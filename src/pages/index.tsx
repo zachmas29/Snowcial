@@ -11,9 +11,9 @@ export default function Home() {
       </Head>
       <div className={`${styles.page}`}>
         <main className={styles.main}>
-          <h1>Replace with your project</h1>
+          <h1>SNOWCIAL</h1>
         </main>
-        <footer className={styles.footer}>CS312 Project Template</footer>
+        <footer className={styles.footer}>COMING SOON</footer>
       </div>
     </>
   );
