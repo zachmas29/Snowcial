@@ -11,11 +11,11 @@ const baseNavItems = [
 
 export function NavBar() {
   const router = useRouter();
-  const isProfilePage = router.pathname === "/profile";
+  const isProfileSection = router.pathname.startsWith("/profile");
 
   const navItems = [
     ...baseNavItems,
-    isProfilePage
+    isProfileSection
       ? { label: "Edit Profile", href: "/profile/edit" }
       : { label: "New Post", href: "/posts/new" },
   ];

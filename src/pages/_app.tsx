@@ -11,10 +11,8 @@ import "@fontsource/roboto/700.css";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <AppCacheProvider {...pageProps}>
-      <>
-        <Component {...pageProps} />
-        <NavBar />
-      </>
+      <Component {...pageProps} />
+      <NavBar />
     </AppCacheProvider>
   );
 }
