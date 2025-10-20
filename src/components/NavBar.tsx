@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/router";
 import styles from "./NavBar.module.css";
 
@@ -25,17 +26,14 @@ export function NavBar() {
       {navItems.map((item) => {
         const isActive = item.href === router.pathname;
         return (
-          <button
-            key={item.label}
-            type="button"
-            onClick={() => {
-              void router.push(item.href);
-            }}
+          <Link
+            key={item.href}
+            href={item.href}
             className={`${styles.navItem} ${isActive ? styles.active : ""}`}
             aria-current={isActive ? "page" : undefined}
           >
             {item.label}
-          </button>
+          </Link>
         );
       })}
     </nav>
