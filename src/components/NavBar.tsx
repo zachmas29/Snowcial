@@ -1,7 +1,7 @@
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import EditIcon from "@mui/icons-material/Edit";
 import EventIcon from "@mui/icons-material/Event";
-import FaceIcon from "@mui/icons-material/Face";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 const baseNavItems = [
-  { label: "Profile", href: "/profile", icon: <FaceIcon /> },
+  { label: "Profile", href: "/profile", icon: <AccountCircleIcon /> },
   { label: "Events", href: "/events", icon: <EventIcon /> },
   { label: "People", href: "/people", icon: <PeopleAltIcon /> },
 ];
