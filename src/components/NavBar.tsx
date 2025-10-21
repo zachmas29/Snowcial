@@ -1,6 +1,8 @@
+import BottomNavigation from "@mui/material/BottomNavigation";
+import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+import Paper from "@mui/material/Paper";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import styles from "./NavBar.module.css";
 
 const baseNavItems = [
   { label: "Profile", href: "/profile" },
@@ -20,20 +22,35 @@ export function NavBar() {
   ];
 
   return (
-    <nav className={styles.nav} aria-label="Primary navigation">
-      {navItems.map((item) => {
-        const isActive = item.href === router.pathname;
-        return (
-          <Link
+    <Paper
+      component="nav"
+      elevation={3}
+      square
+      sx={{
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+      }}
+      aria-label="Primary navigation"
+    >
+      <BottomNavigation value={router.pathname} showLabels>
+        {navItems.map((item) => (
+          <BottomNavigationAction
             key={item.href}
+            component={Link}
             href={item.href}
-            className={`${styles.navItem} ${isActive ? styles.active : ""}`}
-            aria-current={isActive ? "page" : undefined}
-          >
-            {item.label}
-          </Link>
-        );
-      })}
-    </nav>
+            label={item.label}
+            value={item.href}
+            sx={{
+              textTransform: "uppercase",
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              letterSpacing: "0.05em",
+            }}
+          />
+        ))}
+      </BottomNavigation>
+    </Paper>
   );
 }
