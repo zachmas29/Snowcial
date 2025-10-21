@@ -4,34 +4,34 @@ values
   ('Emma', 'Johnson', 'emma.johnson@middlebury.edu', 'EmmaJ', 'Love hitting the slopes early morning! Always looking for powder days at Snowbowl.', '/profiles/emma_profile.jpg', '/banners/emma_banner.jpg'),
   ('Jake', 'Martinez', 'jake.martinez@middlebury.edu', 'JakeM', 'Snowboarder for 5 years. Down for park laps or backcountry adventures.', '/profiles/jake_profile.jpg', '/banners/jake_banner.jpg'),
   ('Sarah', 'Chen', 'sarah.chen@middlebury.edu', 'SarahC', 'Just learned to ski last year, looking for beginner-friendly group rides!', '/profiles/sarah_profile.jpg', '/banners/sarah_banner.jpg'),
-  ('Mike', 'Anderson', 'mike.anderson@middlebury.edu', 'MikeA', 'Instructor at Sugar Bush on weekends. Happy to give tips to anyone!', '/profiles/mike_profile.jpg', '/banners/mike_banner.jpg'),
-  ('Lily', 'Thompson', 'lily.thompson@middlebury.edu', 'LilyT', 'Avid skier, love cruising blues and the occasional black diamond. Sugar Bush regular!', '/profiles/lily_profile.jpg', '/banners/lily_banner.jpg');
+  ('Mike', 'Anderson', 'mike.anderson@middlebury.edu', 'MikeA', 'Instructor at Sugarbush on weekends. Happy to give tips to anyone!', '/profiles/mike_profile.jpg', '/banners/mike_banner.jpg'),
+  ('Lily', 'Thompson', 'lily.thompson@middlebury.edu', 'LilyT', 'Avid skier, love cruising blues and the occasional black diamond. Sugarbush regular!', '/profiles/lily_profile.jpg', '/banners/lily_banner.jpg');
 
 -- Insert event tags
 insert into event_tags (name)
 values
   ('Snowbowl'),
-  ('Sugar Bush');
+  ('Sugarbush');
 
 -- Insert user tags
 insert into user_tags (name)
 values
   ('Beginner'),
-  ('Skiier'),
+  ('Skier'),
   ('Snowboarder');
 
 -- Insert test events
 insert into events (creator_id, event_time, title, description)
 values
   (1, '2025-11-15 09:00:00-05', 'Morning Powder Run at Snowbowl', 'Fresh snow expected tonight! Let''s meet at the base lodge at 9am for first tracks. All levels welcome, we''ll split into groups by ability.'),
-  (4, '2025-11-22 13:00:00-05', 'Afternoon Session at Sugar Bush', 'Casual afternoon skiing/boarding at Sugar Bush. Planning to hit Lincoln Peak and explore some tree runs. Intermediates and above preferred.');
+  (4, '2025-11-22 13:00:00-05', 'Afternoon Session at Sugarbush', 'Casual afternoon skiing/boarding at Sugarbush. Planning to hit Lincoln Peak and explore some tree runs. Intermediates and above preferred.');
 
 -- Insert event comments
 insert into event_comments (creator_id, event_id, comment_text)
 values
   (2, 1, 'Count me in! Should I bring hot chocolate to share?'),
   (3, 1, 'This will be my first time at Snowbowl, super excited!'),
-  (1, 2, 'Love Sugar Bush! Will the conditions be good for intermediates?'),
+  (1, 2, 'Love Sugarbush! Will the conditions be good for intermediates?'),
   (5, 2, 'I''m planning to go! Maybe we can hit Heaven''s Gate if the group is up for it.');
 
 -- Insert event RSVPs
