@@ -17,7 +17,7 @@ values
 insert into user_tags (name)
 values
   ('Beginner'),
-  ('Skiier'),
+  ('Skier'),
   ('Snowboarder');
 
 -- Insert test events
@@ -68,9 +68,9 @@ values
 -- Insert user tag assignments
 insert into user_tag_assignments (user_id, tag_id)
 values
-  (1, 2),  -- Emma is a Skiier
+  (1, 2),  -- Emma is a Skier
   (2, 3),  -- Jake is a Snowboarder
   (3, 1),  -- Sarah is a Beginner
-  (3, 2),  -- Sarah is a Skiier
-  (4, 2),  -- Mike is a Skiier
-  (5, 2);  -- Lily is a Skiier
+  (3, 2),  -- Sarah is a Skier
+  (4, 2),  -- Mike is a Skier
+  (5, 2);  -- Lily is a Skier
