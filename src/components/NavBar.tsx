@@ -1,3 +1,8 @@
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import AddBoxIcon from "@mui/icons-material/AddBox";
+import EditIcon from "@mui/icons-material/Edit";
+import EventIcon from "@mui/icons-material/Event";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Paper from "@mui/material/Paper";
@@ -5,9 +10,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 const baseNavItems = [
-  { label: "Profile", href: "/profile" },
-  { label: "Events", href: "/events" },
-  { label: "People", href: "/people" },
+  { label: "Profile", href: "/profile", icon: <AccountCircleIcon /> },
+  { label: "Events", href: "/events", icon: <EventIcon /> },
+  { label: "People", href: "/people", icon: <PeopleAltIcon /> },
 ];
 
 export function NavBar() {
@@ -17,8 +22,8 @@ export function NavBar() {
   const navItems = [
     ...baseNavItems,
     isProfileSection
-      ? { label: "Edit Profile", href: "/profile/edit" }
-      : { label: "New Post", href: "/posts/new" },
+      ? { label: "Edit Profile", href: "/profile/edit", icon: <EditIcon /> }
+      : { label: "New Post", href: "/posts/new", icon: <AddBoxIcon /> },
   ];
 
   return (
@@ -40,7 +45,7 @@ export function NavBar() {
             key={item.href}
             component={Link}
             href={item.href}
-            label={item.label}
+            icon={item.icon}
             value={item.href}
             sx={{
               textTransform: "uppercase",
