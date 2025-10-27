@@ -53,12 +53,12 @@ export async function fetchUsers(): Promise<User[]> {
       "id, created_at, last_updated, last_active, first_name, last_name, email, nick_name, bio_text, profile_photo_path, banner_photo_path",
     );
 
-  if (!data) {
-    return [];
+  if (error) {
+    throw error;
   }
 
-  if (error) {
-    return error;
+  if (!data) {
+    return [];
   }
 
   return data.map((d) => ({
@@ -88,12 +88,12 @@ export async function fetchUser(id: number): Promise<User | null> {
     .eq("id", id)
     .limit(1);
 
-  if (!data || data.length === 0) {
-    return null;
+  if (error) {
+    throw error;
   }
 
-  if (error) {
-    return error;
+  if (!data || data.length === 0) {
+    return null;
   }
 
   const d = data[0];
@@ -152,12 +152,12 @@ export async function fetchEvents(): Promise<Event[]> {
       "id, creator_id, created_at, last_updated, event_time, title, description",
     );
 
-  if (!data) {
-    return [];
+  if (error) {
+    throw error;
   }
 
-  if (error) {
-    return error;
+  if (!data) {
+    return [];
   }
 
   return data.map((d) => ({
@@ -184,12 +184,12 @@ export async function fetchEvent(id: number): Promise<Event | null> {
     .eq("id", id)
     .limit(1);
 
-  if (!data || data.length === 0) {
-    return null;
+  if (error) {
+    throw error;
   }
 
-  if (error) {
-    return error;
+  if (!data || data.length === 0) {
+    return null;
   }
 
   const d = data[0];
@@ -239,12 +239,12 @@ export async function fetchEventComments(id: number): Promise<EventComment[]> {
     .select("id, creator_id, event_id, created_at, comment_text")
     .eq("event_id", id);
 
-  if (!data) {
-    return [];
+  if (error) {
+    throw error;
   }
 
-  if (error) {
-    return error;
+  if (!data) {
+    return [];
   }
 
   return data.map((d) => ({
