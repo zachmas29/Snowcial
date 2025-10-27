@@ -38,10 +38,10 @@ export interface GalleryPhoto {
 }
 
 export interface EventRsvp {
-  id: number;
+  userId: number;
   eventId: number;
-  name: string;
-  status: boolean;
+  createdAt: Date;
+  status: string;
 }
 
 export interface EventComment {
