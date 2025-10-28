@@ -21,22 +21,22 @@ export default function SmallProfileCard({ user }: Props) {
       }}
     >
       <Avatar
-        src={user.profilePhotoPath}
-        alt={`${user.firstName} ${user.lastName}`}
+        src={user.profile_photo_path ?? ""}
+        alt={`${user.first_name} ${user.last_name}`}
         sx={{ width: 64, height: 64, mr: 2 }}
       />
       <CardContent sx={{ flex: 1, p: 0 }}>
         <Typography variant="h6" fontWeight="bold">
-          {user.firstName} {user.lastName}
+          {user.first_name} {user.last_name}
         </Typography>
 
-        {user.nickname && (
+        {user.nick_name && (
           <Typography variant="subtitle2" color="text.secondary">
-            @{user.nickname}
+            @{user.nick_name}
           </Typography>
         )}
 
-        {user.bioText && (
+        {user.bio_text && (
           <Typography
             variant="body2"
             color="text.secondary"
@@ -47,7 +47,7 @@ export default function SmallProfileCard({ user }: Props) {
               whiteSpace: "nowrap",
             }}
           >
-            {user.bioText}
+            {user.bio_text}
           </Typography>
         )}
       </CardContent>
