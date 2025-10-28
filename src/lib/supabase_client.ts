@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import type { Database } from "@/types/database.types";
 
 // Client-side Supabase client (for browser/React components)
 export function createSupabaseClient() {
@@ -10,7 +11,7 @@ export function createSupabaseClient() {
       "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables",
     );
   }
-  return createClient(SupabaseUrl, SupabaseAnonKey);
+  return createClient<Database>(SupabaseUrl, SupabaseAnonKey);
 }
 
 export const supabase = createSupabaseClient();

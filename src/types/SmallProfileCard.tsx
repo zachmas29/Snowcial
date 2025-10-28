@@ -1,5 +1,5 @@
-import type { User } from "@/types/db_types";
+import type { Tables } from "@/types/database.types";
 
 export interface Props {
-  user: User;
+  user: Tables<"users">;
 }
