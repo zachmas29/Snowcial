@@ -6,9 +6,13 @@
 */
 
 import { Avatar, Card, CardContent, Typography } from "@mui/material";
-import type { Props } from "@/types/SmallProfileCard";
+import type { Tables } from "@/types/database.types";
 
-export default function SmallProfileCard({ user }: Props) {
+export interface SmallProfileCardProps {
+  user: Tables<"users">;
+}
+
+export default function SmallProfileCard({ user }: SmallProfileCardProps) {
   return (
     <Card
       sx={{
