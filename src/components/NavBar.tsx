@@ -17,7 +17,8 @@ const baseNavItems = [
 
 export function NavBar() {
   const router = useRouter();
-  const isProfileSection = router.pathname.startsWith("/profile");
+  const pathname = router.pathname;
+  const isProfileSection = pathname.startsWith("/profile");
 
   const navItems = [
     ...baseNavItems,
@@ -25,6 +26,8 @@ export function NavBar() {
       ? { label: "Edit Profile", href: "/profile/edit", icon: <EditIcon /> }
       : { label: "New Event", href: "/events/new", icon: <AddBoxIcon /> },
   ];
+
+  const activeNavValue = isProfileSection ? "/profile" : pathname;
 
   return (
     <Paper
@@ -39,7 +42,7 @@ export function NavBar() {
       }}
       aria-label="Primary navigation"
     >
-      <BottomNavigation value={router.pathname} showLabels>
+      <BottomNavigation value={activeNavValue} showLabels>
         {navItems.map((item) => (
           <BottomNavigationAction
             key={item.href}
