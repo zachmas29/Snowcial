@@ -13,19 +13,33 @@ export default function SmallProfileCard({ user }: Props) {
     <Card
       sx={{
         display: "flex",
-        alignItems: "center",
-        p: 2,
-        width: 280,
+        alignItems: { xs: "flex-start", sm: "center" },
+        flexDirection: { xs: "column", sm: "row" },
+        p: { xs: 1.5, sm: 2 },
+        width: "100%",
+        maxWidth: { xs: "100%", sm: 360 },
         borderRadius: 3,
         boxShadow: 2,
+        gap: { xs: 1.5, sm: 0 },
       }}
     >
       <Avatar
         src={user.profile_photo_path ?? ""}
         alt={`${user.first_name} ${user.last_name}`}
-        sx={{ width: 64, height: 64, mr: 2 }}
+        sx={{
+          width: { xs: 56, sm: 64 },
+          height: { xs: 56, sm: 64 },
+          mr: { sm: 2 },
+        }}
       />
-      <CardContent sx={{ flex: 1, p: 0 }}>
+      <CardContent
+        sx={{
+          flex: 1,
+          p: 0,
+          minWidth: 0,
+          width: "100%",
+        }}
+      >
         <Typography variant="h6" fontWeight="bold">
           {user.first_name} {user.last_name}
         </Typography>
@@ -42,9 +56,8 @@ export default function SmallProfileCard({ user }: Props) {
             color="text.secondary"
             sx={{
               mt: 0.5,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
+              overflowWrap: "anywhere",
+              wordBreak: "break-word",
             }}
           >
             {user.bio_text}
