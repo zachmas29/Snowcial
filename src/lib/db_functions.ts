@@ -4,6 +4,12 @@ import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
 import type { UserWithTags } from "@/types/User";
 
+export interface UserProfileData {
+  user: Tables<"users">;
+  tags: Tables<"user_tags">[];
+  galleryPhotos: Tables<"gallery_photos">[];
+}
+
 /* fetchUsers
  * returns: array of all Users in the DB
  */
@@ -118,6 +124,47 @@ export async function fetchUserTags(
       ?.map((item) => item.userTags)
       .filter((tag): tag is Tables<"user_tags"> => tag !== null) ?? []
   );
+}
+
+/* fetchUserGalleryPhotos
+ * params: id - a user id to search for
+ * returns: the gallery photos associated with the given user id
+ */
+export async function fetchUserGalleryPhotos(
+  id: number,
+): Promise<Tables<"gallery_photos">[]> {
+  const { data, error } = await supabase
+    .from("gallery_photos")
+    .select("*")
+    .eq("user_id", id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return data ?? [];
+}
+
+/* fetchUserProfile
+ * params: id - a user id to search for
+ * returns: the user, along with tags and gallery photos, or null if not found
+ */
+export async function fetchUserProfile(
+  id: number,
+): Promise<UserProfileData | null> {
+  const user = await fetchUser(id);
+
+  if (!user) {
+    return null;
+  }
+
+  const [tags, galleryPhotos] = await Promise.all([
+    fetchUserTags(id),
+    fetchUserGalleryPhotos(id),
+  ]);
+
+  return { user, tags, galleryPhotos };
 }
 
 /* fetchEvents
