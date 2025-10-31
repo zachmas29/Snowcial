@@ -14,7 +14,7 @@ export interface UserGalleryProps {
   photos: Tables<"gallery_photos">[];
 }
 
-export function UserGallery({ photos }: UserGalleryProps) {
+export default function UserGallery({ photos }: UserGalleryProps) {
   const showEmptyState = photos.length === 0;
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
@@ -85,5 +85,3 @@ export function UserGallery({ photos }: UserGalleryProps) {
     </Box>
   );
 }
-
-export default UserGallery;
