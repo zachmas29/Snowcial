@@ -1,14 +1,9 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
 import { supabase } from "@/lib/supabase_client";
+import type { UserProfileData } from "@/types/app.types";
 import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
 import type { UserWithTags } from "@/types/User";
-
-export interface UserProfileData {
-  user: Tables<"users">;
-  tags: Tables<"user_tags">[];
-  galleryPhotos: Tables<"gallery_photos">[];
-}
 
 /* fetchUsers
  * returns: array of all Users in the DB

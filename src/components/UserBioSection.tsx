@@ -5,10 +5,7 @@
 */
 
 import { Box, Typography } from "@mui/material";
-
-export interface UserBioSectionProps {
-  bioText?: string | null;
-}
+import type { UserBioSectionProps } from "@/types/app.types";
 
 export function UserBioSection({ bioText }: UserBioSectionProps) {
   const paragraphs =

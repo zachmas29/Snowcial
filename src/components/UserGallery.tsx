@@ -8,11 +8,7 @@ import { Box, ImageList, ImageListItem, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Image from "next/image";
-import type { Tables } from "@/types/database.types";
-
-export interface UserGalleryProps {
-  photos: Tables<"gallery_photos">[];
-}
+import type { UserGalleryProps } from "@/types/app.types";
 
 export default function UserGallery({ photos }: UserGalleryProps) {
   const showEmptyState = photos.length === 0;

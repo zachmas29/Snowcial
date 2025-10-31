@@ -5,12 +5,7 @@
 */
 
 import { Avatar, Box, Chip, Stack, Typography } from "@mui/material";
-import type { Tables } from "@/types/database.types";
-
-export interface UserProfileHeaderProps {
-  user: Tables<"users">;
-  tags: Tables<"user_tags">[];
-}
+import type { UserProfileHeaderProps } from "@/types/app.types";
 
 export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
   const fullName = `${user.first_name} ${user.last_name}`.trim();

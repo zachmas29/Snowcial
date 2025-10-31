@@ -11,9 +11,9 @@ import { useEffect, useState } from "react";
 import UserBioSection from "@/components/UserBioSection";
 import UserGallery from "@/components/UserGallery";
 import UserProfileHeader from "@/components/UserProfileHeader";
-import type { UserProfileData } from "@/lib/db_functions";
 import { fetchUserProfile } from "@/lib/db_functions";
 import styles from "@/styles/Home.module.css";
+import type { UserProfileData } from "@/types/app.types";
 
 export default function UserProfilePage() {
   const router = useRouter();

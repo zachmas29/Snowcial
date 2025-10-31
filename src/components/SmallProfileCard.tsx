@@ -15,18 +15,19 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import type { UserWithTags } from "@/types/User";
+import type { SmallProfileCardProps } from "@/types/app.types";
 
-export default function SmallProfileCard({ user }: { user: UserWithTags }) {
+export default function SmallProfileCard({ user }: SmallProfileCardProps) {
   const {
     id,
-    tags,
     profile_photo_path,
     first_name,
     last_name,
     nick_name,
     bio_text,
+    tags,
   } = user;
+
   return (
     <Card
       sx={{
