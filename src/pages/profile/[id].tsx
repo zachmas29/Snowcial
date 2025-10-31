@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import UserBioSection from "@/components/UserBioSection";
 import UserGallery from "@/components/UserGallery";
 import UserProfileHeader from "@/components/UserProfileHeader";
@@ -17,27 +17,20 @@ import styles from "@/styles/Home.module.css";
 
 export default function UserProfilePage() {
   const router = useRouter();
-  const { id } = router.query;
+  const idParam = router.query.id;
+  const parsedId =
+    typeof idParam === "string" ? Number.parseInt(idParam, 10) : Number.NaN;
 
   const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const numericId = useMemo(() => {
-    if (typeof id === "string") {
-      const parsed = Number.parseInt(id, 10);
-      return Number.isNaN(parsed) ? null : parsed;
-    }
-
-    return null;
-  }, [id]);
 
   useEffect(() => {
     if (!router.isReady) {
       return;
     }
 
-    if (numericId === null) {
+    if (Number.isNaN(parsedId)) {
       setError("Invalid profile id.");
       setLoading(false);
       return;
@@ -64,8 +57,8 @@ export default function UserProfilePage() {
       }
     }
 
-    void loadProfile(numericId);
-  }, [numericId, router.isReady]);
+    void loadProfile(parsedId);
+  }, [parsedId, router.isReady]);
 
   const pageTitle = profile
     ? `${profile.user.first_name} ${profile.user.last_name} | Snowcial`
