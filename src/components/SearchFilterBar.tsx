@@ -2,7 +2,77 @@
  * Author: Cam Bitter
  * Description:
  *  This component will call a callback function with arguments
- *  that show the current state of the search and filter parameters
+ *  that show the current state of the search and sort parameters
  */
 
-export default function SearchFilterBar() {}
+import { Box, MenuItem, TextField } from "@mui/material";
+import type { SortType } from "@/types/Sort.types";
+
+type SearchBarProps = {
+  searchTerm: string;
+  sortType: SortType;
+  setTerm: (term: string) => void;
+  setSortType: (type: SortType) => void;
+  width?: string | number;
+};
+
+export default function SearchFilterBar({
+  searchTerm,
+  sortType,
+  setTerm,
+  setSortType,
+  width = "100%",
+}: SearchBarProps) {
+  const sortOptions = [
+    {
+      value: "newest",
+      label: "Newest",
+    },
+    {
+      value: "oldest",
+      label: "Oldest",
+    },
+    {
+      value: "alphabetical",
+      label: "Alphabetical",
+    },
+    {
+      value: "none",
+      label: "None",
+    },
+  ];
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        width: width,
+        gap: 2,
+      }}
+    >
+      <TextField
+        id="outlined-basic"
+        label="Search"
+        variant="outlined"
+        value={searchTerm}
+        onChange={(event) => setTerm(event.target.value)}
+        sx={{ flex: "80%" }}
+      />
+      <TextField
+        id="outlined-select-sort"
+        select
+        label="Sort"
+        value={sortType}
+        onChange={(event) => setSortType(event.target.value as SortType)}
+        defaultValue="none"
+        sx={{ flex: "20%" }}
+      >
+        {sortOptions.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </TextField>
+    </Box>
+  );
+}
