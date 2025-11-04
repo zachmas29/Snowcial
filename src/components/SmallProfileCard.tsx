@@ -1,18 +1,26 @@
 /*
   SmallProfileCard.tsx
 
-  This component displays a user profile as a small card
-  for the profiles feed
+  Compact profile tile used in the people feed. Displays avatar, name, and bio,
+  then renders any tag chips passed in alongside the user data.
 */
 
-import { Avatar, Card, CardContent, Typography } from "@mui/material";
-import type { Tables } from "@/types/database.types";
+import {
+  Avatar,
+  Box,
+  Card,
+  CardContent,
+  Chip,
+  Typography,
+} from "@mui/material";
+import type { UserWithTags } from "@/types/User";
 
-export interface SmallProfileCardProps {
-  user: Tables<"users">;
+interface Props {
+  user: UserWithTags;
 }
 
-export default function SmallProfileCard({ user }: SmallProfileCardProps) {
+export default function SmallProfileCard({ user }: Props) {
+  const { tags, profile_photo_path, first_name, last_name, bio_text } = user;
   return (
     <Card
       sx={{
@@ -28,8 +36,8 @@ export default function SmallProfileCard({ user }: SmallProfileCardProps) {
       }}
     >
       <Avatar
-        src={user.profile_photo_path ?? ""}
-        alt={`${user.first_name} ${user.last_name}`}
+        src={profile_photo_path ?? ""}
+        alt={`${first_name} ${last_name}`}
         sx={{
           width: { xs: 56, sm: 64 },
           height: { xs: 56, sm: 64 },
@@ -45,16 +53,10 @@ export default function SmallProfileCard({ user }: SmallProfileCardProps) {
         }}
       >
         <Typography variant="h6" fontWeight="bold">
-          {user.first_name} {user.last_name}
+          {first_name} {last_name}
         </Typography>
 
-        {user.nick_name && (
-          <Typography variant="subtitle2" color="text.secondary">
-            @{user.nick_name}
-          </Typography>
-        )}
-
-        {user.bio_text && (
+        {bio_text && (
           <Typography
             variant="body2"
             color="text.secondary"
@@ -64,8 +66,33 @@ export default function SmallProfileCard({ user }: SmallProfileCardProps) {
               wordBreak: "break-word",
             }}
           >
-            {user.bio_text}
+            {bio_text}
           </Typography>
+        )}
+
+        {tags && tags.length > 0 && (
+          <Box
+            sx={{
+              mt: 1,
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 0.75,
+            }}
+          >
+            {tags.map((tag) => (
+              <Chip
+                key={tag.id}
+                label={tag.name}
+                size="small"
+                variant="outlined"
+                sx={{
+                  height: 22,
+                  fontSize: "0.75rem",
+                  px: 0.75,
+                }}
+              />
+            ))}
+          </Box>
         )}
       </CardContent>
     </Card>
