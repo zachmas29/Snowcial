@@ -64,7 +64,6 @@ export default function SearchFilterBar({
         label="Sort"
         value={sortType}
         onChange={(event) => setSortType(event.target.value as SortType)}
-        defaultValue="none"
         sx={{ flex: "20%" }}
       >
         {sortOptions.map((option) => (
