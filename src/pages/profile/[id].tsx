@@ -30,34 +30,56 @@ export default function UserProfilePage() {
       return;
     }
 
+    let isMounted = true;
+
     if (Number.isNaN(parsedId)) {
+      setProfile(null);
       setError("Invalid profile id.");
       setLoading(false);
-      return;
+      return () => {
+        isMounted = false;
+      };
     }
 
     async function loadProfile(userId: number) {
+      setLoading(true);
+      setError(null);
+
       try {
-        setLoading(true);
         const data = await fetchUserProfile(userId);
 
+        if (!isMounted) {
+          return;
+        }
+
         if (!data) {
+          setProfile(null);
           setError("We couldn't find that profile.");
           return;
         }
 
         setProfile(data);
-        setError(null);
       } catch (fetchError) {
+        if (!isMounted) {
+          return;
+        }
+
         // biome-ignore lint/suspicious/noConsole: helpful during development
         console.error("Failed to fetch profile:", fetchError);
+        setProfile(null);
         setError("Something went wrong while loading this profile.");
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
 
     void loadProfile(parsedId);
+
+    return () => {
+      isMounted = false;
+    };
   }, [parsedId, router.isReady]);
 
   const pageTitle = profile
