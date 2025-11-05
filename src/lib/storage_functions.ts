@@ -1,4 +1,3 @@
-import { isAssetError } from "next/dist/client/route-loader";
 import { supabase } from "@/lib/supabase_client";
 
 async function resizeAndCropImage(
