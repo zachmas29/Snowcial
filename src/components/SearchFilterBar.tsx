@@ -8,7 +8,7 @@
 import { Box, MenuItem, TextField } from "@mui/material";
 import type { SortType } from "@/types/Sort.types";
 
-type SearchBarProps = {
+type SearchFilterBarProps = {
   searchTerm: string;
   sortType: SortType;
   setTerm: (term: string) => void;
@@ -22,7 +22,7 @@ export default function SearchFilterBar({
   setTerm,
   setSortType,
   width = "100%",
-}: SearchBarProps) {
+}: SearchFilterBarProps) {
   const sortOptions = [
     {
       value: "newest",
