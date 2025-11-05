@@ -16,42 +16,12 @@ export default function People() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortType, setSortType] = useState<SortType>("none");
 
-  // Pull users from DB
+  // Initial load users from DB on page load
   useEffect(() => {
     async function loadUsers() {
       try {
         const data = await fetchUsers();
-
-        // Filter by search term
-        const searchedData = data.filter((user) => {
-          const fullName = `${user.first_name} ${user.last_name}`.toLowerCase();
-          return fullName.includes(searchTerm.toLowerCase());
-        });
-
-        // Sort by sort term
-        const sortedData = searchedData.sort((a, b) => {
-          switch (sortType) {
-            case "alphabetical": {
-              const nameA = `${a.first_name} ${a.last_name}`.toLowerCase();
-              const nameB = `${b.first_name} ${b.last_name}`.toLowerCase();
-              return nameA.localeCompare(nameB);
-            }
-            case "newest":
-              return (
-                new Date(b.created_at).getTime() -
-                new Date(a.created_at).getTime()
-              );
-            case "oldest":
-              return (
-                new Date(a.created_at).getTime() -
-                new Date(b.created_at).getTime()
-              );
-            default:
-              return 0;
-          }
-        });
-
-        setUsers(sortedData);
+        setUsers(data);
       } catch (error) {
         // biome-ignore lint/suspicious/noConsole: just for testing
         console.error("Failed to fetch users:", error);
@@ -61,7 +31,7 @@ export default function People() {
       }
     }
     loadUsers();
-  }, [searchTerm, sortType]);
+  }, []);
 
   return (
     <>
@@ -93,7 +63,12 @@ export default function People() {
               Unable to load people right now.
             </Alert>
           ) : (
-            <PeopleFeed users={users} maxWidth={640} />
+            <PeopleFeed
+              users={users}
+              maxWidth={640}
+              searchTerm={searchTerm}
+              sortType={sortType}
+            />
           )}
         </main>
       </div>
