@@ -8,6 +8,8 @@ async function resizeAndCropImage(
   return new Promise((resolve, reject) => {
     const img = new Image();
     const canvas = document.createElement("canvas");
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
     const ctx = canvas.getContext("2d");
 
     if (!ctx) {
