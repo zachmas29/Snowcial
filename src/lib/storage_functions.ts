@@ -17,6 +17,8 @@ async function resizeAndCropImage(
       return;
     }
 
+    const objectUrl = URL.createObjectURL(image);
+
     img.onload = () => {
       const scale = Math.max(
         targetWidth / img.width,
@@ -41,13 +43,15 @@ async function resizeAndCropImage(
         "image/jpeg",
         0.9,
       );
+      URL.revokeObjectURL(objectUrl);
     };
 
     img.onerror = () => {
       reject(new Error("Failed to load image"));
+      URL.revokeObjectURL(objectUrl);
     };
 
-    img.src = URL.createObjectURL(image);
+    img.src = objectUrl;
   });
 }
 
