@@ -19,9 +19,23 @@ export default function App({ Component, pageProps }: AppProps) {
 
   // Redirect to login if not authenticated and not on login page
   useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      // If navigating to a protected page and not authenticated, redirect to login
+      if (!authData.loading && !authData.user && url !== "/") {
+        router.push("/");
+      }
+    };
+
+    router.events.on("routeChangeStart", handleRouteChange);
+
+    // Also check on initial mount
     if (!authData.loading && !authData.user && !isLoginPage) {
       router.push("/");
     }
+
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChange);
+    };
   }, [authData.loading, authData.user, isLoginPage, router]);
 
   if (authData.loading) {
