@@ -54,14 +54,19 @@ enabled = true
 # Specifies an ordered list of schema files that describe your database.
 # Supports glob patterns relative to supabase directory: "./schemas/*.sql"
 
-# Specific ordering needed for foreign key creation
+# Specific ordering needed for foreign key creation and RLS policies
 schema_paths = [
     "./schemas/functions.sql",
     "./schemas/users.sql",
     "./schemas/user_tags.sql",
     "./schemas/events.sql",
     "./schemas/event_tags.sql",
-    "./schemas/*.sql"
+    "./schemas/event_comments.sql",
+    "./schemas/event_rsvps.sql",
+    "./schemas/event_tag_assignments.sql",
+    "./schemas/gallery_photos.sql",
+    "./schemas/user_tag_assignments.sql",
+    "./schemas/rls_policies.sql"
 ]
 
 [db.seed]
@@ -177,7 +182,7 @@ web3 = 30
 
 [auth.email]
 # Allow/disallow new user signups via email to your project.
-enable_signup = true
+enable_signup = false
 # If enabled, a user will be required to confirm any email change on both the old, and new email
 # addresses. If disabled, only the new email is required to confirm.
 double_confirm_changes = true
@@ -268,6 +273,12 @@ max_frequency = "5s"
 # [auth.mfa.web_authn]
 # enroll_enabled = true
 # verify_enabled = true
+
+[auth.external.google]
+enabled = true
+client_id = "417747831663-dbh6g0b0krrg8g0tr33bvppnfce92ht6.apps.googleusercontent.com"
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET)"
+skip_nonce_check = false
 
 # Use an external OAuth provider. The full list of providers are: `apple`, `azure`, `bitbucket`,
 # `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,

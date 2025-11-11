@@ -15,10 +15,10 @@ export async function fetchUsers(): Promise<Tables<"users">[]> {
 }
 
 /* fetchUser
- * params: id - a user id to search for
+ * params: id - a user id to search for (UUID)
  * returns: the User object associated with the given id
  */
-export async function fetchUser(id: number): Promise<Tables<"users"> | null> {
+export async function fetchUser(id: string): Promise<Tables<"users"> | null> {
   const { data, error } = await supabase
     .from("users")
     .select("*")
@@ -32,12 +32,38 @@ export async function fetchUser(id: number): Promise<Tables<"users"> | null> {
   return data;
 }
 
+/* getCurrentUser
+ * returns: the User object for the currently authenticated user
+ */
+export async function getCurrentUser(): Promise<Tables<"users"> | null> {
+  const {
+    data: { user: authUser },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !authUser) {
+    throw authError || new Error("No authenticated user");
+  }
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", authUser.id)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
 /* fetchUserTags
- * params: id - a user id to search for
+ * params: id - a user id to search for (UUID)
  * returns: the UserTags associated with the given user id
  */
 export async function fetchUserTags(
-  id: number,
+  id: string,
 ): Promise<Tables<"user_tags">[]> {
   const { data, error } = await supabase
     .from("user_tag_assignments")
