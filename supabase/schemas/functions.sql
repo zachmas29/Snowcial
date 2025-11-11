@@ -53,7 +53,7 @@ CREATE OR REPLACE FUNCTION public.handle_new_user()
             NOW(),
             NOW(),
             NOW()
-        );
+        ) ON CONFLICT (id) DO NOTHING;
 
         RETURN NEW;
     END;

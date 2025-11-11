@@ -30,7 +30,8 @@ CREATE POLICY "Users can view all user tag assignments"
 
 CREATE POLICY "Users can manage own tags"
     ON user_tag_assignments FOR ALL
-    USING (auth.uid() = user_id);
+    USING (auth.uid() = user_id)
+    WITH CHECK (auth.uid() = user_id);
 
 -- Events policies
 CREATE POLICY "Users can view all events"
@@ -67,6 +68,13 @@ CREATE POLICY "Users can manage tags for own events"
             WHERE events.id = event_tag_assignments.event_id
             AND events.creator_id = auth.uid()
         )
+    )
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM events
+            WHERE events.id = event_tag_assignments.event_id
+            AND events.creator_id = auth.uid()
+        )
     );
 
 -- Event comments policies
@@ -89,7 +97,8 @@ CREATE POLICY "Users can view all RSVPs"
 
 CREATE POLICY "Users can manage own RSVPs"
     ON event_rsvps FOR ALL
-    USING (auth.uid() = user_id);
+    USING (auth.uid() = user_id)
+    WITH CHECK (auth.uid() = user_id);
 
 -- Gallery photos policies
 CREATE POLICY "Users can view all gallery photos"
@@ -98,4 +107,5 @@ CREATE POLICY "Users can view all gallery photos"
 
 CREATE POLICY "Users can manage own gallery photos"
     ON gallery_photos FOR ALL
-    USING (auth.uid() = user_id);
+    USING (auth.uid() = user_id)
+    WITH CHECK (auth.uid() = user_id);
