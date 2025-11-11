@@ -158,12 +158,10 @@ export async function fetchEventComments(
 
 /** fetchEventTagOptions
  * @returns A list of all possible event tags
-*/
+ */
 
 export async function fetchEventTagOptions(): Promise<Tables<"event_tags">[]> {
-  const { data, error } = await supabase
-    .from("event_tags")
-    .select("*")
+  const { data, error } = await supabase.from("event_tags").select("*");
 
   if (error) {
     throw error;
@@ -177,22 +175,33 @@ export async function fetchEventTagOptions(): Promise<Tables<"event_tags">[]> {
  * @param formData - The event data including tags
  * @returns The inserted event or null if failed
  */
-export async function insertEventWithTags(eventFormData: EventFormData, user_id: number): Promise<Tables<"events"> | null> {
-
+export async function insertEventWithTags(
+  eventFormData: EventFormData,
+  user_id: number,
+): Promise<Tables<"events"> | null> {
   const { data: event, error: eventError } = await supabase
     .from("events")
-    .insert([{
+    .insert({
       title: eventFormData.title,
       description: eventFormData.description,
-      event_time: eventFormData.event_time as Date,
-      creator_id: user_id
-    }])
+      event_time:
+        eventFormData.event_time?.toISOString() ?? new Date().toISOString(),
+      creator_id: user_id,
+    })
     .select()
     .single();
 
-  if (eventError || !event) {
-    console.error("Failed to create event:", eventError);
-    return null;
+  // We need to check that the user_id on the form and the
+  // user_id submitting the form matches so users can't be spoofed
+  if (!user_id) {
+  }
+
+  if (eventError) {
+    throw eventError;
+  }
+
+  if (!event) {
+    throw Error("No event found");
   }
 
   if (eventFormData.tags.length > 0) {
@@ -206,7 +215,7 @@ export async function insertEventWithTags(eventFormData: EventFormData, user_id:
       .insert(tagAssignments);
 
     if (tagError) {
-      console.error("Failed to assign tags:", tagError);
+      throw tagError;
     }
   }
 

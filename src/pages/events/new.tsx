@@ -8,84 +8,102 @@ import styles from "@/styles/Home.module.css";
 import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
 
-export default function NewEvent() { 
+export default function NewEvent() {
+  const router = useRouter();
+  const [tagOptions, setTagOptions] = useState<Tables<"event_tags">[] | []>([]);
+  const [eventFormData, setEventFormData] = useState<EventFormData>({
+    title: "",
+    description: "",
+    event_time: null,
+    tags: [],
+  });
+  const [clientLoaded, setClientLoaded] = useState(false);
 
-    const router = useRouter();
-    const [tagOptions, setTagOptions] = useState<Tables<"event_tags">[] | []>([]);
-    const [eventFormData, setEventFormData] = useState<EventFormData>({title: "", description: "", event_time: null, tags: []});
-    const [clientLoaded, setClientLoaded] = useState(false);
+  // UPDATE THIS WITH USER AUTH EVENTUALLY
+  const USER_ID = 1;
 
-    // UPDATE THIS WITH USER AUTH EVENTUALLY
-    const USER_ID = 1;
-    
-    // delay initiating event_time value to when client page is rendered 
-    // to prevent https://react.dev/link/hydration-mismatch
-    useEffect(() => {
-        setEventFormData((prev) => ({
-            ...prev,
-            event_time: prev.event_time ?? new Date(),
-        }));
+  // delay initiating event_time value to when client page is rendered
+  // to prevent https://react.dev/link/hydration-mismatch
+  useEffect(() => {
+    setEventFormData((prev) => ({
+      ...prev,
+      event_time: prev.event_time ?? new Date(),
+    }));
     setClientLoaded(true);
-    }, []); 
+  }, []);
 
-    // Load event tag options
-    useEffect(() => {
+  // Load event tag options
+  useEffect(() => {
     async function loadEventTags() {
-        try {
-            const data = await fetchEventTagOptions();
-            setTagOptions(data);
-        } catch (error) {
-            // biome-ignore lint/suspicious/noConsole: just for testing
-            console.error("Failed to fetch users:", error);
-        } 
+      try {
+        const data = await fetchEventTagOptions();
+        setTagOptions(data);
+      } catch (error) {
+        // biome-ignore lint/suspicious/noConsole: just for testing
+        console.error("Failed to fetch users:", error);
+      }
     }
     loadEventTags();
-    }, []);
+  }, []);
 
-    // Submits event data to Supabase
-    const handleSubmit = async () => {
-        if (!eventFormData.title.trim() || !eventFormData.description.trim() || !eventFormData.event_time) {
-            alert("Please fill in a title, description, and date.");
-            return;
-        }
-        
-        const confirmed = confirm("Submit this event?");
-        if (!confirmed) return;
+  // Submits event data to Supabase
+  const handleSubmit = async () => {
+    if (
+      !eventFormData.title.trim() ||
+      !eventFormData.description.trim() ||
+      !eventFormData.event_time
+    ) {
+      alert("Please fill in a title, description, and date.");
+      return;
+    }
 
-        try {
-            const inserted = await insertEventWithTags({
-                title: eventFormData.title,
-                description: eventFormData.description,
-                event_time: eventFormData.event_time.toISOString(),
-                creator_id: USER_ID
-            });
+    const confirmed = confirm("Submit this event?");
+    if (!confirmed) return;
 
-            console.log("Inserted event:", inserted);
-            // router.push(`/events/${inserted.id}`);
+    try {
+      const inserted = await insertEventWithTags(
+        {
+          title: eventFormData.title,
+          description: eventFormData.description,
+          event_time: eventFormData.event_time,
+          tags: eventFormData.tags,
+        },
+        USER_ID,
+      );
 
-        } catch (err) {
-            console.error("Error inserting event:", err);
-            alert("Failed to create event.");
-        }
-    };
+      if (inserted) {
+        router.push(`/events/${inserted.id}`);
+      }
+    } catch (err) {
+      alert(`Failed to create event: ${err}`);
+    }
+  };
 
-    // Returns to previous page
-    const handleCancel = () => {
-        router.back();
-    };
+  // Returns to previous page
+  const handleCancel = () => {
+    router.back();
+  };
 
-    if (!clientLoaded) return null; 
+  if (!clientLoaded) return null;
 
-    return  <>
-        <Head>
-            <title>Create Event | Snowcial</title>
-        </Head>
-        
-        <div className={styles.page}>
-            <main className={styles.main}>
-                <h1 style={{ textAlign: "center" }}>CREATE EVENT</h1>
-                <EventCreator eventFormData={eventFormData} setEventFormData={setEventFormData} tagOptions={tagOptions} submit={handleSubmit} cancel={handleCancel}/>
-            </main>
-        </div>
+  return (
+    <>
+      <Head>
+        <title>Create Event | Snowcial</title>
+      </Head>
+
+      <div className={styles.page}>
+        <main className={styles.main}>
+          <h1 style={{ textAlign: "center" }}>CREATE EVENT</h1>
+          <EventCreator
+            eventFormData={eventFormData}
+            setEventFormData={setEventFormData}
+            tagOptions={tagOptions}
+            submit={handleSubmit}
+            cancel={handleCancel}
+          />
+        </main>
+      </div>
     </>
+  );
 }
