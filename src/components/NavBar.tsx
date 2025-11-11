@@ -23,7 +23,7 @@ export function NavBar() {
     ...baseNavItems,
     isProfileSection
       ? { label: "Edit Profile", href: "/profile/edit", icon: <EditIcon /> }
-      : { label: "New Post", href: "/posts/new", icon: <AddBoxIcon /> },
+      : { label: "New Event", href: "/events/new", icon: <AddBoxIcon /> },
   ];
 
   return (

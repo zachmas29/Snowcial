@@ -1,5 +1,7 @@
+/** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
 import { supabase } from "@/lib/supabase_client";
 import type { Tables } from "@/types/database.types";
+import type { EventFormData } from "@/types/EventCreator.types";
 
 /* fetchUsers
  * returns: array of all Users in the DB
@@ -152,4 +154,61 @@ export async function fetchEventComments(
   }
 
   return data ?? [];
+}
+
+/** fetchEventTagOptions
+ * @returns A list of all possible event tags
+*/
+
+export async function fetchEventTagOptions(): Promise<Tables<"event_tags">[]> {
+  const { data, error } = await supabase
+    .from("event_tags")
+    .select("*")
+
+  if (error) {
+    throw error;
+  }
+
+  return data ?? [];
+}
+
+/**
+ * Inserts a new event and its tag assignments
+ * @param formData - The event data including tags
+ * @returns The inserted event or null if failed
+ */
+export async function insertEventWithTags(eventFormData: EventFormData, user_id: number): Promise<Tables<"events"> | null> {
+
+  const { data: event, error: eventError } = await supabase
+    .from("events")
+    .insert([{
+      title: eventFormData.title,
+      description: eventFormData.description,
+      event_time: eventFormData.event_time as Date,
+      creator_id: user_id
+    }])
+    .select()
+    .single();
+
+  if (eventError || !event) {
+    console.error("Failed to create event:", eventError);
+    return null;
+  }
+
+  if (eventFormData.tags.length > 0) {
+    const tagAssignments = eventFormData.tags.map((tag) => ({
+      event_id: event.id,
+      tag_id: tag.id,
+    }));
+
+    const { error: tagError } = await supabase
+      .from("event_tag_assignments")
+      .insert(tagAssignments);
+
+    if (tagError) {
+      console.error("Failed to assign tags:", tagError);
+    }
+  }
+
+  return event;
 }

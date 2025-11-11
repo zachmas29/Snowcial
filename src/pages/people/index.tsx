@@ -40,12 +40,6 @@ export default function People() {
       </Head>
       <div className={styles.page}>
         <main className={styles.main}>
-          <SearchFilterBar
-            searchTerm={searchTerm}
-            sortType={sortType}
-            setTerm={setSearchTerm}
-            setSortType={setSortType}
-          />
           <Typography
             variant="h3"
             component="h1"
@@ -55,6 +49,13 @@ export default function People() {
           >
             People
           </Typography>
+
+          <SearchFilterBar
+            searchTerm={searchTerm}
+            sortType={sortType}
+            setTerm={setSearchTerm}
+            setSortType={setSortType}
+          />
 
           {loading ? (
             <CircularProgress />
