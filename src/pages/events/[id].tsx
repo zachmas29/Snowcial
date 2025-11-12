@@ -2,7 +2,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Event from "@/components/Event";
-import { fetchEvent, fetchEvents, fetchEventTags } from "@/lib/db_functions";
+import { fetchEvent, fetchEventTags } from "@/lib/db_functions";
 import type { EventFormData } from "@/types/EventCreator.types";
 
 export default function eventPage() {
