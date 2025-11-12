@@ -160,7 +160,7 @@ export async function fetchEventTags(
 ): Promise<Tables<"event_tags">[]> {
   const { data, error } = await supabase
     .from("event_tag_assignments")
-    .select("event_tags(id, name)")
+    .select("event_tags:event_tags(id, name)")
     .eq("event_id", id);
 
   if (error) {
