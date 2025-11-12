@@ -44,12 +44,12 @@ export default function UserProfilePage() {
 
     let isMounted = true;
 
-    async function loadProfile() {
+    async function loadProfile(validUserId: string) {
       setLoading(true);
       setError(null);
 
       try {
-        const data = await fetchUserProfile(userId);
+        const data = await fetchUserProfile(validUserId);
 
         if (!isMounted) {
           return;
@@ -78,7 +78,7 @@ export default function UserProfilePage() {
       }
     }
 
-    void loadProfile();
+    void loadProfile(userId);
 
     return () => {
       isMounted = false;
