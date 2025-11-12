@@ -2,6 +2,7 @@
 import { supabase } from "@/lib/supabase_client";
 import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
+import type { UserWithTags } from "@/types/User";
 
 /* fetchUsers
  * returns: array of all Users in the DB
@@ -14,6 +15,40 @@ export async function fetchUsers(): Promise<Tables<"users">[]> {
   }
 
   return data ?? [];
+}
+
+/* fetchUsersWithTags
+ * returns: array of all Users in the DB with their associated tags
+ */
+export async function fetchUsersWithTags(): Promise<UserWithTags[]> {
+  type UserRowWithAssignments = Tables<"users"> & {
+    userTagAssignments?: {
+      userTags: Tables<"user_tags"> | null;
+    }[];
+  };
+
+  const { data, error } = await supabase.from("users").select(
+    `
+        *,
+        userTagAssignments:user_tag_assignments (
+          userTags:user_tags ( id, name )
+        )
+      `,
+  );
+
+  if (error) {
+    throw error;
+  }
+
+  const rows = (data ?? []) as UserRowWithAssignments[];
+
+  return rows.map(({ userTagAssignments, ...user }) => ({
+    ...user,
+    tags:
+      userTagAssignments
+        ?.map((assignment) => assignment.userTags)
+        .filter((tag): tag is Tables<"user_tags"> => tag !== null) ?? [],
+  }));
 }
 
 /* fetchUser
@@ -69,16 +104,18 @@ export async function fetchUserTags(
 ): Promise<Tables<"user_tags">[]> {
   const { data, error } = await supabase
     .from("user_tag_assignments")
-    .select("user_tags(id, name)")
+    .select("userTags:user_tags(id, name)")
     .eq("user_id", id);
 
   if (error) {
     throw error;
   }
 
+  const rows = (data ?? []) as { userTags: Tables<"user_tags"> | null }[];
+
   return (
-    data
-      ?.map((item) => item.user_tags)
+    rows
+      ?.map((item) => item.userTags)
       .filter((tag): tag is Tables<"user_tags"> => tag !== null) ?? []
   );
 }
@@ -123,7 +160,7 @@ export async function fetchEventTags(
 ): Promise<Tables<"event_tags">[]> {
   const { data, error } = await supabase
     .from("event_tag_assignments")
-    .select("event_tags(id, name)")
+    .select("event_tags:event_tags(id, name)")
     .eq("event_id", id);
 
   if (error) {

@@ -6,11 +6,11 @@
 
 import { Box, Typography } from "@mui/material";
 import SmallProfileCard from "@/components/SmallProfileCard";
-import type { Tables } from "@/types/database.types";
 import type { SortType } from "@/types/Sort.types";
+import type { UserWithTags } from "@/types/User";
 
 interface PeopleFeedProps {
-  users: Tables<"users">[];
+  users: UserWithTags[];
   emptyMessage?: string;
   maxWidth?: number | string;
   spacing?: number;
