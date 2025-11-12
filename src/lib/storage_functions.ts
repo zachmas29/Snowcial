@@ -39,11 +39,11 @@ async function resizeAndCropImage(
           } else {
             reject(new Error("Failed to create blob from canvas"));
           }
+          URL.revokeObjectURL(objectUrl);
         },
         "image/jpeg",
         0.9,
       );
-      URL.revokeObjectURL(objectUrl);
     };
 
     img.onerror = () => {
