@@ -1,6 +1,8 @@
+/** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
 import { supabase } from "@/lib/supabase_client";
 import type { Tables } from "@/types/database.types";
 import type { UserWithTags } from "@/types/User";
+import type { EventFormData } from "@/types/EventCreator.types";
 
 /* fetchUsers
  * returns: array of all Users in the DB
@@ -189,4 +191,68 @@ export async function fetchEventComments(
   }
 
   return data ?? [];
+}
+
+/** fetchEventTagOptions
+ * @returns A list of all possible event tags
+ */
+
+export async function fetchEventTagOptions(): Promise<Tables<"event_tags">[]> {
+  const { data, error } = await supabase.from("event_tags").select("*");
+
+  if (error) {
+    throw error;
+  }
+
+  return data ?? [];
+}
+
+/**
+ * Inserts a new event and its tag assignments
+ * @param eventFormData - The event data including tags
+ * @returns The inserted event or null if failed
+ */
+export async function insertEventWithTags(
+  eventFormData: EventFormData,
+  user_id: string,
+): Promise<Tables<"events"> | null> {
+  if (!eventFormData.event_time) {
+    throw Error("Invalid event date provided.");
+  }
+
+  const { data: event, error: eventError } = await supabase
+    .from("events")
+    .insert({
+      title: eventFormData.title,
+      description: eventFormData.description,
+      event_time: eventFormData.event_time?.toISOString(),
+      creator_id: user_id,
+    })
+    .select()
+    .single();
+
+  if (eventError) {
+    throw eventError;
+  }
+
+  if (!event) {
+    throw Error("No event found");
+  }
+
+  if (eventFormData.tags.length > 0) {
+    const tagAssignments = eventFormData.tags.map((tag) => ({
+      event_id: event.id,
+      tag_id: tag.id,
+    }));
+
+    const { error: tagError } = await supabase
+      .from("event_tag_assignments")
+      .insert(tagAssignments);
+
+    if (tagError) {
+      throw tagError;
+    }
+  }
+
+  return event;
 }
