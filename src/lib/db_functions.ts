@@ -1,7 +1,6 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
 import { supabase } from "@/lib/supabase_client";
 import type { Tables } from "@/types/database.types";
-import type { UserWithTags } from "@/types/User";
 import type { EventFormData } from "@/types/EventCreator.types";
 import type { UserWithTags } from "@/types/User";
 
