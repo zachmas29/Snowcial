@@ -40,21 +40,21 @@ export type Database = {
         Row: {
           comment_text: string;
           created_at: string;
-          creator_id: number;
+          creator_id: string;
           event_id: number;
           id: number;
         };
         Insert: {
           comment_text: string;
           created_at?: string;
-          creator_id: number;
+          creator_id: string;
           event_id: number;
           id?: never;
         };
         Update: {
           comment_text?: string;
           created_at?: string;
-          creator_id?: number;
+          creator_id?: string;
           event_id?: number;
           id?: never;
         };
@@ -80,19 +80,19 @@ export type Database = {
           created_at: string;
           event_id: number;
           status: Database["public"]["Enums"]["rsvp_status"];
-          user_id: number;
+          user_id: string;
         };
         Insert: {
           created_at?: string;
           event_id: number;
           status: Database["public"]["Enums"]["rsvp_status"];
-          user_id: number;
+          user_id: string;
         };
         Update: {
           created_at?: string;
           event_id?: number;
           status?: Database["public"]["Enums"]["rsvp_status"];
-          user_id?: number;
+          user_id?: string;
         };
         Relationships: [
           {
@@ -159,7 +159,7 @@ export type Database = {
       events: {
         Row: {
           created_at: string;
-          creator_id: number;
+          creator_id: string;
           description: string | null;
           event_time: string;
           id: number;
@@ -168,7 +168,7 @@ export type Database = {
         };
         Insert: {
           created_at?: string;
-          creator_id: number;
+          creator_id: string;
           description?: string | null;
           event_time: string;
           id?: never;
@@ -177,7 +177,7 @@ export type Database = {
         };
         Update: {
           created_at?: string;
-          creator_id?: number;
+          creator_id?: string;
           description?: string | null;
           event_time?: string;
           id?: never;
@@ -198,17 +198,17 @@ export type Database = {
         Row: {
           created_at: string;
           photo_path: string;
-          user_id: number;
+          user_id: string;
         };
         Insert: {
           created_at?: string;
           photo_path: string;
-          user_id: number;
+          user_id: string;
         };
         Update: {
           created_at?: string;
           photo_path?: string;
-          user_id?: number;
+          user_id?: string;
         };
         Relationships: [
           {
@@ -223,15 +223,15 @@ export type Database = {
       user_tag_assignments: {
         Row: {
           tag_id: number;
-          user_id: number;
+          user_id: string;
         };
         Insert: {
           tag_id: number;
-          user_id: number;
+          user_id: string;
         };
         Update: {
           tag_id?: number;
-          user_id?: number;
+          user_id?: string;
         };
         Relationships: [
           {
@@ -272,7 +272,7 @@ export type Database = {
           created_at: string;
           email: string;
           first_name: string;
-          id: number;
+          id: string;
           last_active: string;
           last_name: string;
           last_updated: string;
@@ -285,7 +285,7 @@ export type Database = {
           created_at?: string;
           email: string;
           first_name: string;
-          id?: never;
+          id: string;
           last_active?: string;
           last_name: string;
           last_updated?: string;
@@ -298,7 +298,7 @@ export type Database = {
           created_at?: string;
           email?: string;
           first_name?: string;
-          id?: never;
+          id?: string;
           last_active?: string;
           last_name?: string;
           last_updated?: string;

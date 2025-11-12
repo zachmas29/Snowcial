@@ -1,66 +1,91 @@
 create type "public"."rsvp_status" as enum ('yes', 'maybe');
 
-create table "public"."event_comments" (
+
+  create table "public"."event_comments" (
     "id" bigint generated always as identity not null,
-    "creator_id" bigint not null,
+    "creator_id" uuid not null,
     "event_id" bigint not null,
     "created_at" timestamp with time zone not null default now(),
     "comment_text" text not null
-);
+      );
 
 
-create table "public"."event_rsvps" (
-    "user_id" bigint not null,
+alter table "public"."event_comments" enable row level security;
+
+
+  create table "public"."event_rsvps" (
+    "user_id" uuid not null,
     "event_id" bigint not null,
     "created_at" timestamp with time zone not null default now(),
-    "status" rsvp_status not null
-);
+    "status" public.rsvp_status not null
+      );
 
 
-create table "public"."event_tag_assignments" (
+alter table "public"."event_rsvps" enable row level security;
+
+
+  create table "public"."event_tag_assignments" (
     "event_id" bigint not null,
     "tag_id" bigint not null
-);
+      );
 
 
-create table "public"."event_tags" (
+alter table "public"."event_tag_assignments" enable row level security;
+
+
+  create table "public"."event_tags" (
     "id" bigint generated always as identity not null,
     "name" text not null
-);
+      );
 
 
-create table "public"."events" (
+alter table "public"."event_tags" enable row level security;
+
+
+  create table "public"."events" (
     "id" bigint generated always as identity not null,
-    "creator_id" bigint not null,
+    "creator_id" uuid not null,
     "created_at" timestamp with time zone not null default now(),
     "last_updated" timestamp with time zone not null default now(),
     "event_time" timestamp with time zone not null,
     "title" text not null,
     "description" text
-);
+      );
 
 
-create table "public"."gallery_photos" (
-    "user_id" bigint not null,
+alter table "public"."events" enable row level security;
+
+
+  create table "public"."gallery_photos" (
+    "user_id" uuid not null,
     "photo_path" text not null,
     "created_at" timestamp with time zone not null default now()
-);
+      );
 
 
-create table "public"."user_tag_assignments" (
-    "user_id" bigint not null,
+alter table "public"."gallery_photos" enable row level security;
+
+
+  create table "public"."user_tag_assignments" (
+    "user_id" uuid not null,
     "tag_id" bigint not null
-);
+      );
 
 
-create table "public"."user_tags" (
+alter table "public"."user_tag_assignments" enable row level security;
+
+
+  create table "public"."user_tags" (
     "id" bigint generated always as identity not null,
     "name" text not null
-);
+      );
 
 
-create table "public"."users" (
-    "id" bigint generated always as identity not null,
+alter table "public"."user_tags" enable row level security;
+
+
+  create table "public"."users" (
+    "id" uuid not null,
     "created_at" timestamp with time zone not null default now(),
     "last_updated" timestamp with time zone not null default now(),
     "last_active" timestamp with time zone not null default now(),
@@ -71,8 +96,10 @@ create table "public"."users" (
     "bio_text" text,
     "profile_photo_path" text,
     "banner_photo_path" text
-);
+      );
 
+
+alter table "public"."users" enable row level security;
 
 CREATE INDEX event_comments_event_id_idx ON public.event_comments USING btree (event_id);
 
@@ -136,45 +163,45 @@ alter table "public"."user_tags" add constraint "user_tags_pkey" PRIMARY KEY usi
 
 alter table "public"."users" add constraint "users_pkey" PRIMARY KEY using index "users_pkey";
 
-alter table "public"."event_comments" add constraint "event_comments_creator_id_fkey" FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE not valid;
+alter table "public"."event_comments" add constraint "event_comments_creator_id_fkey" FOREIGN KEY (creator_id) REFERENCES public.users(id) ON DELETE CASCADE not valid;
 
 alter table "public"."event_comments" validate constraint "event_comments_creator_id_fkey";
 
-alter table "public"."event_comments" add constraint "event_comments_event_id_fkey" FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE not valid;
+alter table "public"."event_comments" add constraint "event_comments_event_id_fkey" FOREIGN KEY (event_id) REFERENCES public.events(id) ON DELETE CASCADE not valid;
 
 alter table "public"."event_comments" validate constraint "event_comments_event_id_fkey";
 
-alter table "public"."event_rsvps" add constraint "event_rsvps_event_id_fkey" FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE not valid;
+alter table "public"."event_rsvps" add constraint "event_rsvps_event_id_fkey" FOREIGN KEY (event_id) REFERENCES public.events(id) ON DELETE CASCADE not valid;
 
 alter table "public"."event_rsvps" validate constraint "event_rsvps_event_id_fkey";
 
-alter table "public"."event_rsvps" add constraint "event_rsvps_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE not valid;
+alter table "public"."event_rsvps" add constraint "event_rsvps_user_id_fkey" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE not valid;
 
 alter table "public"."event_rsvps" validate constraint "event_rsvps_user_id_fkey";
 
-alter table "public"."event_tag_assignments" add constraint "event_tag_assignments_event_id_fkey" FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE not valid;
+alter table "public"."event_tag_assignments" add constraint "event_tag_assignments_event_id_fkey" FOREIGN KEY (event_id) REFERENCES public.events(id) ON DELETE CASCADE not valid;
 
 alter table "public"."event_tag_assignments" validate constraint "event_tag_assignments_event_id_fkey";
 
-alter table "public"."event_tag_assignments" add constraint "event_tag_assignments_tag_id_fkey" FOREIGN KEY (tag_id) REFERENCES event_tags(id) ON DELETE CASCADE not valid;
+alter table "public"."event_tag_assignments" add constraint "event_tag_assignments_tag_id_fkey" FOREIGN KEY (tag_id) REFERENCES public.event_tags(id) ON DELETE CASCADE not valid;
 
 alter table "public"."event_tag_assignments" validate constraint "event_tag_assignments_tag_id_fkey";
 
 alter table "public"."event_tags" add constraint "event_tags_name_key" UNIQUE using index "event_tags_name_key";
 
-alter table "public"."events" add constraint "events_creator_id_fkey" FOREIGN KEY (creator_id) REFERENCES users(id) not valid;
+alter table "public"."events" add constraint "events_creator_id_fkey" FOREIGN KEY (creator_id) REFERENCES public.users(id) not valid;
 
 alter table "public"."events" validate constraint "events_creator_id_fkey";
 
-alter table "public"."gallery_photos" add constraint "gallery_photos_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE not valid;
+alter table "public"."gallery_photos" add constraint "gallery_photos_user_id_fkey" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE not valid;
 
 alter table "public"."gallery_photos" validate constraint "gallery_photos_user_id_fkey";
 
-alter table "public"."user_tag_assignments" add constraint "user_tag_assignments_tag_id_fkey" FOREIGN KEY (tag_id) REFERENCES user_tags(id) ON DELETE CASCADE not valid;
+alter table "public"."user_tag_assignments" add constraint "user_tag_assignments_tag_id_fkey" FOREIGN KEY (tag_id) REFERENCES public.user_tags(id) ON DELETE CASCADE not valid;
 
 alter table "public"."user_tag_assignments" validate constraint "user_tag_assignments_tag_id_fkey";
 
-alter table "public"."user_tag_assignments" add constraint "user_tag_assignments_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE not valid;
+alter table "public"."user_tag_assignments" add constraint "user_tag_assignments_user_id_fkey" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE not valid;
 
 alter table "public"."user_tag_assignments" validate constraint "user_tag_assignments_user_id_fkey";
 
@@ -183,6 +210,62 @@ alter table "public"."user_tags" add constraint "user_tags_name_key" UNIQUE usin
 alter table "public"."users" add constraint "users_email_key" UNIQUE using index "users_email_key";
 
 set check_function_bodies = off;
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+AS $function$
+    DECLARE
+        full_name TEXT;
+        name_parts TEXT[];
+        first TEXT;
+        last TEXT;
+    BEGIN
+        -- Get the full name from user metadata (Google OAuth provides this)
+        full_name := NEW.raw_user_meta_data->>'name';
+
+        -- Split name into first and last (Google provides "First Last" format)
+        IF full_name IS NOT NULL THEN
+            name_parts := string_to_array(full_name, ' ');
+            first := name_parts[1];
+            -- Last name is everything after first name
+            IF array_length(name_parts, 1) > 1 THEN
+                last := array_to_string(name_parts[2:array_length(name_parts, 1)], ' ');
+            ELSE
+                last := '';
+            END IF;
+        ELSE
+            -- Fallback if name not provided
+            first := 'User';
+            last := '';
+        END IF;
+
+        -- Insert new user into public.users table
+        INSERT INTO public.users (
+            id,
+            first_name,
+            last_name,
+            email,
+            profile_photo_path,
+            created_at,
+            last_updated,
+            last_active
+        ) VALUES (
+            NEW.id,
+            first,
+            last,
+            NEW.email,
+            NEW.raw_user_meta_data->>'avatar_url',
+            NOW(),
+            NOW(),
+            NOW()
+        ) ON CONFLICT (id) DO NOTHING;
+
+        RETURN NEW;
+    END;
+    $function$
+;
 
 CREATE OR REPLACE FUNCTION public.update_last_updated_column()
  RETURNS trigger
@@ -573,8 +656,189 @@ grant truncate on table "public"."users" to "service_role";
 
 grant update on table "public"."users" to "service_role";
 
-CREATE TRIGGER update_events_last_updated BEFORE UPDATE ON public.events FOR EACH ROW EXECUTE FUNCTION update_last_updated_column();
 
-CREATE TRIGGER update_users_last_updated BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION update_last_updated_column();
+  create policy "Users can create comments"
+  on "public"."event_comments"
+  as permissive
+  for insert
+  to public
+with check ((auth.uid() = creator_id));
+
+
+
+  create policy "Users can delete own comments"
+  on "public"."event_comments"
+  as permissive
+  for delete
+  to public
+using ((auth.uid() = creator_id));
+
+
+
+  create policy "Users can view all event comments"
+  on "public"."event_comments"
+  as permissive
+  for select
+  to public
+using ((auth.role() = 'authenticated'::text));
+
+
+
+  create policy "Users can manage own RSVPs"
+  on "public"."event_rsvps"
+  as permissive
+  for all
+  to public
+using ((auth.uid() = user_id))
+with check ((auth.uid() = user_id));
+
+
+
+  create policy "Users can view all RSVPs"
+  on "public"."event_rsvps"
+  as permissive
+  for select
+  to public
+using ((auth.role() = 'authenticated'::text));
+
+
+
+  create policy "Users can manage tags for own events"
+  on "public"."event_tag_assignments"
+  as permissive
+  for all
+  to public
+using ((EXISTS ( SELECT 1
+   FROM public.events
+  WHERE ((events.id = event_tag_assignments.event_id) AND (events.creator_id = auth.uid())))))
+with check ((EXISTS ( SELECT 1
+   FROM public.events
+  WHERE ((events.id = event_tag_assignments.event_id) AND (events.creator_id = auth.uid())))));
+
+
+
+  create policy "Users can view event tag assignments"
+  on "public"."event_tag_assignments"
+  as permissive
+  for select
+  to public
+using ((auth.role() = 'authenticated'::text));
+
+
+
+  create policy "Users can view all event tags"
+  on "public"."event_tags"
+  as permissive
+  for select
+  to public
+using ((auth.role() = 'authenticated'::text));
+
+
+
+  create policy "Users can create events"
+  on "public"."events"
+  as permissive
+  for insert
+  to public
+with check ((auth.uid() = creator_id));
+
+
+
+  create policy "Users can delete own events"
+  on "public"."events"
+  as permissive
+  for delete
+  to public
+using ((auth.uid() = creator_id));
+
+
+
+  create policy "Users can update own events"
+  on "public"."events"
+  as permissive
+  for update
+  to public
+using ((auth.uid() = creator_id));
+
+
+
+  create policy "Users can view all events"
+  on "public"."events"
+  as permissive
+  for select
+  to public
+using ((auth.role() = 'authenticated'::text));
+
+
+
+  create policy "Users can manage own gallery photos"
+  on "public"."gallery_photos"
+  as permissive
+  for all
+  to public
+using ((auth.uid() = user_id))
+with check ((auth.uid() = user_id));
+
+
+
+  create policy "Users can view all gallery photos"
+  on "public"."gallery_photos"
+  as permissive
+  for select
+  to public
+using ((auth.role() = 'authenticated'::text));
+
+
+
+  create policy "Users can manage own tags"
+  on "public"."user_tag_assignments"
+  as permissive
+  for all
+  to public
+using ((auth.uid() = user_id))
+with check ((auth.uid() = user_id));
+
+
+
+  create policy "Users can view all user tag assignments"
+  on "public"."user_tag_assignments"
+  as permissive
+  for select
+  to public
+using ((auth.role() = 'authenticated'::text));
+
+
+
+  create policy "Users can view all user tags"
+  on "public"."user_tags"
+  as permissive
+  for select
+  to public
+using ((auth.role() = 'authenticated'::text));
+
+
+
+  create policy "Users can update own profile"
+  on "public"."users"
+  as permissive
+  for update
+  to public
+using ((auth.uid() = id));
+
+
+
+  create policy "Users can view all profiles"
+  on "public"."users"
+  as permissive
+  for select
+  to public
+using ((auth.role() = 'authenticated'::text));
+
+
+CREATE TRIGGER update_events_last_updated BEFORE UPDATE ON public.events FOR EACH ROW EXECUTE FUNCTION public.update_last_updated_column();
+
+CREATE TRIGGER update_users_last_updated BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION public.update_last_updated_column();
+
+CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 

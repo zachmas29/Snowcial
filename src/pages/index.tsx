@@ -1,20 +1,50 @@
+import { Box, useMediaQuery } from "@mui/material";
 import Head from "next/head";
-import styles from "@/styles/Home.module.css";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { LoginButton } from "@/components/LoginButton";
+import { useAuthContext } from "@/hooks/useAuth";
 
 export default function Home() {
+  const { user } = useAuthContext();
+  const router = useRouter();
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+
+  // Redirect authenticated users to the people page
+  useEffect(() => {
+    if (user) {
+      router.push("/people");
+    }
+  }, [user, router]);
+
+  if (user) {
+    return null; // Will redirect
+  }
+
+  const logoSrc = prefersDarkMode
+    ? "/snowcial_logo_cream.webp"
+    : "/snowcial_logo_blue.webp";
+
   return (
     <>
       <Head>
-        <title>CS 312 Project Template</title>
-
+        <title>Snowcial - Login</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={`${styles.page}`}>
-        <main className={styles.main}>
-          <h1>SNOWCIAL</h1>
-        </main>
-        <footer className={styles.footer}>COMING SOON</footer>
-      </div>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          gap: 4,
+        }}
+      >
+        <Image src={logoSrc} alt="Snowcial" width={400} height={400} priority />
+        <LoginButton />
+      </Box>
     </>
   );
 }

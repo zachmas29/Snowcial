@@ -1,5 +1,5 @@
 CREATE TABLE user_tag_assignments (
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     tag_id BIGINT NOT NULL REFERENCES user_tags(id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, tag_id)
 );
