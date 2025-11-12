@@ -9,7 +9,7 @@ import TagSelector from "./TagSelector";
 interface EventCreatorProps {
   eventFormData: EventFormData;
   setEventFormData: (EventFormData: EventFormData) => void;
-  tagOptions: Tables<"event_tags">[] | [];
+  tagOptions: Tables<"event_tags">[];
   submit: () => void;
   cancel: () => void;
 }
@@ -27,7 +27,6 @@ export default function EventCreator({
     <Box
       sx={{
         width: "600px",
-        maxWidth: 800,
         mx: "auto",
         display: "flex",
         flexDirection: "column",

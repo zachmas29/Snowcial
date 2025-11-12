@@ -179,13 +179,16 @@ export async function insertEventWithTags(
   eventFormData: EventFormData,
   user_id: string,
 ): Promise<Tables<"events"> | null> {
+  if (!eventFormData.event_time) {
+    throw Error("Invalid event date provided.");
+  }
+
   const { data: event, error: eventError } = await supabase
     .from("events")
     .insert({
       title: eventFormData.title,
       description: eventFormData.description,
-      event_time:
-        eventFormData.event_time?.toISOString() ?? new Date().toISOString(),
+      event_time: eventFormData.event_time?.toISOString(),
       creator_id: user_id,
     })
     .select()
