@@ -15,11 +15,11 @@ import {
 } from "@mui/material";
 import type { UserWithTags } from "@/types/User";
 
-interface Props {
+interface SmallProfileCardProps {
   user: UserWithTags;
 }
 
-export default function SmallProfileCard({ user }: Props) {
+export default function SmallProfileCard({ user }: SmallProfileCardProps) {
   const { tags, profile_photo_path, first_name, last_name, bio_text } = user;
   return (
     <Card

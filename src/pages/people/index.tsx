@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import PeopleFeed from "@/components/PeopleFeed";
 import SearchFilterBar from "@/components/SearchFilterBar";
-import { fetchUsers, fetchUserTags } from "@/lib/db_functions";
+import { fetchUsersWithTags } from "@/lib/db_functions";
 import styles from "@/styles/Home.module.css";
 import type { SortType } from "@/types/Sort.types";
 import type { UserWithTags } from "@/types/User";
@@ -20,14 +20,8 @@ export default function People() {
   useEffect(() => {
     async function loadUsers() {
       try {
-        const data = await fetchUsers();
-        const usersWithTags = await Promise.all(
-          data.map(async (user) => ({
-            ...user,
-            tags: await fetchUserTags(user.id),
-          })),
-        );
-        setUsers(usersWithTags);
+        const data = await fetchUsersWithTags();
+        setUsers(data);
       } catch (error) {
         // biome-ignore lint/suspicious/noConsole: just for testing
         console.error("Failed to fetch users:", error);
