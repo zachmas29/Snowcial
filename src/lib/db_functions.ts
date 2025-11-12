@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase_client";
 import type { Tables } from "@/types/database.types";
 import type { UserWithTags } from "@/types/User";
 import type { EventFormData } from "@/types/EventCreator.types";
+import type { UserWithTags } from "@/types/User";
 
 /* fetchUsers
  * returns: array of all Users in the DB
