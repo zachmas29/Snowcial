@@ -126,7 +126,7 @@ export async function fetchUserTags(
  * returns: the gallery photos associated with the given user id
  */
 export async function fetchUserGalleryPhotos(
-  id: number,
+  id: string,
 ): Promise<Tables<"gallery_photos">[]> {
   const { data, error } = await supabase
     .from("gallery_photos")
@@ -146,7 +146,7 @@ export async function fetchUserGalleryPhotos(
  * returns: the user, along with tags and gallery photos, or null if not found
  */
 export async function fetchUserProfile(
-  id: number,
+  id: string,
 ): Promise<UserProfileData | null> {
   const user = await fetchUser(id);
 

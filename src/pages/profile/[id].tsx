@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import UserBioSection from "@/components/UserBioSection";
 import UserGallery from "@/components/UserGallery";
 import UserProfileHeader from "@/components/UserProfileHeader";
@@ -15,11 +15,24 @@ import { fetchUserProfile } from "@/lib/db_functions";
 import styles from "@/styles/Home.module.css";
 import type { UserProfileData } from "@/types/app.types";
 
+function isValidUuid(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+    value,
+  );
+}
+
 export default function UserProfilePage() {
   const router = useRouter();
-  const idParam = router.query.id;
-  const parsedId =
-    typeof idParam === "string" ? Number.parseInt(idParam, 10) : Number.NaN;
+  const userId = useMemo(() => {
+    const { id } = router.query;
+    if (typeof id === "string") {
+      return id;
+    }
+    if (Array.isArray(id)) {
+      return id[0];
+    }
+    return null;
+  }, [router.query]);
 
   const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -32,7 +45,7 @@ export default function UserProfilePage() {
 
     let isMounted = true;
 
-    if (Number.isNaN(parsedId)) {
+    if (!userId || !isValidUuid(userId)) {
       setProfile(null);
       setError("Invalid profile id.");
       setLoading(false);
@@ -41,12 +54,12 @@ export default function UserProfilePage() {
       };
     }
 
-    async function loadProfile(userId: number) {
+    async function loadProfile(id: string) {
       setLoading(true);
       setError(null);
 
       try {
-        const data = await fetchUserProfile(userId);
+        const data = await fetchUserProfile(id);
 
         if (!isMounted) {
           return;
@@ -75,12 +88,12 @@ export default function UserProfilePage() {
       }
     }
 
-    void loadProfile(parsedId);
+    void loadProfile(userId);
 
     return () => {
       isMounted = false;
     };
-  }, [parsedId, router.isReady]);
+  }, [router.isReady, userId]);
 
   const pageTitle = profile
     ? `${profile.user.first_name} ${profile.user.last_name} | Snowcial`
