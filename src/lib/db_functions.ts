@@ -177,7 +177,7 @@ export async function fetchEventTagOptions(): Promise<Tables<"event_tags">[]> {
  */
 export async function insertEventWithTags(
   eventFormData: EventFormData,
-  user_id: number,
+  user_id: string,
 ): Promise<Tables<"events"> | null> {
   const { data: event, error: eventError } = await supabase
     .from("events")

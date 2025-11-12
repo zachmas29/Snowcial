@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import EventCreator from "@/components/EventCreator";
+import useAuth from "@/hooks/useAuth";
 import { fetchEventTagOptions, insertEventWithTags } from "@/lib/db_functions";
 import styles from "@/styles/Home.module.css";
 import type { Tables } from "@/types/database.types";
@@ -10,6 +11,8 @@ import type { EventFormData } from "@/types/EventCreator.types";
 
 export default function NewEvent() {
   const router = useRouter();
+  const authData = useAuth();
+
   const [tagOptions, setTagOptions] = useState<Tables<"event_tags">[] | []>([]);
   const [eventFormData, setEventFormData] = useState<EventFormData>({
     title: "",
@@ -18,9 +21,6 @@ export default function NewEvent() {
     tags: [],
   });
   const [clientLoaded, setClientLoaded] = useState(false);
-
-  // UPDATE THIS WITH USER AUTH EVENTUALLY
-  const USER_ID = 1;
 
   // delay initiating event_time value to when client page is rendered
   // to prevent https://react.dev/link/hydration-mismatch
@@ -59,6 +59,7 @@ export default function NewEvent() {
 
     const confirmed = confirm("Submit this event?");
     if (!confirmed) return;
+    if (!authData.user?.id) return;
 
     try {
       const inserted = await insertEventWithTags(
@@ -68,7 +69,7 @@ export default function NewEvent() {
           event_time: eventFormData.event_time,
           tags: eventFormData.tags,
         },
-        USER_ID,
+        authData.user.id,
       );
 
       if (inserted) {
