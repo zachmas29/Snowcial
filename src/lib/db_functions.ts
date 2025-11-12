@@ -172,7 +172,7 @@ export async function fetchEventTagOptions(): Promise<Tables<"event_tags">[]> {
 
 /**
  * Inserts a new event and its tag assignments
- * @param formData - The event data including tags
+ * @param eventFormData - The event data including tags
  * @returns The inserted event or null if failed
  */
 export async function insertEventWithTags(
@@ -190,11 +190,6 @@ export async function insertEventWithTags(
     })
     .select()
     .single();
-
-  // We need to check that the user_id on the form and the
-  // user_id submitting the form matches so users can't be spoofed
-  if (!user_id) {
-  }
 
   if (eventError) {
     throw eventError;

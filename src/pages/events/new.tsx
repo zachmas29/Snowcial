@@ -40,7 +40,7 @@ export default function NewEvent() {
         setTagOptions(data);
       } catch (error) {
         // biome-ignore lint/suspicious/noConsole: just for testing
-        console.error("Failed to fetch users:", error);
+        console.error("Failed to fetch tags:", error);
       }
     }
     loadEventTags();

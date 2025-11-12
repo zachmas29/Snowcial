@@ -34,7 +34,6 @@
     "@mui/x-date-pickers": "^8.17.0",
     "@mui/x-date-pickers-pro": "^8.17.0",
     "@supabase/supabase-js": "^2.75.0",
-    "AdapterDateFns": "link:@mui/x-date-pickers/AdapterDateFns",
     "date-fns": "^4.1.0",
     "next": "15.5.4",
     "react": "19.2.0",
