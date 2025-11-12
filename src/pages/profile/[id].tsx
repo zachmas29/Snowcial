@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import UserBioSection from "@/components/UserBioSection";
 import UserGallery from "@/components/UserGallery";
 import UserProfileHeader from "@/components/UserProfileHeader";
@@ -23,16 +23,8 @@ function isValidUuid(value: string): boolean {
 
 export default function UserProfilePage() {
   const router = useRouter();
-  const userId = useMemo(() => {
-    const { id } = router.query;
-    if (typeof id === "string") {
-      return id;
-    }
-    if (Array.isArray(id)) {
-      return id[0];
-    }
-    return null;
-  }, [router.query]);
+  const { id } = router.query;
+  const userId = typeof id === "string" ? id : Array.isArray(id) ? id[0] : null;
 
   const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,23 +35,21 @@ export default function UserProfilePage() {
       return;
     }
 
-    let isMounted = true;
-
     if (!userId || !isValidUuid(userId)) {
       setProfile(null);
       setError("Invalid profile id.");
       setLoading(false);
-      return () => {
-        isMounted = false;
-      };
+      return;
     }
 
-    async function loadProfile(id: string) {
+    let isMounted = true;
+
+    async function loadProfile() {
       setLoading(true);
       setError(null);
 
       try {
-        const data = await fetchUserProfile(id);
+        const data = await fetchUserProfile(userId);
 
         if (!isMounted) {
           return;
@@ -88,7 +78,7 @@ export default function UserProfilePage() {
       }
     }
 
-    void loadProfile(userId);
+    void loadProfile();
 
     return () => {
       isMounted = false;
