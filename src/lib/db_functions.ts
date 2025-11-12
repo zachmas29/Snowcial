@@ -1,6 +1,7 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
 import { supabase } from "@/lib/supabase_client";
 import type { UserProfileData } from "@/types/app.types";
+import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
 import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
 import type { UserWithTags } from "@/types/User";
@@ -193,6 +194,47 @@ export async function fetchEvent(id: number): Promise<Tables<"events"> | null> {
   return data;
 }
 
+/* getAttendeeCount
+ * params: id - the event id to search for
+ * returns: an object of type AttendeeCountType containing
+ *    yes - the number of people who answered 'yes'
+ *    maybe - the number of people who answered 'maybe'
+ *    total - yes + maybe
+ */
+export async function getAttendeeCount(eventId: number) {
+  const yesPromise = supabase
+    .from("event_rsvps")
+    .select("*", { count: "exact", head: true })
+    .eq("event_id", eventId)
+    .eq("status", "yes");
+
+  const maybePromise = supabase
+    .from("event_rsvps")
+    .select("*", { count: "exact", head: true })
+    .eq("event_id", eventId)
+    .eq("status", "maybe");
+
+  const [yesResult, maybeResult] = await Promise.all([
+    yesPromise,
+    maybePromise,
+  ]);
+  if (yesResult.error) {
+    throw yesResult.error;
+  }
+  if (maybeResult.error) {
+    throw maybeResult.error;
+  }
+
+  const yesCount = yesResult.count ?? 0;
+  const maybeCount = maybeResult.count ?? 0;
+  const totalCount = yesCount + maybeCount;
+
+  return {
+    yes: yesCount,
+    maybe: maybeCount,
+    total: totalCount,
+  } as AttendeeCountType;
+}
 /* fetchEventTags
  * params: id - an event id to search for
  * returns: an array of EventTags associated with the given event id
