@@ -6,17 +6,7 @@
 
 import { Box, Typography } from "@mui/material";
 import SmallProfileCard from "@/components/SmallProfileCard";
-import type { SortType } from "@/types/Sort.types";
-import type { UserWithTags } from "@/types/User";
-
-interface PeopleFeedProps {
-  users: UserWithTags[];
-  emptyMessage?: string;
-  maxWidth?: number | string;
-  spacing?: number;
-  searchTerm: string;
-  sortType: SortType;
-}
+import type { PeopleFeedProps } from "@/types/app.types";
 
 export default function PeopleFeed({
   users,

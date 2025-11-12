@@ -1,6 +1,7 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
 import { supabase } from "@/lib/supabase_client";
 import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
+import type { UserProfileData } from "@/types/app.types";
 import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
 import type { UserWithTags } from "@/types/User";
@@ -119,6 +120,47 @@ export async function fetchUserTags(
       ?.map((item) => item.userTags)
       .filter((tag): tag is Tables<"user_tags"> => tag !== null) ?? []
   );
+}
+
+/* fetchUserGalleryPhotos
+ * params: id - a user id to search for
+ * returns: the gallery photos associated with the given user id
+ */
+export async function fetchUserGalleryPhotos(
+  id: string,
+): Promise<Tables<"gallery_photos">[]> {
+  const { data, error } = await supabase
+    .from("gallery_photos")
+    .select("*")
+    .eq("user_id", id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return data ?? [];
+}
+
+/* fetchUserProfile
+ * params: id - a user id to search for
+ * returns: the user, along with tags and gallery photos, or null if not found
+ */
+export async function fetchUserProfile(
+  id: string,
+): Promise<UserProfileData | null> {
+  const user = await fetchUser(id);
+
+  if (!user) {
+    return null;
+  }
+
+  const [tags, galleryPhotos] = await Promise.all([
+    fetchUserTags(id),
+    fetchUserGalleryPhotos(id),
+  ]);
+
+  return { user, tags, galleryPhotos };
 }
 
 /* fetchEvents
