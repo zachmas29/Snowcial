@@ -185,7 +185,7 @@ export async function fetchEvent(id: number): Promise<Tables<"events"> | null> {
     .from("events")
     .select("*")
     .eq("id", id)
-    .maybeSingle();
+    .single();
 
   if (error) {
     throw error;
