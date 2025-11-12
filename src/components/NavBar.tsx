@@ -8,26 +8,61 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Paper from "@mui/material/Paper";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import type { ReactNode } from "react";
+import { useAuthContext } from "@/hooks/useAuth";
 
-const baseNavItems = [
-  { label: "Profile", href: "/profile", icon: <AccountCircleIcon /> },
-  { label: "Events", href: "/events", icon: <EventIcon /> },
-  { label: "People", href: "/people", icon: <PeopleAltIcon /> },
-];
+type NavItem = {
+  label: string;
+  href: string;
+  icon: ReactNode;
+  value?: string;
+};
 
 export function NavBar() {
+  const { user } = useAuthContext();
   const router = useRouter();
   const pathname = router.pathname;
   const isProfileSection = pathname.startsWith("/profile");
+  const authUserId = user?.id ?? null;
+  const profileHref = authUserId ? `/profile/${authUserId}` : "/profile";
+  const profileRouteId = Array.isArray(router.query.id)
+    ? router.query.id[0]
+    : ((router.query.id as string | undefined) ?? null);
+  const isProfileEditPage = pathname === "/profile/edit";
+  const viewingOwnProfile =
+    Boolean(authUserId) &&
+    (pathname === "/profile" ||
+      isProfileEditPage ||
+      (pathname === "/profile/[id]" && profileRouteId === authUserId));
+
+  const baseNavItems: NavItem[] = [
+    {
+      label: "Profile",
+      href: profileHref,
+      icon: <AccountCircleIcon />,
+      value: "/profile",
+    },
+    { label: "Events", href: "/events", icon: <EventIcon /> },
+    { label: "People", href: "/people", icon: <PeopleAltIcon /> },
+  ];
 
   const navItems = [
     ...baseNavItems,
-    isProfileSection
-      ? { label: "Edit Profile", href: "/profile/edit", icon: <EditIcon /> }
+    isProfileSection && viewingOwnProfile
+      ? {
+          label: "Edit Profile",
+          href: "/profile/edit",
+          icon: <EditIcon />,
+          value: "/profile/edit",
+        }
       : { label: "New Event", href: "/events/new", icon: <AddBoxIcon /> },
   ];
 
-  const activeNavValue = isProfileSection ? "/profile" : pathname;
+  const activeNavValue = isProfileEditPage
+    ? "/profile/edit"
+    : isProfileSection
+      ? "/profile"
+      : pathname;
 
   return (
     <Paper
@@ -49,7 +84,7 @@ export function NavBar() {
             component={Link}
             href={item.href}
             icon={item.icon}
-            value={item.href}
+            value={item.value ?? item.href}
             sx={{
               textTransform: "uppercase",
               fontSize: "0.75rem",
