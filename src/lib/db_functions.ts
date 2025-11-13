@@ -185,7 +185,7 @@ export async function fetchEvent(id: number): Promise<Tables<"events"> | null> {
     .from("events")
     .select("*")
     .eq("id", id)
-    .maybeSingle();
+    .single();
 
   if (error) {
     throw error;
@@ -339,4 +339,28 @@ export async function insertEventWithTags(
   }
 
   return event;
+}
+
+/* getUserFromEventId
+ * params: eventId - an event id to search for
+ * returns: the user who created the event, or null if not found
+ */
+export async function fetchUserFromEventId(
+  eventId: number,
+): Promise<Tables<"users"> | null> {
+  const { data, error } = await supabase
+    .from("events")
+    .select("creator_id, users:creator_id(*)")
+    .eq("id", eventId)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data?.users) {
+    return null;
+  }
+
+  return data.users;
 }

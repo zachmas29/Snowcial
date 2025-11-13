@@ -1,4 +1,5 @@
 import { Alert, Box, CircularProgress, Stack } from "@mui/material";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
   fetchEvents,
@@ -21,6 +22,9 @@ export default function EventFeed() {
   const [enrichedEvents, setEnrichedEvents] = useState<EnrichedEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
+
+  const router = useRouter();
+
   useEffect(() => {
     async function prepareEvents() {
       try {
@@ -70,6 +74,10 @@ export default function EventFeed() {
     prepareEvents();
   }, []);
 
+  const handleEventClick = (eventId: number) => {
+    router.push(`events/${eventId}`);
+  };
+
   if (loading) {
     return (
       <Box
@@ -109,6 +117,7 @@ export default function EventFeed() {
         user={ee.user}
         eventTags={ee.eventTags}
         attendingCount={ee.attendingCount}
+        handleEventClick={handleEventClick}
       />
     );
   });

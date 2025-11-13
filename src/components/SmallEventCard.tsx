@@ -1,8 +1,8 @@
 import {
   Avatar,
   Box,
-  Button,
   Card,
+  CardActionArea,
   CardActions,
   CardContent,
   CardHeader,
@@ -21,6 +21,7 @@ type EventCardProps = {
   user: Tables<"users"> | null;
   attendingCount?: AttendeeCountType;
   loading?: boolean;
+  handleEventClick: (eventId: number) => void;
 };
 
 export default function SmallEventCard({
@@ -29,6 +30,7 @@ export default function SmallEventCard({
   user,
   attendingCount,
   loading = false,
+  handleEventClick,
 }: EventCardProps) {
   if (loading) {
     return (
@@ -65,7 +67,11 @@ export default function SmallEventCard({
   const attendeesNotice = `${attendees} ${attendingCount?.total !== 1 ? "people" : "person"}`;
 
   const ClickableAvatar = user ? (
-    <Link href={`/profile/${user.id}`} underline="none">
+    <Link
+      href={`/profile/${user.id}`}
+      underline="none"
+      onClick={(e) => e.stopPropagation()}
+    >
       <Avatar>{initials}</Avatar>
     </Link>
   ) : (
@@ -75,31 +81,32 @@ export default function SmallEventCard({
   );
 
   return (
-    <Card sx={{ justifyContent: "space-between" }}>
-      <CardHeader
-        avatar={ClickableAvatar}
-        title={event.title}
-        subheader={`${user ? `${user.first_name} ${user.last_name}` : ""} • ${event.event_time}`}
-      />
+    <CardActionArea onClick={() => handleEventClick(event.id)}>
+      <Card sx={{ justifyContent: "space-between" }}>
+        <CardHeader
+          avatar={ClickableAvatar}
+          title={event.title}
+          subheader={`${user ? `${user.first_name} ${user.last_name}` : ""} • ${event.event_time}`}
+        />
 
-      <CardContent>
-        <Typography variant="body2" color="text.secondary">
-          {event.description}
-        </Typography>
+        <CardContent>
+          <Typography variant="body2" color="text.secondary">
+            {event.description}
+          </Typography>
 
-        <Box mt={2}>
-          <Stack direction="row" spacing={1} flexWrap="wrap">
-            {tagChips}
-          </Stack>
-        </Box>
-      </CardContent>
+          <Box mt={2}>
+            <Stack direction="row" spacing={1} flexWrap="wrap">
+              {tagChips}
+            </Stack>
+          </Box>
+        </CardContent>
 
-      <CardActions sx={{ justifyContent: "space-between" }}>
-        <Typography variant="body2" color="text.secondary">
-          {`${attendeesNotice} attending`}
-        </Typography>
-        <Button size="small">Join</Button>
-      </CardActions>
-    </Card>
+        <CardActions sx={{ justifyContent: "space-between" }}>
+          <Typography variant="body2" color="text.secondary">
+            {`${attendeesNotice} attending`}
+          </Typography>
+        </CardActions>
+      </Card>
+    </CardActionArea>
   );
 }
