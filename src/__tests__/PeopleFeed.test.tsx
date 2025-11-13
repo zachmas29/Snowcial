@@ -8,40 +8,40 @@ import type { UserWithTags } from "@/types/User";
 const mockUsers: UserWithTags[] = [
   {
     id: "1",
-    first_name: "Alice",
-    last_name: "Smith",
-    email: "alice@example.com",
-    bio_text: "Product manager",
+    first_name: "Sophie",
+    last_name: "Martinez",
+    email: "smartinez@middlebury.edu",
+    bio_text: "Snowboarder who loves park features",
     created_at: "2025-01-01T00:00:00+00:00",
     last_updated: "2025-01-01T00:00:00+00:00",
     banner_photo_path: null,
     profile_photo_path: null,
-    nick_name: "ali",
+    nick_name: "sophieshreds",
     last_active: "2025-11-13T00:00:00+00:00",
     tags: [
-      { id: 1, name: "Product" },
-      { id: 2, name: "Manager" },
+      { id: 1, name: "Snowbowl" },
+      { id: 2, name: "Park" },
     ],
   },
   {
     id: "2",
-    first_name: "Bob",
-    last_name: "Johnson",
-    email: "bob@example.com",
-    bio_text: "Software engineer",
+    first_name: "Jake",
+    last_name: "Thompson",
+    email: "jthompson@middlebury.edu",
+    bio_text: "Alpine skier, all-mountain enthusiast",
     created_at: "2025-02-01T00:00:00+00:00",
     last_updated: "2025-02-01T00:00:00+00:00",
     banner_photo_path: null,
     profile_photo_path: null,
-    nick_name: "bobj",
+    nick_name: "jakerides",
     last_active: "2025-11-13T00:00:00+00:00",
-    tags: [{ id: 3, name: "Engineer" }],
+    tags: [{ id: 3, name: "Sugarbush" }],
   },
   {
     id: "3",
-    first_name: "Charlie",
-    last_name: "Brown",
-    email: "charlie@example.com",
+    first_name: "Maya",
+    last_name: "Patel",
+    email: "mpatel@middlebury.edu",
     bio_text: null,
     created_at: "2025-03-01T00:00:00+00:00",
     last_updated: "2025-03-01T00:00:00+00:00",
@@ -58,7 +58,7 @@ describe("PeopleFeed", () => {
     render(
       <PeopleFeed users={mockUsers} searchTerm="" sortType="alphabetical" />,
     );
-    expect(screen.getByText("Alice Smith")).toBeInTheDocument();
+    expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
   });
 
   test("Snapshot test - renders consistently", () => {
@@ -72,9 +72,9 @@ describe("PeopleFeed", () => {
     render(
       <PeopleFeed users={mockUsers} searchTerm="" sortType="alphabetical" />,
     );
-    expect(screen.getByText("Alice Smith")).toBeInTheDocument();
-    expect(screen.getByText("Bob Johnson")).toBeInTheDocument();
-    expect(screen.getByText("Charlie Brown")).toBeInTheDocument();
+    expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
+    expect(screen.getByText("Jake Thompson")).toBeInTheDocument();
+    expect(screen.getByText("Maya Patel")).toBeInTheDocument();
   });
 
   test("Displays empty message when no users provided", () => {
@@ -98,36 +98,36 @@ describe("PeopleFeed", () => {
     render(
       <PeopleFeed
         users={mockUsers}
-        searchTerm="Alice"
+        searchTerm="Sophie"
         sortType="alphabetical"
       />,
     );
-    expect(screen.getByText("Alice Smith")).toBeInTheDocument();
-    expect(screen.queryByText("Bob Johnson")).not.toBeInTheDocument();
-    expect(screen.queryByText("Charlie Brown")).not.toBeInTheDocument();
+    expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
+    expect(screen.queryByText("Jake Thompson")).not.toBeInTheDocument();
+    expect(screen.queryByText("Maya Patel")).not.toBeInTheDocument();
   });
 
   test("Filters users by last name", () => {
     render(
       <PeopleFeed
         users={mockUsers}
-        searchTerm="Johnson"
+        searchTerm="Thompson"
         sortType="alphabetical"
       />,
     );
-    expect(screen.getByText("Bob Johnson")).toBeInTheDocument();
-    expect(screen.queryByText("Alice Smith")).not.toBeInTheDocument();
+    expect(screen.getByText("Jake Thompson")).toBeInTheDocument();
+    expect(screen.queryByText("Sophie Martinez")).not.toBeInTheDocument();
   });
 
   test("Search is case insensitive", () => {
     render(
       <PeopleFeed
         users={mockUsers}
-        searchTerm="alice"
+        searchTerm="sophie"
         sortType="alphabetical"
       />,
     );
-    expect(screen.getByText("Alice Smith")).toBeInTheDocument();
+    expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
   });
 
   test("Shows empty message when search returns no results", () => {
@@ -146,40 +146,44 @@ describe("PeopleFeed", () => {
       <PeopleFeed users={mockUsers} searchTerm="" sortType="alphabetical" />,
     );
     // Verify all users are rendered in alphabetical order
-    const allElements = screen.getAllByText(/Smith|Johnson|Brown/);
-    expect(allElements[0]?.textContent).toContain("Alice Smith");
+    const allElements = screen.getAllByText(/Martinez|Thompson|Patel/);
+    expect(allElements[0]?.textContent).toContain("Jake Thompson");
   });
 
   test("Sorts users by newest", () => {
     render(<PeopleFeed users={mockUsers} searchTerm="" sortType="newest" />);
-    // Newest sort should show Charlie (created 2025-03-01) first
-    const allElements = screen.getAllByText(/Smith|Johnson|Brown/);
-    expect(allElements[0]?.textContent).toContain("Charlie Brown");
+    // Newest sort should show Maya (created 2025-03-01) first
+    const allElements = screen.getAllByText(/Martinez|Thompson|Patel/);
+    expect(allElements[0]?.textContent).toContain("Maya Patel");
   });
 
   test("Sorts users by oldest", () => {
     render(<PeopleFeed users={mockUsers} searchTerm="" sortType="oldest" />);
-    // Oldest sort should show Alice (created 2025-01-01) first
-    const allElements = screen.getAllByText(/Smith|Johnson|Brown/);
-    expect(allElements[0]?.textContent).toContain("Alice Smith");
+    // Oldest sort should show Sophie (created 2025-01-01) first
+    const allElements = screen.getAllByText(/Martinez|Thompson|Patel/);
+    expect(allElements[0]?.textContent).toContain("Sophie Martinez");
   });
 
   test("Displays user bio text when available", () => {
     render(
       <PeopleFeed users={mockUsers} searchTerm="" sortType="alphabetical" />,
     );
-    expect(screen.getByText("Product manager")).toBeInTheDocument();
-    expect(screen.getByText("Software engineer")).toBeInTheDocument();
+    expect(
+      screen.getByText("Snowboarder who loves park features"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Alpine skier, all-mountain enthusiast"),
+    ).toBeInTheDocument();
   });
 
   test("Combines search and sort correctly", () => {
     const { container } = render(
-      <PeopleFeed users={mockUsers} searchTerm="e" sortType="alphabetical" />,
+      <PeopleFeed users={mockUsers} searchTerm="o" sortType="alphabetical" />,
     );
-    // Should match "Alice", "Charlie" (contains 'e')
-    expect(screen.getByText("Alice Smith")).toBeInTheDocument();
-    expect(screen.getByText("Charlie Brown")).toBeInTheDocument();
-    expect(screen.queryByText("Bob Johnson")).not.toBeInTheDocument();
+    // Should match "Sophie", "Thompson" (contains 'o')
+    expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
+    expect(screen.getByText("Jake Thompson")).toBeInTheDocument();
+    expect(screen.queryByText("Maya Patel")).not.toBeInTheDocument();
   });
 
   test("Respects maxWidth prop", () => {
@@ -205,23 +209,23 @@ describe("PeopleFeed", () => {
       />,
     );
     // Spacing affects grid gap
-    expect(screen.getByText("Alice Smith")).toBeInTheDocument();
+    expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
   });
 
   test("Displays nicknames with @ prefix when available", () => {
     render(
       <PeopleFeed users={mockUsers} searchTerm="" sortType="alphabetical" />,
     );
-    expect(screen.getByText("@ali")).toBeInTheDocument();
-    expect(screen.getByText("@bobj")).toBeInTheDocument();
+    expect(screen.getByText("@sophieshreds")).toBeInTheDocument();
+    expect(screen.getByText("@jakerides")).toBeInTheDocument();
   });
 
   test("Handles users without nicknames", () => {
     render(
       <PeopleFeed users={mockUsers} searchTerm="" sortType="alphabetical" />,
     );
-    // Charlie Brown has no nickname, should still render
-    expect(screen.getByText("Charlie Brown")).toBeInTheDocument();
-    expect(screen.queryByText("@charlie")).not.toBeInTheDocument();
+    // Maya Patel has no nickname, should still render
+    expect(screen.getByText("Maya Patel")).toBeInTheDocument();
+    expect(screen.queryByText("@maya")).not.toBeInTheDocument();
   });
 });

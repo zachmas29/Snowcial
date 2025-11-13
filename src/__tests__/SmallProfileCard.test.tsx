@@ -7,56 +7,56 @@ import type { UserWithTags } from "@/types/User";
 
 const mockUser: UserWithTags = {
   id: "1",
-  first_name: "Alice",
-  last_name: "Smith",
-  email: "alice@example.com",
-  bio_text: "Product manager and tech enthusiast",
+  first_name: "Sophie",
+  last_name: "Martinez",
+  email: "smartinez@middlebury.edu",
+  bio_text: "Snowboarder who loves park features and powder days",
   created_at: "2025-01-01T00:00:00+00:00",
   last_updated: "2025-01-01T00:00:00+00:00",
   banner_photo_path: null,
   profile_photo_path: null,
-  nick_name: "ali",
+  nick_name: "sophieshreds",
   last_active: "2025-11-13T00:00:00+00:00",
   tags: [
-    { id: 1, name: "Product" },
-    { id: 2, name: "Manager" },
+    { id: 1, name: "Snowbowl" },
+    { id: 2, name: "Park" },
   ],
 };
 
 const mockUserNoBio: UserWithTags = {
   id: "2",
-  first_name: "Bob",
-  last_name: "Johnson",
-  email: "bob@example.com",
+  first_name: "Jake",
+  last_name: "Thompson",
+  email: "jthompson@middlebury.edu",
   bio_text: null,
   created_at: "2025-02-01T00:00:00+00:00",
   last_updated: "2025-02-01T00:00:00+00:00",
   banner_photo_path: null,
   profile_photo_path: null,
-  nick_name: "bobj",
+  nick_name: "jakerides",
   last_active: "2025-11-13T00:00:00+00:00",
   tags: [],
 };
 
 const mockUserNoNickname: UserWithTags = {
   id: "3",
-  first_name: "Charlie",
-  last_name: "Brown",
-  email: "charlie@example.com",
-  bio_text: "Designer",
+  first_name: "Maya",
+  last_name: "Patel",
+  email: "mpatel@middlebury.edu",
+  bio_text: "Cross-country skier and Nordic enthusiast",
   created_at: "2025-03-01T00:00:00+00:00",
   last_updated: "2025-03-01T00:00:00+00:00",
   banner_photo_path: null,
   profile_photo_path: null,
   nick_name: null,
   last_active: "2025-11-13T00:00:00+00:00",
-  tags: [{ id: 3, name: "Design" }],
+  tags: [{ id: 3, name: "Nordic" }],
 };
 
 describe("SmallProfileCard", () => {
   test("Smoke test - renders without crashing", () => {
     render(<SmallProfileCard user={mockUser} />);
-    expect(screen.getByText("Alice Smith")).toBeInTheDocument();
+    expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
   });
 
   test("Snapshot test - renders consistently", () => {
@@ -66,52 +66,52 @@ describe("SmallProfileCard", () => {
 
   test("Displays first name and last name", () => {
     render(<SmallProfileCard user={mockUser} />);
-    expect(screen.getByText("Alice Smith")).toBeInTheDocument();
+    expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
   });
 
   test("Displays nickname with @ prefix", () => {
     render(<SmallProfileCard user={mockUser} />);
-    expect(screen.getByText("@ali")).toBeInTheDocument();
+    expect(screen.getByText("@sophieshreds")).toBeInTheDocument();
   });
 
   test("Hides nickname section when nickname is null", () => {
     render(<SmallProfileCard user={mockUserNoNickname} />);
-    expect(screen.queryByText("@charlie")).not.toBeInTheDocument();
+    expect(screen.queryByText("@maya")).not.toBeInTheDocument();
   });
 
   test("Displays bio text when available", () => {
     render(<SmallProfileCard user={mockUser} />);
     expect(
-      screen.getByText("Product manager and tech enthusiast"),
+      screen.getByText("Snowboarder who loves park features and powder days"),
     ).toBeInTheDocument();
   });
 
   test("Hides bio section when bio_text is null", () => {
     render(<SmallProfileCard user={mockUserNoBio} />);
-    expect(screen.queryByText(/enthusiast/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/park features|powder/)).not.toBeInTheDocument();
   });
 
   test("Displays all tags", () => {
     render(<SmallProfileCard user={mockUser} />);
-    expect(screen.getByText("Product")).toBeInTheDocument();
-    expect(screen.getByText("Manager")).toBeInTheDocument();
+    expect(screen.getByText("Snowbowl")).toBeInTheDocument();
+    expect(screen.getByText("Park")).toBeInTheDocument();
   });
 
   test("Hides tag section when tags array is empty", () => {
     render(<SmallProfileCard user={mockUserNoBio} />);
     // When tags are empty, no tag chips are rendered
-    expect(screen.queryByText("Design")).not.toBeInTheDocument();
+    expect(screen.queryByText("Nordic")).not.toBeInTheDocument();
   });
 
   test("Displays single tag", () => {
     render(<SmallProfileCard user={mockUserNoNickname} />);
-    expect(screen.getByText("Design")).toBeInTheDocument();
+    expect(screen.getByText("Nordic")).toBeInTheDocument();
   });
 
   test("Renders avatar with correct initials", () => {
     const { container } = render(<SmallProfileCard user={mockUser} />);
     const avatar = container.querySelector('[class*="MuiAvatar"]');
-    expect(avatar?.textContent).toMatch(/A/);
+    expect(avatar?.textContent).toMatch(/S/);
   });
 
   test("Renders avatar with fallback initials for empty names", () => {
@@ -147,29 +147,31 @@ describe("SmallProfileCard", () => {
   test("Displays profile information in correct order", () => {
     render(<SmallProfileCard user={mockUser} />);
     // Name should appear before nickname in document
-    const name = screen.getByText("Alice Smith");
-    const nickname = screen.getByText("@ali");
+    const name = screen.getByText("Sophie Martinez");
+    const nickname = screen.getByText("@sophieshreds");
     expect(name).toBeInTheDocument();
     expect(nickname).toBeInTheDocument();
   });
 
   test("Handles user with all fields populated", () => {
     render(<SmallProfileCard user={mockUser} />);
-    expect(screen.getByText("Alice Smith")).toBeInTheDocument();
-    expect(screen.getByText("@ali")).toBeInTheDocument();
+    expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
+    expect(screen.getByText("@sophieshreds")).toBeInTheDocument();
     expect(
-      screen.getByText("Product manager and tech enthusiast"),
+      screen.getByText("Snowboarder who loves park features and powder days"),
     ).toBeInTheDocument();
-    expect(screen.getByText("Product")).toBeInTheDocument();
-    expect(screen.getByText("Manager")).toBeInTheDocument();
+    expect(screen.getByText("Snowbowl")).toBeInTheDocument();
+    expect(screen.getByText("Park")).toBeInTheDocument();
   });
 
   test("Handles user with minimal fields", () => {
     render(<SmallProfileCard user={mockUserNoBio} />);
-    expect(screen.getByText("Bob Johnson")).toBeInTheDocument();
-    expect(screen.getByText("@bobj")).toBeInTheDocument();
+    expect(screen.getByText("Jake Thompson")).toBeInTheDocument();
+    expect(screen.getByText("@jakerides")).toBeInTheDocument();
     // Bio and tags should not be visible
-    expect(screen.queryByText(/bio|design|product/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/snowboarder|park|powder/i),
+    ).not.toBeInTheDocument();
   });
 
   test("Card is clickable and navigates", () => {
@@ -182,14 +184,14 @@ describe("SmallProfileCard", () => {
     const userMultipleTags = {
       ...mockUser,
       tags: [
-        { id: 1, name: "Product" },
-        { id: 2, name: "Manager" },
-        { id: 3, name: "Leadership" },
+        { id: 1, name: "Snowbowl" },
+        { id: 2, name: "Park" },
+        { id: 3, name: "Backcountry" },
       ],
     };
     render(<SmallProfileCard user={userMultipleTags} />);
-    expect(screen.getByText("Product")).toBeInTheDocument();
-    expect(screen.getByText("Manager")).toBeInTheDocument();
-    expect(screen.getByText("Leadership")).toBeInTheDocument();
+    expect(screen.getByText("Snowbowl")).toBeInTheDocument();
+    expect(screen.getByText("Park")).toBeInTheDocument();
+    expect(screen.getByText("Backcountry")).toBeInTheDocument();
   });
 });

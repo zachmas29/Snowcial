@@ -21,7 +21,7 @@ const mockUser: Tables<"users"> = {
   id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
   first_name: "Emma",
   last_name: "Johnson",
-  email: "emma@example.com",
+  email: "ejohnson@middlebury.edu",
   bio_text: "Ski instructor and mountain enthusiast",
   created_at: "2025-01-01T00:00:00+00:00",
   last_updated: "2025-01-01T00:00:00+00:00",

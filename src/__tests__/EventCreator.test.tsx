@@ -117,7 +117,7 @@ describe("EventCreator", () => {
   });
 
   test("Submit button is disabled when description is empty", () => {
-    const formDataWithTitle = { ...mockFormData, title: "Event Title" };
+    const formDataWithTitle = { ...mockFormData, title: "Mogul Run at Stowe" };
     render(
       <EventCreator
         eventFormData={formDataWithTitle}
@@ -133,8 +133,8 @@ describe("EventCreator", () => {
   test("Submit button is enabled when title and description are provided", () => {
     const completeFormData = {
       ...mockFormData,
-      title: "Event Title",
-      description: "Event Description",
+      title: "Blue Square Cruise",
+      description: "Join us for intermediate runs at Sugarbush",
     };
     render(
       <EventCreator
@@ -152,8 +152,8 @@ describe("EventCreator", () => {
     const submitMock = vi.fn();
     const completeFormData = {
       ...mockFormData,
-      title: "Event Title",
-      description: "Event Description",
+      title: "Tree Skiing at Mad River Glen",
+      description: "Advanced terrain through the glades",
     };
     render(
       <EventCreator
@@ -184,7 +184,10 @@ describe("EventCreator", () => {
   });
 
   test("Does not display error message when title is provided but description missing", () => {
-    const formDataWithTitle = { ...mockFormData, title: "Event Title" };
+    const formDataWithTitle = {
+      ...mockFormData,
+      title: "Early Bird Ski Session",
+    };
     render(
       <EventCreator
         eventFormData={formDataWithTitle}
@@ -211,9 +214,11 @@ describe("EventCreator", () => {
       />,
     );
     const titleInput = screen.getAllByRole("textbox")[0] as HTMLInputElement;
-    fireEvent.change(titleInput, { target: { value: "New Event" } });
+    fireEvent.change(titleInput, {
+      target: { value: "Afternoon Backcountry Tour" },
+    });
     expect(setEventFormDataMock).toHaveBeenCalledWith(
-      expect.objectContaining({ title: "New Event" }),
+      expect.objectContaining({ title: "Afternoon Backcountry Tour" }),
     );
   });
 
@@ -229,9 +234,13 @@ describe("EventCreator", () => {
       />,
     );
     const descInput = screen.getAllByRole("textbox")[1] as HTMLTextAreaElement;
-    fireEvent.change(descInput, { target: { value: "New Description" } });
+    fireEvent.change(descInput, {
+      target: { value: "Exploring fresh powder in the backcountry" },
+    });
     expect(setEventFormDataMock).toHaveBeenCalledWith(
-      expect.objectContaining({ description: "New Description" }),
+      expect.objectContaining({
+        description: "Exploring fresh powder in the backcountry",
+      }),
     );
   });
 
