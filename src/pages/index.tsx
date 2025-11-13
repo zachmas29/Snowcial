@@ -9,7 +9,8 @@ import { useAuthContext } from "@/hooks/useAuth";
 export default function Home() {
   const { user } = useAuthContext();
   const router = useRouter();
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  // const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  const prefersDarkMode = false;
 
   // Redirect authenticated users to the people page
   useEffect(() => {
