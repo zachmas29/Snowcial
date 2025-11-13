@@ -7,6 +7,9 @@ import * as dbFunctions from "@/lib/db_functions";
 import type { Tables } from "@/types/database.types";
 
 vi.mock("@/lib/db_functions");
+vi.mock("next/router", () => ({
+  useRouter: vi.fn(),
+}));
 
 const mockEvent: Tables<"events"> = {
   id: 1,
