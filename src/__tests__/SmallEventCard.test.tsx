@@ -1,7 +1,8 @@
 /** biome-ignore-all lint/style/useNamingConvention: <using supabase styling conventions> */
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { describe, expect, test } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, test, vi } from "vitest";
 import SmallEventCard from "@/components/SmallEventCard";
 import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
 import type { Tables } from "@/types/database.types";
@@ -44,6 +45,8 @@ const mockAttendingCount: AttendeeCountType = {
   total: 22,
 };
 
+const mockHandleEventClick = vi.fn();
+
 describe("SmallEventCard", () => {
   test("Smoke test - renders without crashing", () => {
     render(
@@ -53,6 +56,7 @@ describe("SmallEventCard", () => {
         user={mockUser}
         attendingCount={mockAttendingCount}
         loading={false}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(
@@ -68,6 +72,7 @@ describe("SmallEventCard", () => {
         user={mockUser}
         attendingCount={mockAttendingCount}
         loading={false}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(asFragment()).toMatchSnapshot();
@@ -80,6 +85,7 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={mockUser}
         attendingCount={mockAttendingCount}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(
@@ -94,6 +100,7 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={mockUser}
         attendingCount={mockAttendingCount}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(
@@ -110,6 +117,7 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={mockUser}
         attendingCount={mockAttendingCount}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(
@@ -124,6 +132,7 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={mockUser}
         attendingCount={mockAttendingCount}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(screen.getByText(/2025-11-15T09:00:00/)).toBeInTheDocument();
@@ -136,6 +145,7 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={mockUser}
         attendingCount={mockAttendingCount}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(screen.getByText("Snowbowl")).toBeInTheDocument();
@@ -148,6 +158,7 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={mockUser}
         attendingCount={mockAttendingCount}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(screen.getByText("15-22 people attending")).toBeInTheDocument();
@@ -165,21 +176,10 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={mockUser}
         attendingCount={allConfirmedAttendees}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(screen.getByText("20 people attending")).toBeInTheDocument();
-  });
-
-  test("Renders Join button", () => {
-    render(
-      <SmallEventCard
-        event={mockEvent}
-        eventTags={mockEventTags}
-        user={mockUser}
-        attendingCount={mockAttendingCount}
-      />,
-    );
-    expect(screen.getByRole("button", { name: /Join/i })).toBeInTheDocument();
   });
 
   test("Shows loading spinner when loading is true", () => {
@@ -190,6 +190,7 @@ describe("SmallEventCard", () => {
         user={mockUser}
         attendingCount={mockAttendingCount}
         loading={true}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     // Check for CircularProgress component
@@ -206,6 +207,7 @@ describe("SmallEventCard", () => {
         user={mockUser}
         attendingCount={mockAttendingCount}
         loading={true}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(
@@ -220,6 +222,7 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={mockUser}
         attendingCount={mockAttendingCount}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     // Avatar should contain "EJ" (Emma Johnson initials)
@@ -235,6 +238,7 @@ describe("SmallEventCard", () => {
         eventTags={[]}
         user={null}
         attendingCount={mockAttendingCount}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     // Avatar should contain "MO" (Morning Powder Run first 2 letters)
@@ -250,6 +254,7 @@ describe("SmallEventCard", () => {
         eventTags={[]}
         user={mockUser}
         attendingCount={mockAttendingCount}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(
@@ -265,6 +270,7 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={mockUser}
         attendingCount={undefined}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(screen.getByText("0 people attending")).toBeInTheDocument();
@@ -282,6 +288,7 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={userWithMissingName}
         attendingCount={mockAttendingCount}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     // Should still render without errors
@@ -297,6 +304,7 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={mockUser}
         attendingCount={mockAttendingCount}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     const link = container.querySelector("a");
@@ -310,6 +318,7 @@ describe("SmallEventCard", () => {
         eventTags={[]}
         user={null}
         attendingCount={mockAttendingCount}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     const link = container.querySelector("a");
@@ -328,6 +337,7 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={mockUser}
         attendingCount={singleAttendee}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(screen.getByText("1 person attending")).toBeInTheDocument();
@@ -345,6 +355,7 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={mockUser}
         attendingCount={multipleAttendees}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     expect(screen.getByText("5-9 people attending")).toBeInTheDocument();
@@ -362,9 +373,30 @@ describe("SmallEventCard", () => {
         eventTags={mockEventTags}
         user={mockUser}
         attendingCount={zeroConfirmed}
+        handleEventClick={mockHandleEventClick}
       />,
     );
     // When yes is 0, should display total only
     expect(screen.getByText("7 people attending")).toBeInTheDocument();
+  });
+
+  test("Navigates to event page when clicked", async () => {
+    const user = userEvent.setup();
+    const handleEventClick = vi.fn();
+
+    render(
+      <SmallEventCard
+        event={mockEvent}
+        eventTags={mockEventTags}
+        user={mockUser}
+        attendingCount={mockAttendingCount}
+        handleEventClick={handleEventClick}
+      />,
+    );
+
+    const cardElement = screen.getByText(mockEvent.title);
+
+    await user.click(cardElement);
+    expect(handleEventClick).toHaveBeenCalledWith(mockEvent.id);
   });
 });
