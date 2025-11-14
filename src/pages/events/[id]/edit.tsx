@@ -60,7 +60,6 @@ export default function EditEvent() {
     loadEvent();
   }, [event_id, authData.user]);
 
-  // Handle form submission
   const handleSubmit = async (formData: EventFormData) => {
     if (
       !formData.title.trim() ||

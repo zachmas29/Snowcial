@@ -18,7 +18,6 @@ export default function NewEvent() {
     setClientLoaded(true);
   }, []);
 
-  // Submits event data to Supabase
   const handleSubmit = async (formData: EventFormData) => {
     if (
       !formData.title.trim() ||
