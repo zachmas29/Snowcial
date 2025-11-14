@@ -1,5 +1,3 @@
-import type { Tables } from "./database.types";
-
 export interface EventFormData {
   title: string;
   description: string;
@@ -14,9 +12,7 @@ export interface GenericTagType {
 }
 
 export interface EventCreatorProps {
-  eventFormData: EventFormData;
-  setEventFormData: (EventFormData: EventFormData) => void;
-  tagOptions: Tables<"event_tags">[];
-  submit: () => void;
-  cancel: () => void;
+  initialData?: EventFormData;
+  onSubmit: (data: EventFormData) => Promise<void>;
+  onCancel: () => void;
 }

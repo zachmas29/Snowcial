@@ -7,7 +7,6 @@ import EventCreator from "@/components/EventCreator";
 import { useAuthContext } from "@/hooks/useAuth";
 import {
   fetchEvent,
-  fetchEventTagOptions,
   fetchEventTags,
   updateEventWithTags,
 } from "@/lib/db_functions";
@@ -20,31 +19,12 @@ export default function EditEvent() {
   const authData = useAuthContext();
   const event_id: number = Number(router.query.id);
 
-  const [tagOptions, setTagOptions] = useState<Tables<"event_tags">[]>([]);
-  const [eventFormData, setEventFormData] = useState<EventFormData>({
-    title: "",
-    description: "",
-    event_time: new Date(),
-    tags: [],
-  });
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [originalEventData, setOriginalEventData] =
     useState<Tables<"events"> | null>(null);
-
-  useEffect(() => {
-    async function loadEventTags() {
-      try {
-        const data = await fetchEventTagOptions();
-        setTagOptions(data);
-      } catch (error) {
-        // biome-ignore lint/suspicious/noConsole: just for testing
-        console.error("Failed to fetch tags:", error);
-      }
-    }
-    loadEventTags();
-  }, []);
+  const [eventTags, setEventTags] = useState<Tables<"event_tags">[]>([]);
 
   // Load event data
   useEffect(() => {
@@ -68,15 +48,7 @@ export default function EditEvent() {
         }
 
         setOriginalEventData(eventData);
-
-        const typedData: EventFormData = {
-          title: eventData.title,
-          description: eventData.description ?? "",
-          event_time: new Date(eventData.event_time),
-          tags: tags,
-        };
-
-        setEventFormData(typedData);
+        setEventTags(tags);
       } catch (_error) {
         setHasError(true);
         setErrorMessage("Unable to load event data.");
@@ -88,12 +60,12 @@ export default function EditEvent() {
     loadEvent();
   }, [event_id, authData.user]);
 
-  // Handle form submission (placeholder for now)
-  const handleSubmit = async () => {
+  // Handle form submission
+  const handleSubmit = async (formData: EventFormData) => {
     if (
-      !eventFormData.title.trim() ||
-      !eventFormData.description.trim() ||
-      !eventFormData.event_time
+      !formData.title.trim() ||
+      !formData.description.trim() ||
+      !formData.event_time
     ) {
       alert("Please fill in a title, description, and date.");
       return;
@@ -112,15 +84,12 @@ export default function EditEvent() {
     try {
       const updatedEventData: Tables<"events"> = {
         ...originalEventData,
-        title: eventFormData.title,
-        description: eventFormData.description,
-        event_time: eventFormData.event_time.toISOString(),
+        title: formData.title,
+        description: formData.description,
+        event_time: formData.event_time.toISOString(),
       };
 
-      const result = await updateEventWithTags(
-        updatedEventData,
-        eventFormData.tags,
-      );
+      const result = await updateEventWithTags(updatedEventData, formData.tags);
 
       if (result) {
         router.push(`/events/${event_id}`);
@@ -166,11 +135,18 @@ export default function EditEvent() {
         <main className={styles.main}>
           <h1 style={{ textAlign: "center" }}>EDIT EVENT</h1>
           <EventCreator
-            eventFormData={eventFormData}
-            setEventFormData={setEventFormData}
-            tagOptions={tagOptions}
-            submit={handleSubmit}
-            cancel={handleCancel}
+            initialData={
+              originalEventData
+                ? {
+                    title: originalEventData.title,
+                    description: originalEventData.description ?? "",
+                    event_time: new Date(originalEventData.event_time),
+                    tags: eventTags,
+                  }
+                : undefined
+            }
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
           />
         </main>
       </div>
