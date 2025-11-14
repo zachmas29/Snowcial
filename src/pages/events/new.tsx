@@ -78,7 +78,6 @@ export default function NewEvent() {
     }
   };
 
-  // Returns to previous page
   const handleCancel = () => {
     router.back();
   };

@@ -19,7 +19,6 @@ export default function eventPage() {
   const [hasError, setHasError] = useState(false);
   const event_id: number = Number(router.query.id);
 
-  // Load event data
   useEffect(() => {
     async function loadEvent() {
       try {
@@ -41,9 +40,7 @@ export default function eventPage() {
 
         setEventData(typedData);
         setUserData(userData ?? null);
-      } catch (error) {
-        // biome-ignore lint/suspicious/noConsole: just for testing
-        console.error("Failed to fetch event data:", error);
+      } catch (_error) {
         setHasError(true);
       } finally {
         setLoading(false);

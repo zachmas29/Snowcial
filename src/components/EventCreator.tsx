@@ -2,17 +2,12 @@ import { Alert, Box, Button, Stack, TextField } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers-pro";
-import type { Tables } from "@/types/database.types";
-import type { EventFormData, GenericTagType } from "@/types/EventCreator.types";
+import { useRouter } from "next/router";
+import type {
+  EventCreatorProps,
+  GenericTagType,
+} from "@/types/EventCreator.types";
 import TagSelector from "./TagSelector";
-
-interface EventCreatorProps {
-  eventFormData: EventFormData;
-  setEventFormData: (EventFormData: EventFormData) => void;
-  tagOptions: Tables<"event_tags">[];
-  submit: () => void;
-  cancel: () => void;
-}
 
 export default function EventCreator({
   eventFormData,
@@ -21,7 +16,12 @@ export default function EventCreator({
   submit,
   cancel,
 }: EventCreatorProps) {
+  const router = useRouter();
   const typedTagOptions = tagOptions as GenericTagType[];
+
+  // Determine if we're in edit mode based on the route
+  const isEditMode = router.pathname.includes("/edit");
+  const submitText = isEditMode ? "Save" : "Create";
 
   return (
     <Box
@@ -81,7 +81,7 @@ export default function EventCreator({
             onClick={submit}
             disabled={!eventFormData.title || !eventFormData.description}
           >
-            Submit
+            {submitText}
           </Button>
           {(!eventFormData.title || !eventFormData.description) && (
             <Alert severity="error">
