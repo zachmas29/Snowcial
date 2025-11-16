@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import EventCreator from "@/components/EventCreator";
 import { useAuthContext } from "@/hooks/useAuth";
 import {
+  deleteEvent,
   fetchEvent,
   fetchEventTags,
   updateEventWithTags,
@@ -98,8 +99,13 @@ export default function EditEvent() {
     }
   };
 
-  const handleCancel = () => {
-    router.back();
+  const handleClick = (action: string) => {
+    if (action === "delete") {
+      if (originalEventData?.id) {
+        deleteEvent(originalEventData.id);
+      }
+    }
+    router.push("/events");
   };
 
   if (loading) {
@@ -145,7 +151,7 @@ export default function EditEvent() {
                 : undefined
             }
             onSubmit={handleSubmit}
-            onCancel={handleCancel}
+            handleClick={() => handleClick}
           />
         </main>
       </div>

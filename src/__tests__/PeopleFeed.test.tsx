@@ -177,9 +177,10 @@ describe("PeopleFeed", () => {
   });
 
   test("Combines search and sort correctly", () => {
-    const { container } = render(
+    render(
       <PeopleFeed users={mockUsers} searchTerm="o" sortType="alphabetical" />,
     );
+
     // Should match "Sophie", "Thompson" (contains 'o')
     expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
     expect(screen.getByText("Jake Thompson")).toBeInTheDocument();

@@ -1,4 +1,6 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
+
+import DeleteIcon from "@mui/icons-material/Delete";
 import { Alert, Box, Button, Stack, TextField } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -7,6 +9,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { fetchEventTagOptions } from "@/lib/db_functions";
 import type { Tables } from "@/types/database.types";
+
 import type {
   EventCreatorProps,
   EventFormData,
@@ -17,7 +20,7 @@ import TagSelector from "./TagSelector";
 export default function EventCreator({
   initialData,
   onSubmit,
-  onCancel,
+  handleClick,
 }: EventCreatorProps) {
   const router = useRouter();
   const [tagOptions, setTagOptions] = useState<Tables<"event_tags">[]>([]);
@@ -103,7 +106,7 @@ export default function EventCreator({
           }
         />
         <Stack direction="row" spacing={2}>
-          <Button variant="outlined" onClick={onCancel}>
+          <Button variant="outlined" onClick={() => handleClick("cancel")}>
             Cancel
           </Button>
           <Button
@@ -113,6 +116,17 @@ export default function EventCreator({
           >
             {submitText}
           </Button>
+          {isEditMode && (
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<DeleteIcon />}
+              onClick={() => handleClick("delete")}
+              disabled={!eventFormData.title || !eventFormData.description}
+            >
+              Delete
+            </Button>
+          )}
           {(!eventFormData.title || !eventFormData.description) && (
             <Alert severity="error">
               Event name and description are required!

@@ -14,5 +14,5 @@ export interface GenericTagType {
 export interface EventCreatorProps {
   initialData?: EventFormData;
   onSubmit: (data: EventFormData) => Promise<void>;
-  onCancel: () => void;
+  handleClick: (action?: string) => void;
 }

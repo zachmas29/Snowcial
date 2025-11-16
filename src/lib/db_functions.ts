@@ -194,6 +194,19 @@ export async function fetchEvent(id: number): Promise<Tables<"events"> | null> {
   return data;
 }
 
+/**
+ * deleteEvent
+ * @params id - the event id to delete
+ * @returns void - throws error if deletion fails
+ */
+export async function deleteEvent(id: number): Promise<void> {
+  const { error } = await supabase.from("events").delete().eq("id", id);
+
+  if (error) {
+    throw error;
+  }
+}
+
 /* getAttendeeCount
  * params: id - the event id to search for
  * returns: an object of type AttendeeCountType containing

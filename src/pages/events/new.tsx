@@ -49,7 +49,7 @@ export default function NewEvent() {
     }
   };
 
-  const handleCancel = () => {
+  const handleClick = () => {
     router.back();
   };
 
@@ -64,7 +64,7 @@ export default function NewEvent() {
       <div className={styles.page}>
         <main className={styles.main}>
           <h1 style={{ textAlign: "center" }}>CREATE EVENT</h1>
-          <EventCreator onSubmit={handleSubmit} onCancel={handleCancel} />
+          <EventCreator onSubmit={handleSubmit} handleClick={handleClick} />
         </main>
       </div>
     </>

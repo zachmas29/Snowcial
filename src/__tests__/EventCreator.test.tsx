@@ -28,7 +28,7 @@ describe("EventCreator", () => {
       <EventCreator
         initialData={mockFormData}
         onSubmit={vi.fn()}
-        onCancel={vi.fn()}
+        handleClick={vi.fn()}
       />,
     );
     expect(screen.getByText("Event Name")).toBeInTheDocument();
@@ -39,7 +39,7 @@ describe("EventCreator", () => {
       <EventCreator
         initialData={mockFormData}
         onSubmit={vi.fn()}
-        onCancel={vi.fn()}
+        handleClick={vi.fn()}
       />,
     );
     expect(asFragment()).toMatchSnapshot();
@@ -50,7 +50,7 @@ describe("EventCreator", () => {
       <EventCreator
         initialData={mockFormData}
         onSubmit={vi.fn()}
-        onCancel={vi.fn()}
+        handleClick={vi.fn()}
       />,
     );
     expect(screen.getByText("Event Name")).toBeInTheDocument();
@@ -63,20 +63,20 @@ describe("EventCreator", () => {
       <EventCreator
         initialData={mockFormData}
         onSubmit={vi.fn()}
-        onCancel={vi.fn()}
+        handleClick={vi.fn()}
       />,
     );
     expect(screen.getByRole("button", { name: /Cancel/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Create/i })).toBeInTheDocument();
   });
 
-  test("Calls cancel callback when Cancel button clicked", () => {
+  test("Calls handleClick callback when Cancel button clicked", () => {
     const cancelMock = vi.fn();
     render(
       <EventCreator
         initialData={mockFormData}
         onSubmit={vi.fn()}
-        onCancel={cancelMock}
+        handleClick={cancelMock}
       />,
     );
     fireEvent.click(screen.getByRole("button", { name: /Cancel/i }));
@@ -88,7 +88,7 @@ describe("EventCreator", () => {
       <EventCreator
         initialData={mockFormData}
         onSubmit={vi.fn()}
-        onCancel={vi.fn()}
+        handleClick={vi.fn()}
       />,
     );
     expect(screen.getByRole("button", { name: /Create/i })).toBeDisabled();
@@ -100,7 +100,7 @@ describe("EventCreator", () => {
       <EventCreator
         initialData={formDataWithTitle}
         onSubmit={vi.fn()}
-        onCancel={vi.fn()}
+        handleClick={vi.fn()}
       />,
     );
     expect(screen.getByRole("button", { name: /Create/i })).toBeDisabled();
@@ -116,7 +116,7 @@ describe("EventCreator", () => {
       <EventCreator
         initialData={completeFormData}
         onSubmit={vi.fn()}
-        onCancel={vi.fn()}
+        handleClick={vi.fn()}
       />,
     );
     expect(screen.getByRole("button", { name: /Create/i })).not.toBeDisabled();
@@ -133,7 +133,7 @@ describe("EventCreator", () => {
       <EventCreator
         initialData={completeFormData}
         onSubmit={submitMock}
-        onCancel={vi.fn()}
+        handleClick={vi.fn()}
       />,
     );
     fireEvent.click(screen.getByRole("button", { name: /Create/i }));
@@ -145,7 +145,7 @@ describe("EventCreator", () => {
       <EventCreator
         initialData={mockFormData}
         onSubmit={vi.fn()}
-        onCancel={vi.fn()}
+        handleClick={vi.fn()}
       />,
     );
     expect(
@@ -162,7 +162,7 @@ describe("EventCreator", () => {
       <EventCreator
         initialData={formDataWithTitle}
         onSubmit={vi.fn()}
-        onCancel={vi.fn()}
+        handleClick={vi.fn()}
       />,
     );
     expect(
@@ -176,7 +176,7 @@ describe("EventCreator", () => {
       <EventCreator
         initialData={mockFormData}
         onSubmit={setEventFormDataMock}
-        onCancel={vi.fn()}
+        handleClick={vi.fn()}
       />,
     );
     const titleInput = screen.getAllByRole("textbox")[0] as HTMLInputElement;
@@ -193,7 +193,7 @@ describe("EventCreator", () => {
       <EventCreator
         initialData={mockFormData}
         onSubmit={setEventFormDataMock}
-        onCancel={vi.fn()}
+        handleClick={vi.fn()}
       />,
     );
     const descInput = screen.getAllByRole("textbox")[1] as HTMLTextAreaElement;
@@ -209,7 +209,7 @@ describe("EventCreator", () => {
       <EventCreator
         initialData={mockFormData}
         onSubmit={vi.fn()}
-        onCancel={vi.fn()}
+        handleClick={vi.fn()}
       />,
     );
     expect(screen.getByText("Add Event Tags")).toBeInTheDocument();
