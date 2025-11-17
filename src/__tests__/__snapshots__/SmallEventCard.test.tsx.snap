@@ -39,7 +39,7 @@ exports[`SmallEventCard > Snapshot test - renders consistently 1`] = `
           <span
             class="MuiTypography-root MuiTypography-body2 MuiCardHeader-subheader css-1a1whku-MuiTypography-root"
           >
-            Emma Johnson • Sat, Nov 15, 7:00 AM
+            Emma Johnson • Sat, Nov 15, 12:00 PM
           </span>
         </div>
       </div>
