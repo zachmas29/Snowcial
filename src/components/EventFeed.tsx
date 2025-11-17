@@ -1,8 +1,16 @@
-import { Alert, Box, CircularProgress, Stack } from "@mui/material";
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
   fetchEvents,
+  fetchEventsByUser,
   fetchEventTags,
   fetchUser,
   getAttendeeCount,
@@ -18,7 +26,12 @@ type EnrichedEvent = {
   attendingCount?: AttendeeCountType;
 };
 
-export default function EventFeed() {
+interface EventFeedProps {
+  includeUserId?: string;
+  excludeUserId?: string;
+}
+
+export default function EventFeed({ includeUserId }: EventFeedProps) {
   const [enrichedEvents, setEnrichedEvents] = useState<EnrichedEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -28,7 +41,9 @@ export default function EventFeed() {
   useEffect(() => {
     async function prepareEvents() {
       try {
-        const data = await fetchEvents();
+        const data = includeUserId
+          ? await fetchEventsByUser(includeUserId)
+          : await fetchEvents();
 
         // Fetch per-event auxiliary data in parallel (one Promise per event)
         const enrichedPromises = data.map(async (event) => {
@@ -72,10 +87,10 @@ export default function EventFeed() {
     }
 
     prepareEvents();
-  }, []);
+  }, [includeUserId]);
 
   const handleEventClick = (eventId: number) => {
-    router.push(`events/${eventId}`);
+    router.push(`/events/${eventId}`);
   };
 
   if (loading) {
@@ -99,7 +114,22 @@ export default function EventFeed() {
   }
 
   if (enrichedEvents.length === 0) {
-    return (
+    return includeUserId ? (
+      <Paper
+        elevation={0}
+        sx={{
+          p: 3,
+          textAlign: "center",
+          backgroundColor: "grey.50",
+          border: "1px dashed",
+          borderColor: "grey.300",
+        }}
+      >
+        <Typography variant="body1" color="text.secondary">
+          No events yet. Create your first event!
+        </Typography>
+      </Paper>
+    ) : (
       <Alert
         key={`empty-feed-index-`}
         severity="warning"

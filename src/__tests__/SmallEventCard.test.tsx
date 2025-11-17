@@ -135,7 +135,7 @@ describe("SmallEventCard", () => {
         handleEventClick={mockHandleEventClick}
       />,
     );
-    expect(screen.getByText(/2025-11-15T09:00:00/)).toBeInTheDocument();
+    expect(screen.getByText(/Sat, Nov 15, 9:00 AM/)).toBeInTheDocument();
   });
 
   test("Renders all event tags", () => {

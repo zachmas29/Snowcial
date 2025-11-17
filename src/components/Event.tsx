@@ -5,12 +5,17 @@
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CardContent,
   Chip,
+  Link,
   Stack,
   Typography,
 } from "@mui/material";
+import { useRouter } from "next/router";
+import { useAuthContext } from "@/hooks/useAuth";
+import { formatEventDate } from "@/lib/date_formatters";
 import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
 
@@ -34,6 +39,8 @@ interface EventProps {
 
 export default function Event({ eventData, userData }: EventProps) {
   const { title, description, event_time, tags } = eventData;
+  const router = useRouter();
+  const { user } = useAuthContext();
 
   return (
     <Box
@@ -66,17 +73,23 @@ export default function Event({ eventData, userData }: EventProps) {
           {userData && (
             <Box sx={{ mb: 2 }}>
               <Stack direction="row" spacing={2} alignItems="center">
-                <Avatar
-                  src={userData.profile_photo_path ?? ""}
-                  alt={`${userData.first_name} ${userData.last_name}`}
-                  sx={{
-                    width: 48,
-                    height: 48,
-                    fontSize: 18,
-                  }}
+                <Link
+                  href={`/profile/${userData.id}`}
+                  underline="none"
+                  sx={{ cursor: "pointer" }}
                 >
-                  {userData.first_name?.charAt(0).toUpperCase()}
-                </Avatar>
+                  <Avatar
+                    src={userData.profile_photo_path ?? ""}
+                    alt={`${userData.first_name} ${userData.last_name}`}
+                    sx={{
+                      width: 48,
+                      height: 48,
+                      fontSize: 18,
+                    }}
+                  >
+                    {userData.first_name?.charAt(0).toUpperCase()}
+                  </Avatar>
+                </Link>
                 <Box>
                   <Typography variant="body1" fontWeight="medium">
                     {userData.first_name} {userData.last_name}
@@ -105,7 +118,7 @@ export default function Event({ eventData, userData }: EventProps) {
 
           {event_time && (
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              {new Date(event_time).toLocaleString()}
+              {formatEventDate(event_time)}
             </Typography>
           )}
 
@@ -115,6 +128,7 @@ export default function Event({ eventData, userData }: EventProps) {
                 display: "flex",
                 flexWrap: "wrap",
                 gap: 0.75,
+                mb: 2,
               }}
             >
               {tags.map((tag, index) => (
@@ -130,6 +144,18 @@ export default function Event({ eventData, userData }: EventProps) {
                   }}
                 />
               ))}
+            </Box>
+          )}
+
+          {/* Edit button - only show if current user is the event creator */}
+          {user && userData && user.id === userData.id && (
+            <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                variant="outlined"
+                onClick={() => router.push(`/events/${router.query.id}/edit`)}
+              >
+                Edit Event
+              </Button>
             </Box>
           )}
         </CardContent>

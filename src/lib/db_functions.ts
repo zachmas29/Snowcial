@@ -176,6 +176,26 @@ export async function fetchEvents(): Promise<Tables<"events">[]> {
   return data ?? [];
 }
 
+/* fetchEventsByUser
+ * params: userId - a user id to search for events created by them
+ * returns: array of Events created by the specified user
+ */
+export async function fetchEventsByUser(
+  userId: string,
+): Promise<Tables<"events">[]> {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("creator_id", userId)
+    .order("event_time", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return data ?? [];
+}
+
 /* fetchEvent
  * params: id - an event id to search for
  * returns: the Event object associated with the given id

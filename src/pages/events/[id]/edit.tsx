@@ -99,7 +99,7 @@ export default function EditEvent() {
     }
   };
 
-  const handleClick = (action: string) => {
+  const handleClick = (action?: string) => {
     if (action === "delete") {
       if (originalEventData?.id) {
         deleteEvent(originalEventData.id);
@@ -151,7 +151,7 @@ export default function EditEvent() {
                 : undefined
             }
             onSubmit={handleSubmit}
-            handleClick={() => handleClick}
+            handleClick={handleClick}
           />
         </main>
       </div>
