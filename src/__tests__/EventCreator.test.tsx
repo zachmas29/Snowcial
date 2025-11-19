@@ -59,13 +59,7 @@ describe("EventCreator", () => {
   });
 
   test("Displays Cancel and Create buttons", () => {
-    render(
-      <EventCreator
-        initialData={mockFormData}
-        onSubmit={vi.fn()}
-        handleClick={vi.fn()}
-      />,
-    );
+    render(<EventCreator onSubmit={vi.fn()} handleClick={vi.fn()} />);
     expect(screen.getByRole("button", { name: /Cancel/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Create/i })).toBeInTheDocument();
   });
@@ -84,70 +78,44 @@ describe("EventCreator", () => {
   });
 
   test("Create button is disabled when title is empty", () => {
-    render(
-      <EventCreator
-        initialData={mockFormData}
-        onSubmit={vi.fn()}
-        handleClick={vi.fn()}
-      />,
-    );
+    render(<EventCreator onSubmit={vi.fn()} handleClick={vi.fn()} />);
     expect(screen.getByRole("button", { name: /Create/i })).toBeDisabled();
   });
 
   test("Create button is disabled when description is empty", () => {
-    const formDataWithTitle = { ...mockFormData, title: "Mogul Run at Stowe" };
-    render(
-      <EventCreator
-        initialData={formDataWithTitle}
-        onSubmit={vi.fn()}
-        handleClick={vi.fn()}
-      />,
-    );
+    render(<EventCreator onSubmit={vi.fn()} handleClick={vi.fn()} />);
+    fireEvent.change(screen.getByLabelText(/Event Name/i), {
+      target: { value: "Mogul Run at Stowe" },
+    });
     expect(screen.getByRole("button", { name: /Create/i })).toBeDisabled();
   });
 
   test("Create button is enabled when title and description are provided", () => {
-    const completeFormData = {
-      ...mockFormData,
-      title: "Blue Square Cruise",
-      description: "Join us for intermediate runs at Sugarbush",
-    };
-    render(
-      <EventCreator
-        initialData={completeFormData}
-        onSubmit={vi.fn()}
-        handleClick={vi.fn()}
-      />,
-    );
+    render(<EventCreator onSubmit={vi.fn()} handleClick={vi.fn()} />);
+    fireEvent.change(screen.getByLabelText(/Event Name/i), {
+      target: { value: "Blue Square Cruise" },
+    });
+    fireEvent.change(screen.getByLabelText(/Description/i), {
+      target: { value: "Join us for intermediate runs at Sugarbush" },
+    });
     expect(screen.getByRole("button", { name: /Create/i })).not.toBeDisabled();
   });
 
   test("Calls submit callback when Create button clicked and form is valid", () => {
     const submitMock = vi.fn();
-    const completeFormData = {
-      ...mockFormData,
-      title: "Tree Skiing at Mad River Glen",
-      description: "Advanced terrain through the glades",
-    };
-    render(
-      <EventCreator
-        initialData={completeFormData}
-        onSubmit={submitMock}
-        handleClick={vi.fn()}
-      />,
-    );
+    render(<EventCreator onSubmit={submitMock} handleClick={vi.fn()} />);
+    fireEvent.change(screen.getByLabelText(/Event Name/i), {
+      target: { value: "Tree Skiing at Mad River Glen" },
+    });
+    fireEvent.change(screen.getByLabelText(/Description/i), {
+      target: { value: "Advanced terrain through the glades" },
+    });
     fireEvent.click(screen.getByRole("button", { name: /Create/i }));
     expect(submitMock).toHaveBeenCalled();
   });
 
   test("Displays error message when title and description are missing", () => {
-    render(
-      <EventCreator
-        initialData={mockFormData}
-        onSubmit={vi.fn()}
-        handleClick={vi.fn()}
-      />,
-    );
+    render(<EventCreator onSubmit={vi.fn()} handleClick={vi.fn()} />);
     expect(
       screen.getByText("Event name and description are required!"),
     ).toBeInTheDocument();

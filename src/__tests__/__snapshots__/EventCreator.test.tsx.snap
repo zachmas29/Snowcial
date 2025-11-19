@@ -14,8 +14,8 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
         <label
           class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary Mui-required MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-19qnlrw-MuiFormLabel-root-MuiInputLabel-root"
           data-shrink="false"
-          for="_r_a_"
-          id="_r_a_-label"
+          for="_r_b_"
+          id="_r_b_-label"
         >
           Event Name
           <span
@@ -31,7 +31,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
           <input
             aria-invalid="false"
             class="MuiInputBase-input MuiOutlinedInput-input css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input"
-            id="_r_a_"
+            id="_r_b_"
             required=""
             type="text"
             value=""
@@ -56,8 +56,8 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
         <label
           class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary Mui-required MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-19qnlrw-MuiFormLabel-root-MuiInputLabel-root"
           data-shrink="false"
-          for="_r_b_"
-          id="_r_b_-label"
+          for="_r_c_"
+          id="_r_c_-label"
         >
           Description
           <span
@@ -73,7 +73,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
           <textarea
             aria-invalid="false"
             class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMultiline css-w4nesw-MuiInputBase-input-MuiOutlinedInput-input"
-            id="_r_b_"
+            id="_r_c_"
             required=""
             rows="3"
             style="height: 0px; overflow: hidden;"
@@ -105,14 +105,14 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
         <label
           class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-19qnlrw-MuiFormLabel-root-MuiInputLabel-root"
           data-shrink="false"
-          for="_r_c_"
-          id="_r_c_-label"
+          for="_r_d_"
+          id="_r_d_-label"
         >
           Event Time
         </label>
         <div
           aria-invalid="false"
-          aria-labelledby="_r_c_-label"
+          aria-labelledby="_r_d_-label"
           class="MuiPickersInputBase-root MuiPickersOutlinedInput-root MuiPickersInputBase-colorPrimary MuiPickersInputBase-adornedEnd css-vycme6-MuiPickersInputBase-root-MuiPickersOutlinedInput-root"
           role="group"
         >
@@ -345,7 +345,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
           <input
             aria-hidden="true"
             class="MuiPickersInputBase-input MuiPickersOutlinedInput-input css-31lcvl-MuiPickersInputBase-input"
-            id="_r_c_"
+            id="_r_d_"
             tabindex="-1"
             value=""
           />
@@ -426,33 +426,55 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
           tabindex="-1"
           type="button"
         >
-          Create
+          Save
         </button>
-        <div
-          class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAlert-root MuiAlert-colorError MuiAlert-standardError MuiAlert-standard css-3lhuho-MuiPaper-root-MuiAlert-root"
-          role="alert"
-          style="--Paper-shadow: none;"
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedError MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorError MuiButton-root MuiButton-contained MuiButton-containedError MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorError css-1f7qp0x-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
         >
-          <div
-            class="MuiAlert-icon css-vab54s-MuiAlert-icon"
+          <span
+            class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1sh91j5-MuiButton-startIcon"
           >
             <svg
               aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit css-1ckov0h-MuiSvgIcon-root"
-              data-testid="ErrorOutlineIcon"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+              data-testid="DeleteIcon"
               focusable="false"
               viewBox="0 0 24 24"
             >
               <path
-                d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+                d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"
               />
             </svg>
-          </div>
-          <div
-            class="MuiAlert-message css-zioonp-MuiAlert-message"
+          </span>
+          Delete
+        </button>
+      </div>
+      <div
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation0 MuiAlert-root MuiAlert-colorError MuiAlert-standardError MuiAlert-standard css-3lhuho-MuiPaper-root-MuiAlert-root"
+        role="alert"
+        style="--Paper-shadow: none;"
+      >
+        <div
+          class="MuiAlert-icon css-vab54s-MuiAlert-icon"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit css-1ckov0h-MuiSvgIcon-root"
+            data-testid="ErrorOutlineIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
           >
-            Event name and description are required!
-          </div>
+            <path
+              d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+            />
+          </svg>
+        </div>
+        <div
+          class="MuiAlert-message css-zioonp-MuiAlert-message"
+        >
+          Event name and description are required!
         </div>
       </div>
     </div>
