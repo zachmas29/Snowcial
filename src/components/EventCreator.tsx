@@ -13,7 +13,6 @@ import { Alert, Box, Button, Stack, TextField } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers-pro";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { fetchEventTagOptions } from "@/lib/db_functions";
 import type { Tables } from "@/types/database.types";
