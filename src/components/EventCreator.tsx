@@ -46,15 +46,9 @@ export default function EventCreator({
     loadEventTags();
   }, []);
 
-  useEffect(() => {
-    if (initialData) {
-      setEventFormData(initialData);
-    }
-  }, [initialData]);
-
   const typedTagOptions = tagOptions as GenericTagType[];
 
-  const isEditMode = router.pathname.includes("/edit");
+  const isEditMode = initialData !== undefined;
   const submitText = isEditMode ? "Save" : "Create";
 
   return (
@@ -122,17 +116,16 @@ export default function EventCreator({
               color="error"
               startIcon={<DeleteIcon />}
               onClick={() => handleClick("delete")}
-              disabled={!eventFormData.title || !eventFormData.description}
             >
               Delete
             </Button>
           )}
-          {(!eventFormData.title || !eventFormData.description) && (
-            <Alert severity="error">
-              Event name and description are required!
-            </Alert>
-          )}
         </Stack>
+        {(!eventFormData.title || !eventFormData.description) && (
+          <Alert severity="error">
+            Event name and description are required!
+          </Alert>
+        )}
       </Stack>
     </Box>
   );

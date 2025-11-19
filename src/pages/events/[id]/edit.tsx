@@ -50,7 +50,7 @@ export default function EditEvent() {
 
         setOriginalEventData(eventData);
         setEventTags(tags);
-      } catch (_error) {
+      } catch {
         setHasError(true);
         setErrorMessage("Unable to load event data.");
       } finally {
@@ -65,19 +65,13 @@ export default function EditEvent() {
     if (
       !formData.title.trim() ||
       !formData.description.trim() ||
-      !formData.event_time
+      !formData.event_time ||
+      !authData.user ||
+      !originalEventData
     ) {
-      alert("Please fill in a title, description, and date.");
-      return;
-    }
-
-    if (!authData.user) {
-      alert("You must be logged in to edit events.");
-      return;
-    }
-
-    if (!originalEventData) {
-      alert("Original event data not loaded.");
+      // This should never be called based on when
+      // the form data submit button is disabled
+      alert("Something went wrong...");
       return;
     }
 
@@ -103,9 +97,11 @@ export default function EditEvent() {
     if (action === "delete") {
       if (originalEventData?.id) {
         deleteEvent(originalEventData.id);
+        router.push("/events");
       }
+    } else if (action === "cancel") {
+      router.back();
     }
-    router.push("/events");
   };
 
   if (loading) {

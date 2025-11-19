@@ -34,6 +34,13 @@ export default function UserProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // function to handle possessive grammar for names
+  const getPossessiveForm = (name: string): string => {
+    return name.toLowerCase().endsWith("s")
+      ? `${name}' Events`
+      : `${name}'s Events`;
+  };
+
   useEffect(() => {
     if (!router.isReady) {
       return;
@@ -129,7 +136,7 @@ export default function UserProfilePage() {
                   >
                     {isOwnProfile
                       ? "My Events"
-                      : `${profile.user.first_name}'s Events`}
+                      : getPossessiveForm(profile.user.first_name)}
                   </Typography>
                   <EventFeed includeUserId={userId || undefined} />
                 </Box>

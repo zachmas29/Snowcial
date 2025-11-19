@@ -28,7 +28,6 @@ type EnrichedEvent = {
 
 interface EventFeedProps {
   includeUserId?: string;
-  excludeUserId?: string;
 }
 
 export default function EventFeed({ includeUserId }: EventFeedProps) {
