@@ -30,7 +30,6 @@ export default function EventCreator({
   onSubmit,
   handleClick,
 }: EventCreatorProps) {
-  const router = useRouter();
   const [tagOptions, setTagOptions] = useState<Tables<"event_tags">[]>([]);
   const [eventFormData, setEventFormData] = useState<EventFormData>(
     initialData || {
