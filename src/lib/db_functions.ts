@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase_client";
 import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
 import type { UserProfileData } from "@/types/app.types";
 import type { Tables } from "@/types/database.types";
-import type { EventFormData } from "@/types/EventCreator.types";
+import type { EventFormData, GenericTagType } from "@/types/EventCreator.types";
 import type { UserWithTags } from "@/types/User";
 
 /* fetchUsers
@@ -176,6 +176,26 @@ export async function fetchEvents(): Promise<Tables<"events">[]> {
   return data ?? [];
 }
 
+/* fetchEventsByUser
+ * params: userId - a user id to search for events created by them
+ * returns: array of Events created by the specified user
+ */
+export async function fetchEventsByUser(
+  userId: string,
+): Promise<Tables<"events">[]> {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("creator_id", userId)
+    .order("event_time", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return data ?? [];
+}
+
 /* fetchEvent
  * params: id - an event id to search for
  * returns: the Event object associated with the given id
@@ -192,6 +212,19 @@ export async function fetchEvent(id: number): Promise<Tables<"events"> | null> {
   }
 
   return data;
+}
+
+/**
+ * deleteEvent
+ * @params id - the event id to delete
+ * @returns void - throws error if deletion fails
+ */
+export async function deleteEvent(id: number): Promise<void> {
+  const { error } = await supabase.from("events").delete().eq("id", id);
+
+  if (error) {
+    throw error;
+  }
 }
 
 /* getAttendeeCount
@@ -335,6 +368,64 @@ export async function insertEventWithTags(
 
     if (tagError) {
       throw tagError;
+    }
+  }
+
+  return event;
+}
+
+/**
+ * Updates an existing event and its tag assignments
+ * @param eventData - The complete event data including id
+ * @param tags - Optional array of tags to assign to the event
+ * @returns The updated event or null if failed
+ */
+export async function updateEventWithTags(
+  eventData: Tables<"events">,
+  tags?: GenericTagType[],
+): Promise<Tables<"events"> | null> {
+  const { data: event, error: eventError } = await supabase
+    .from("events")
+    .update({
+      title: eventData.title,
+      description: eventData.description,
+      event_time: eventData.event_time,
+    })
+    .eq("id", eventData.id)
+    .select()
+    .single();
+
+  if (eventError) {
+    throw eventError;
+  }
+
+  if (!event) {
+    throw Error("No event found");
+  }
+
+  if (tags !== undefined) {
+    const { error: deleteError } = await supabase
+      .from("event_tag_assignments")
+      .delete()
+      .eq("event_id", eventData.id);
+
+    if (deleteError) {
+      throw deleteError;
+    }
+
+    if (tags.length > 0) {
+      const tagAssignments = tags.map((tag) => ({
+        event_id: eventData.id,
+        tag_id: tag.id,
+      }));
+
+      const { error: tagError } = await supabase
+        .from("event_tag_assignments")
+        .insert(tagAssignments);
+
+      if (tagError) {
+        throw tagError;
+      }
     }
   }
 

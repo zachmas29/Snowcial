@@ -165,3 +165,11 @@ a.secondary {
     filter: invert();
   }
 }
+
+.errorMessage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  width: 100%;
+}

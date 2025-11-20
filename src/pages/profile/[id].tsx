@@ -8,9 +8,11 @@ import {
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import EventFeed from "@/components/EventFeed";
 import UserBioSection from "@/components/UserBioSection";
 import UserGallery from "@/components/UserGallery";
 import UserProfileHeader from "@/components/UserProfileHeader";
+import { useAuthContext } from "@/hooks/useAuth";
 import { fetchUserProfile } from "@/lib/db_functions";
 import styles from "@/styles/Home.module.css";
 import type { UserProfileData } from "@/types/app.types";
@@ -23,12 +25,21 @@ function isValidUuid(value: string): boolean {
 
 export default function UserProfilePage() {
   const router = useRouter();
-  const { id } = router.query;
+  const id = router.query.id;
+  const { user } = useAuthContext();
   const userId = typeof id === "string" ? id : Array.isArray(id) ? id[0] : null;
+  const isOwnProfile = user?.id === userId;
 
   const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // function to handle possessive grammar for names
+  const getPossessiveForm = (name: string): string => {
+    return name.toLowerCase().endsWith("s")
+      ? `${name}' Events`
+      : `${name}'s Events`;
+  };
 
   useEffect(() => {
     if (!router.isReady) {
@@ -116,6 +127,19 @@ export default function UserProfilePage() {
                 <UserProfileHeader user={profile.user} tags={profile.tags} />
                 <UserBioSection bioText={profile.user.bio_text} />
                 <UserGallery photos={profile.galleryPhotos} />
+                <Box>
+                  <Typography
+                    variant="h6"
+                    component="h2"
+                    fontWeight={600}
+                    mb={1.5}
+                  >
+                    {isOwnProfile
+                      ? "My Events"
+                      : getPossessiveForm(profile.user.first_name)}
+                  </Typography>
+                  <EventFeed includeUserId={userId || undefined} />
+                </Box>
               </Box>
             ) : (
               <Typography color="text.secondary">

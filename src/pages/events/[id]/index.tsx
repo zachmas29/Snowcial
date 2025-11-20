@@ -8,6 +8,7 @@ import {
   fetchEventTags,
   fetchUserFromEventId,
 } from "@/lib/db_functions";
+import styles from "@/styles/Home.module.css";
 import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
 
@@ -19,7 +20,6 @@ export default function eventPage() {
   const [hasError, setHasError] = useState(false);
   const event_id: number = Number(router.query.id);
 
-  // Load event data
   useEffect(() => {
     async function loadEvent() {
       try {
@@ -39,11 +39,13 @@ export default function eventPage() {
           tags: tags,
         };
 
+        if (!typedData) {
+          throw Error("Event undefined.");
+        }
+
         setEventData(typedData);
         setUserData(userData ?? null);
-      } catch (error) {
-        // biome-ignore lint/suspicious/noConsole: just for testing
-        console.error("Failed to fetch event data:", error);
+      } catch (_error) {
         setHasError(true);
       } finally {
         setLoading(false);
@@ -56,16 +58,16 @@ export default function eventPage() {
     <div>
       {loading ? (
         <CircularProgress />
-      ) : hasError ? (
-        <Alert severity="error" sx={{ width: "100%", maxWidth: 640 }}>
-          Unable to load event right now.
-        </Alert>
-      ) : eventData ? (
-        <Event eventData={eventData} userData={userData ?? null} />
+      ) : hasError || !eventData ? (
+        <div className={styles.page}>
+          <main className={styles.main}>
+            <Alert severity="error" sx={{ width: "100%", maxWidth: 640 }}>
+              Unable to load event right now.
+            </Alert>
+          </main>
+        </div>
       ) : (
-        <Alert severity="warning" sx={{ width: "100%", maxWidth: 640 }}>
-          Event not found.
-        </Alert>
+        <Event eventData={eventData} userData={userData ?? null} />
       )}
     </div>
   );

@@ -4,9 +4,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import EventCreator from "@/components/EventCreator";
 import { useAuthContext } from "@/hooks/useAuth";
-import { fetchEventTagOptions, insertEventWithTags } from "@/lib/db_functions";
+import { insertEventWithTags } from "@/lib/db_functions";
 import styles from "@/styles/Home.module.css";
-import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
 
 export default function NewEvent() {
@@ -14,58 +13,30 @@ export default function NewEvent() {
   const authData = useAuthContext();
   const [clientLoaded, setClientLoaded] = useState(false);
 
-  const [tagOptions, setTagOptions] = useState<Tables<"event_tags">[] | []>([]);
-  const [eventFormData, setEventFormData] = useState<EventFormData>({
-    title: "",
-    description: "",
-    event_time: null,
-    tags: [],
-  });
-
-  // delay initiating event_time value to when client page is rendered
-  // to prevent https://react.dev/link/hydration-mismatch
+  // delay client loading to prevent hydration mismatch
   useEffect(() => {
-    setEventFormData((prev) => ({
-      ...prev,
-      event_time: prev.event_time ?? new Date(),
-    }));
     setClientLoaded(true);
   }, []);
 
-  // Load event tag options
-  useEffect(() => {
-    async function loadEventTags() {
-      try {
-        const data = await fetchEventTagOptions();
-        setTagOptions(data);
-      } catch (error) {
-        // biome-ignore lint/suspicious/noConsole: just for testing
-        console.error("Failed to fetch tags:", error);
-      }
-    }
-    loadEventTags();
-  }, []);
-
-  // Submits event data to Supabase
-  const handleSubmit = async () => {
+  const handleSubmit = async (formData: EventFormData) => {
     if (
-      !eventFormData.title.trim() ||
-      !eventFormData.description.trim() ||
-      !eventFormData.event_time
+      !formData.title.trim() ||
+      !formData.description.trim() ||
+      !formData.event_time
     ) {
       alert("Please fill in a title, description, and date.");
       return;
     }
 
-    if (!clientLoaded || !authData.user) return null;
+    if (!clientLoaded || !authData.user) return;
 
     try {
       const inserted = await insertEventWithTags(
         {
-          title: eventFormData.title,
-          description: eventFormData.description,
-          event_time: eventFormData.event_time,
-          tags: eventFormData.tags,
+          title: formData.title,
+          description: formData.description,
+          event_time: formData.event_time,
+          tags: formData.tags,
         },
         authData.user.id,
       );
@@ -78,8 +49,7 @@ export default function NewEvent() {
     }
   };
 
-  // Returns to previous page
-  const handleCancel = () => {
+  const handleClick = () => {
     router.back();
   };
 
@@ -94,13 +64,7 @@ export default function NewEvent() {
       <div className={styles.page}>
         <main className={styles.main}>
           <h1 style={{ textAlign: "center" }}>CREATE EVENT</h1>
-          <EventCreator
-            eventFormData={eventFormData}
-            setEventFormData={setEventFormData}
-            tagOptions={tagOptions}
-            submit={handleSubmit}
-            cancel={handleCancel}
-          />
+          <EventCreator onSubmit={handleSubmit} handleClick={handleClick} />
         </main>
       </div>
     </>

@@ -10,3 +10,9 @@ export interface GenericTagType {
   id: number;
   name: string;
 }
+
+export interface EventCreatorProps {
+  initialData?: EventFormData;
+  onSubmit: (data: EventFormData) => Promise<void>;
+  handleClick: (action?: string) => void;
+}

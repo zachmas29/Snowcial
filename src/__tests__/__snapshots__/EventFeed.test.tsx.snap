@@ -42,7 +42,7 @@ exports[`EventFeed > Snapshot test - renders consistently 1`] = `
             <span
               class="MuiTypography-root MuiTypography-body2 MuiCardHeader-subheader css-1a1whku-MuiTypography-root"
             >
-              Emma Johnson • 2025-11-15T09:00:00-05:00
+              Emma Johnson • Sat, Nov 15, 12:00 PM
             </span>
           </div>
         </div>

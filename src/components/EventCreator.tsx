@@ -1,27 +1,61 @@
+/** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
+
+/*
+ * EventCreator.tsx
+ * If no initial data is passed, operates as 
+ * an event creator, otherwise will prefill the 
+ * form data and be in edit mode.
+
+*/
+
+import DeleteIcon from "@mui/icons-material/Delete";
 import { Alert, Box, Button, Stack, TextField } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers-pro";
+import { useEffect, useState } from "react";
+import { fetchEventTagOptions } from "@/lib/db_functions";
 import type { Tables } from "@/types/database.types";
-import type { EventFormData, GenericTagType } from "@/types/EventCreator.types";
+
+import type {
+  EventCreatorProps,
+  EventFormData,
+  GenericTagType,
+} from "@/types/EventCreator.types";
 import TagSelector from "./TagSelector";
 
-interface EventCreatorProps {
-  eventFormData: EventFormData;
-  setEventFormData: (EventFormData: EventFormData) => void;
-  tagOptions: Tables<"event_tags">[];
-  submit: () => void;
-  cancel: () => void;
-}
-
 export default function EventCreator({
-  eventFormData,
-  setEventFormData,
-  tagOptions,
-  submit,
-  cancel,
+  initialData,
+  onSubmit,
+  handleClick,
 }: EventCreatorProps) {
+  const [tagOptions, setTagOptions] = useState<Tables<"event_tags">[]>([]);
+  const [eventFormData, setEventFormData] = useState<EventFormData>(
+    initialData || {
+      title: "",
+      description: "",
+      event_time: new Date(),
+      tags: [],
+    },
+  );
+
+  useEffect(() => {
+    async function loadEventTags() {
+      try {
+        const data = await fetchEventTagOptions();
+        setTagOptions(data);
+      } catch (error) {
+        // biome-ignore lint/suspicious/noConsole: just for testing
+        console.error("Failed to fetch tags:", error);
+      }
+    }
+    loadEventTags();
+  }, []);
+
   const typedTagOptions = tagOptions as GenericTagType[];
+
+  const isEditMode = initialData !== undefined;
+  const submitText = isEditMode ? "Save" : "Create";
 
   return (
     <Box
@@ -60,7 +94,6 @@ export default function EventCreator({
             label="Event Time"
             value={eventFormData.event_time}
             onChange={(newValue) =>
-              // biome-ignore lint/style/useNamingConvention: <snake_case to keep supabase happy>
               setEventFormData({ ...eventFormData, event_time: newValue })
             }
           />
@@ -73,22 +106,32 @@ export default function EventCreator({
           }
         />
         <Stack direction="row" spacing={2}>
-          <Button variant="outlined" onClick={cancel}>
+          <Button variant="outlined" onClick={() => handleClick("cancel")}>
             Cancel
           </Button>
           <Button
             variant="contained"
-            onClick={submit}
+            onClick={() => onSubmit(eventFormData)}
             disabled={!eventFormData.title || !eventFormData.description}
           >
-            Submit
+            {submitText}
           </Button>
-          {(!eventFormData.title || !eventFormData.description) && (
-            <Alert severity="error">
-              Event name and description are required!
-            </Alert>
+          {isEditMode && (
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<DeleteIcon />}
+              onClick={() => handleClick("delete")}
+            >
+              Delete
+            </Button>
           )}
         </Stack>
+        {(!eventFormData.title || !eventFormData.description) && (
+          <Alert severity="error">
+            Event name and description are required!
+          </Alert>
+        )}
       </Stack>
     </Box>
   );

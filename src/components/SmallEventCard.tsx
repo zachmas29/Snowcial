@@ -12,6 +12,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { formatEventDate } from "@/lib/date_formatters";
 import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
 import type { Tables } from "@/types/database.types";
 
@@ -86,7 +87,7 @@ export default function SmallEventCard({
         <CardHeader
           avatar={ClickableAvatar}
           title={event.title}
-          subheader={`${user ? `${user.first_name} ${user.last_name}` : ""} • ${event.event_time}`}
+          subheader={`${user ? `${user.first_name} ${user.last_name}` : ""} • ${formatEventDate(event.event_time)}`}
         />
 
         <CardContent>

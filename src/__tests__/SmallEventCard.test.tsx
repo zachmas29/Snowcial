@@ -12,7 +12,7 @@ const mockEvent: Tables<"events"> = {
   title: "Morning Powder Run at Snowbowl",
   description:
     "Fresh snow expected tonight! Let's meet at the base lodge at 9am for first tracks. All levels welcome, we'll split into groups by ability.",
-  event_time: "2025-11-15T09:00:00-05:00",
+  event_time: "2025-11-15T12:00:00.000Z",
   creator_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
   created_at: "2025-11-01T12:00:00+00:00",
   last_updated: "2025-11-01T12:00:00+00:00",
@@ -135,7 +135,7 @@ describe("SmallEventCard", () => {
         handleEventClick={mockHandleEventClick}
       />,
     );
-    expect(screen.getByText(/2025-11-15T09:00:00/)).toBeInTheDocument();
+    expect(screen.getByText(/Sat, Nov 15, 12:00 PM/)).toBeInTheDocument();
   });
 
   test("Renders all event tags", () => {
