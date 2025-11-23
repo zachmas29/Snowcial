@@ -27,6 +27,7 @@ export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
             : `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
+          alt: `${fullName}'s banner photo`,
         }}
       />
 
