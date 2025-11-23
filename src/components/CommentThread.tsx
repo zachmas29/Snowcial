@@ -126,7 +126,9 @@ export default function CommentThread({ eventId }: CommentThreadProps) {
                   key={comment.id}
                   comment={comment}
                   currentUserId={user?.id ?? null}
-                  onReply={(parentId, text) => handleAddComment(text, parentId)}
+                  onReply={async (parentId, text) => {
+                    await handleAddComment(text, parentId);
+                  }}
                   onDelete={handleDelete}
                 />
               ))
