@@ -45,7 +45,9 @@ export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
           borderColor: "background.paper",
           boxShadow: 2,
         }}
-      />
+      >
+        {fullName.charAt(0).toUpperCase()}
+      </Avatar>
 
       {/* Content */}
       <Box sx={{ pt: { xs: 6, sm: 7 }, pb: 3, px: 2 }}>
