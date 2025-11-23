@@ -2,19 +2,42 @@
 import { createTheme } from "@mui/material/styles";
 
 export const theme = createTheme({
-  colorSchemes: {
-    dark: true, // Enable dark mode - MUI auto-generates background/text colors
+  cssVariables: {
+    colorSchemeSelector: "data-mui-color-scheme",
+    cssVarPrefix: "mui",
   },
-  palette: {
-    primary: {
-      main: "#667eea",
-      light: "#8fa3f0",
-      dark: "#4a5fc7",
+  colorSchemes: {
+    light: {
+      palette: {
+        primary: {
+          main: "#667eea",
+          light: "#8fa3f0",
+          dark: "#4a5fc7",
+        },
+        secondary: {
+          main: "#764ba2",
+          light: "#9575cd",
+          dark: "#5e3a7a",
+        },
+      },
     },
-    secondary: {
-      main: "#764ba2",
-      light: "#9575cd",
-      dark: "#5e3a7a",
+    dark: {
+      palette: {
+        primary: {
+          main: "#8fa3f0",
+          light: "#a9c1f5",
+          dark: "#667eea",
+        },
+        secondary: {
+          main: "#9575cd",
+          light: "#b39ddb",
+          dark: "#764ba2",
+        },
+        background: {
+          default: "#0a0a0a",
+          paper: "#1a1a1a",
+        },
+      },
     },
   },
   typography: {

@@ -1,15 +1,22 @@
-import { Box, useMediaQuery } from "@mui/material";
+import { Box } from "@mui/material";
+import { useColorScheme } from "@mui/material/styles";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { LoginButton } from "@/components/LoginButton";
 import { useAuthContext } from "@/hooks/useAuth";
 
 export default function Home() {
   const { user } = useAuthContext();
   const router = useRouter();
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  const { mode } = useColorScheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Redirect authenticated users to the people page
   useEffect(() => {
@@ -18,10 +25,16 @@ export default function Home() {
     }
   }, [user, router]);
 
+  // Show loading during SSR to prevent hydration mismatch
+  if (!mounted) {
+    return null;
+  }
+
   if (user) {
     return null; // Will redirect
   }
 
+  const prefersDarkMode = mode === "dark";
   const logoSrc = prefersDarkMode
     ? "/snowcial_logo_cream.webp"
     : "/snowcial_logo_blue.webp";

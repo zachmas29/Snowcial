@@ -1,5 +1,18 @@
 :root {
   --bottom-nav-height: 72px;
+  /* Prevent flash during theme loading */
+  color-scheme: dark light;
+}
+
+html {
+  /* Prevent flash with system preference or default dark background */
+  background-color: #0a0a0a;
+  color: #ffffff;
+}
+
+html[data-mui-color-scheme="light"] {
+  background-color: #ffffff;
+  color: #000000;
 }
 
 html,

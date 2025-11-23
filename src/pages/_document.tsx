@@ -1,3 +1,4 @@
+import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import type { DocumentHeadTagsProps } from "@mui/material-nextjs/v15-pagesRouter";
 import {
   DocumentHeadTags,
@@ -16,9 +17,11 @@ export default function Document(props: DocumentProps & DocumentHeadTagsProps) {
   return (
     <Html lang="en">
       <Head>
+        <meta name="color-scheme" content="dark light" />
         <DocumentHeadTags {...props} />
       </Head>
       <body>
+        <InitColorSchemeScript attribute="data-mui-color-scheme" />
         <Main />
         <NextScript />
       </body>

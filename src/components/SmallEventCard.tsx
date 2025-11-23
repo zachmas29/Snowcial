@@ -86,6 +86,7 @@ export default function SmallEventCard({
       <Card
         sx={{
           justifyContent: "space-between",
+          backgroundColor: "background.paper",
           boxShadow: 3,
           border: 1,
           borderColor: "divider",

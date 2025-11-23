@@ -3,6 +3,7 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 import EditIcon from "@mui/icons-material/Edit";
 import EventIcon from "@mui/icons-material/Event";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import { Box } from "@mui/material";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Paper from "@mui/material/Paper";
@@ -10,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import type { ReactNode } from "react";
 import { useAuthContext } from "@/hooks/useAuth";
+import { ThemeToggle } from "./ThemeToggle";
 
 type NavItem = {
   label: string;
@@ -77,23 +79,35 @@ export function NavBar() {
       }}
       aria-label="Primary navigation"
     >
-      <BottomNavigation value={activeNavValue} showLabels>
-        {navItems.map((item) => (
-          <BottomNavigationAction
-            key={item.href}
-            component={Link}
-            href={item.href}
-            icon={item.icon}
-            value={item.value ?? item.href}
-            sx={{
-              textTransform: "uppercase",
-              fontSize: "0.75rem",
-              fontWeight: 600,
-              letterSpacing: "0.05em",
-            }}
-          />
-        ))}
-      </BottomNavigation>
+      <Box sx={{ position: "relative" }}>
+        <BottomNavigation value={activeNavValue} showLabels>
+          {navItems.map((item) => (
+            <BottomNavigationAction
+              key={item.href}
+              component={Link}
+              href={item.href}
+              icon={item.icon}
+              value={item.value ?? item.href}
+              sx={{
+                textTransform: "uppercase",
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                letterSpacing: "0.05em",
+              }}
+            />
+          ))}
+        </BottomNavigation>
+        <Box
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+        >
+          <ThemeToggle />
+        </Box>
+      </Box>
     </Paper>
   );
 }
