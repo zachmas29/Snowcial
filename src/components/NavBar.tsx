@@ -103,6 +103,7 @@ export function NavBar() {
             right: 8,
             top: "50%",
             transform: "translateY(-50%)",
+            display: { xs: "none", sm: "block" },
           }}
         >
           <ThemeToggle />
