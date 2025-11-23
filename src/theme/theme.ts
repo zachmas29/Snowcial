@@ -6,6 +6,7 @@ export const theme = createTheme({
     colorSchemeSelector: "data-mui-color-scheme",
     cssVarPrefix: "mui",
   },
+  defaultColorScheme: "dark",
   colorSchemes: {
     light: {
       palette: {

@@ -52,6 +52,7 @@ export default function App({ Component, pageProps }: AppProps) {
           justifyContent: "center",
           alignItems: "center",
           minHeight: "100vh",
+          backgroundColor: "background.default",
         }}
       >
         <CircularProgress />

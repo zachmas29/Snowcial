@@ -148,8 +148,10 @@ export default function SmallEventCard({
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 display: "-webkit-box",
-                webkitLineClamp: 3,
-                webkitBoxOrient: "vertical",
+                // biome-ignore lint/style/useNamingConvention: necessary for React inline styles
+                WebkitLineClamp: 3,
+                // biome-ignore lint/style/useNamingConvention: necessary for React inline styles
+                WebkitBoxOrient: "vertical",
               }}
             >
               {truncateDescription(event.description)}

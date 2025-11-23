@@ -43,7 +43,7 @@ exports[`SmallEventCard > Snapshot test - renders consistently 1`] = `
           </div>
         </div>
         <p
-          class="MuiTypography-root MuiTypography-body2 css-hy3iae-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body2 css-10d2o18-MuiTypography-root"
         >
           Fresh snow expected tonight! Let's meet at the base lodge at 9am for first tracks. All levels welcome, we'll split into groups by ability.
         </p>
