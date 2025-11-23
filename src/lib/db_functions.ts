@@ -2,6 +2,7 @@
 import { supabase } from "@/lib/supabase_client";
 import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
 import type { UserProfileData } from "@/types/app.types";
+import type { EventCommentWithAuthor } from "@/types/Comment.types";
 import type { Tables } from "@/types/database.types";
 import type { EventFormData, GenericTagType } from "@/types/EventCreator.types";
 import type { UserWithTags } from "@/types/User";
@@ -297,17 +298,116 @@ export async function fetchEventTags(
  */
 export async function fetchEventComments(
   id: number,
-): Promise<Tables<"event_comments">[]> {
+): Promise<EventCommentWithAuthor[]> {
   const { data, error } = await supabase
     .from("event_comments")
-    .select("*")
-    .eq("event_id", id);
+    .select(
+      `
+        id,
+        event_id,
+        parent_comment_id,
+        created_at,
+        creator_id,
+        comment_text,
+        author:users (
+          id,
+          first_name,
+          last_name,
+          profile_photo_path
+        )
+      `,
+    )
+    .eq("event_id", id)
+    .order("created_at", { ascending: true });
 
   if (error) {
     throw error;
   }
 
-  return data ?? [];
+  return (data ?? []) as EventCommentWithAuthor[];
+}
+
+type CreateEventCommentInput = {
+  eventId: number;
+  commentText: string;
+  parentCommentId?: number | null;
+};
+
+export async function createEventComment(
+  input: CreateEventCommentInput,
+): Promise<EventCommentWithAuthor> {
+  const { eventId, commentText, parentCommentId = null } = input;
+  const trimmed = commentText.trim();
+
+  if (!trimmed) {
+    throw new Error("Comment cannot be empty");
+  }
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    throw authError || new Error("No authenticated user");
+  }
+
+  const { data, error } = await supabase
+    .from("event_comments")
+    .insert({
+      comment_text: trimmed,
+      event_id: eventId,
+      creator_id: user.id,
+      parent_comment_id: parentCommentId,
+    })
+    .select(
+      `
+        id,
+        event_id,
+        parent_comment_id,
+        created_at,
+        creator_id,
+        comment_text,
+        author:users (
+          id,
+          first_name,
+          last_name,
+          profile_photo_path
+        )
+      `,
+    )
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
+    throw new Error("Failed to create comment");
+  }
+
+  return data as EventCommentWithAuthor;
+}
+
+export async function deleteEventComment(commentId: number): Promise<void> {
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    throw authError || new Error("No authenticated user");
+  }
+
+  const { error } = await supabase
+    .from("event_comments")
+    .delete()
+    .eq("id", commentId)
+    .eq("creator_id", user.id);
+
+  if (error) {
+    throw error;
+  }
 }
 
 /** fetchEventTagOptions

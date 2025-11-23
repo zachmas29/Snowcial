@@ -2,6 +2,7 @@
 import { Alert, CircularProgress } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import CommentThread from "@/components/CommentThread";
 import Event from "@/components/Event";
 import {
   fetchEvent,
@@ -21,6 +22,9 @@ export default function eventPage() {
   const event_id: number = Number(router.query.id);
 
   useEffect(() => {
+    if (!router.isReady || Number.isNaN(event_id)) {
+      return;
+    }
     async function loadEvent() {
       try {
         const data = await fetchEvent(event_id);
@@ -52,7 +56,7 @@ export default function eventPage() {
       }
     }
     loadEvent();
-  }, [event_id]);
+  }, [event_id, router.isReady]);
 
   return (
     <div>
@@ -67,7 +71,10 @@ export default function eventPage() {
           </main>
         </div>
       ) : (
-        <Event eventData={eventData} userData={userData ?? null} />
+        <>
+          <Event eventData={eventData} userData={userData ?? null} />
+          <CommentThread eventId={event_id} />
+        </>
       )}
     </div>
   );
