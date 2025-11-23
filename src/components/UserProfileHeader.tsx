@@ -39,10 +39,11 @@ export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
           position: "absolute",
           top: { xs: 80, sm: 130 },
           left: 20,
-          border: `3px solid ${theme.palette.background.paper}`,
+          border: "3px solid",
+          borderColor: "background.paper",
           boxShadow: 2,
         }}
-      ></Avatar>
+      />
 
       {/* Content */}
       <Box sx={{ pt: { xs: 6, sm: 7 }, pb: 3, px: 2 }}>

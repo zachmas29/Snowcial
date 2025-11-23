@@ -20,13 +20,14 @@ export function LoginButton() {
         startIcon={<GoogleIcon />}
         onClick={signIn}
         sx={{
-          backgroundColor: "#4285F4",
+          backgroundColor: "primary.main",
           "&:hover": {
-            backgroundColor: "#357ae8",
+            backgroundColor: "primary.dark",
           },
           textTransform: "none",
           fontSize: "1.1rem",
           padding: "12px 24px",
+          color: "primary.contrastText",
         }}
       >
         Sign in with Google
