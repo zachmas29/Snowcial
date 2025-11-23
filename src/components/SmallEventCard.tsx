@@ -83,7 +83,14 @@ export default function SmallEventCard({
 
   return (
     <CardActionArea onClick={() => handleEventClick(event.id)}>
-      <Card sx={{ justifyContent: "space-between" }}>
+      <Card
+        sx={{
+          justifyContent: "space-between",
+          boxShadow: 3,
+          border: 1,
+          borderColor: "divider",
+        }}
+      >
         <CardHeader
           avatar={ClickableAvatar}
           title={event.title}

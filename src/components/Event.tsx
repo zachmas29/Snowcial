@@ -47,7 +47,9 @@ export default function Event({ eventData, userData }: EventProps) {
       sx={{
         width: "100%",
         borderRadius: 3,
-        boxShadow: 2,
+        boxShadow: 3,
+        border: 1,
+        borderColor: "divider",
       }}
     >
       <CardContent

@@ -51,7 +51,7 @@ export default function PeopleFeed({
           width: "100%",
           display: "flex",
           justifyContent: "center",
-          py: 4,
+          py: (theme) => theme.spacing(4),
         }}
       >
         <Typography color="text.secondary">{emptyMessage}</Typography>

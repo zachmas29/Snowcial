@@ -33,7 +33,9 @@ export default function SmallProfileCard({ user }: SmallProfileCardProps) {
       sx={{
         width: "100%",
         borderRadius: 3,
-        boxShadow: 2,
+        boxShadow: 3,
+        border: 1,
+        borderColor: "divider",
       }}
     >
       <CardActionArea

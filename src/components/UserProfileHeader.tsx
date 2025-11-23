@@ -13,7 +13,9 @@ export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
         borderRadius: 2,
         overflow: "hidden",
         backgroundColor: "background.paper",
-        boxShadow: 1,
+        boxShadow: 3,
+        border: 1,
+        borderColor: "divider",
       }}
     >
       {/* Banner */}
