@@ -10,7 +10,7 @@ import { useAuthContext } from "@/hooks/useAuth";
 export default function Home() {
   const { user } = useAuthContext();
   const router = useRouter();
-  const { mode } = useColorScheme();
+  const { mode, systemMode } = useColorScheme();
   const [mounted, setMounted] = useState(false);
 
   // Prevent hydration mismatch
@@ -34,7 +34,10 @@ export default function Home() {
     return null; // Will redirect
   }
 
-  const prefersDarkMode = mode === "dark";
+  // Use systemMode to get the resolved mode when mode is "system"
+  const resolvedMode = mode === "system" ? systemMode : mode;
+  const prefersDarkMode = resolvedMode === "dark";
+
   const logoSrc = prefersDarkMode
     ? "/snowcial_logo_cream.webp"
     : "/snowcial_logo_blue.webp";
