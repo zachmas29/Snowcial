@@ -61,7 +61,7 @@ export default function SmallEventCard({
   const truncateDescription = (text: string, wordLimit: number = 50) => {
     const words = text.trim().split(/\s+/);
     if (words.length <= wordLimit) return text;
-    return words.slice(0, wordLimit).join(" ") + "...";
+    return `${words.slice(0, wordLimit).join(" ")}...`;
   };
 
   return (
