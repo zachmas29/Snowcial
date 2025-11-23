@@ -119,9 +119,12 @@ export default function EventFeed({ includeUserId }: EventFeedProps) {
         sx={{
           p: 3,
           textAlign: "center",
-          backgroundColor: "grey.50",
+          backgroundColor: (theme) =>
+            theme.palette.mode === "dark"
+              ? theme.palette.grey[800]
+              : theme.palette.grey[50],
           border: "1px dashed",
-          borderColor: "grey.300",
+          borderColor: "divider",
         }}
       >
         <Typography variant="body1" color="text.secondary">

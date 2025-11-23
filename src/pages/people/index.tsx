@@ -1,8 +1,8 @@
 import { Alert, CircularProgress, Typography } from "@mui/material";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import PeopleFeed from "@/components/PeopleFeed";
 import PageLayout from "@/components/PageLayout";
+import PeopleFeed from "@/components/PeopleFeed";
 import SearchFilterBar from "@/components/SearchFilterBar";
 import { fetchUsersWithTags } from "@/lib/db_functions";
 import type { SortType } from "@/types/Sort.types";

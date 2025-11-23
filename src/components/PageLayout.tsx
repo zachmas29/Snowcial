@@ -1,4 +1,4 @@
-import { Box, Container, ContainerProps } from "@mui/material";
+import { Box, Container, type ContainerProps } from "@mui/material";
 import type { ReactNode } from "react";
 
 interface PageLayoutProps {
@@ -37,4 +37,3 @@ export default function PageLayout({
     </Container>
   );
 }
-

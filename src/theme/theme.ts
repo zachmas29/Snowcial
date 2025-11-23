@@ -1,6 +1,9 @@
 import { createTheme } from "@mui/material/styles";
 
 export const theme = createTheme({
+  colorSchemes: {
+    dark: true, // Enable dark mode - MUI auto-generates background/text colors
+  },
   palette: {
     primary: {
       main: "#667eea",
@@ -12,22 +15,9 @@ export const theme = createTheme({
       light: "#9575cd",
       dark: "#5e3a7a",
     },
-    background: {
-      default: "#ffffff",
-      paper: "#ffffff",
-    },
-    text: {
-      primary: "#171717",
-      secondary: "rgba(0, 0, 0, 0.6)",
-    },
   },
   typography: {
-    fontFamily: [
-      "Roboto",
-      "Arial",
-      "Helvetica",
-      "sans-serif",
-    ].join(","),
+    fontFamily: ["Roboto", "Arial", "Helvetica", "sans-serif"].join(","),
     h1: {
       fontWeight: 700,
     },
@@ -73,4 +63,3 @@ export const theme = createTheme({
     },
   },
 });
-

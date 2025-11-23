@@ -12,7 +12,12 @@ export default function EditProfile() {
         <title>Edit Profile | Snowcial</title>
       </Head>
       <PageLayout maxWidth="sm">
-        <Typography variant="h3" component="h1" fontWeight={600} textAlign="center">
+        <Typography
+          variant="h3"
+          component="h1"
+          fontWeight={600}
+          textAlign="center"
+        >
           Edit Profile
         </Typography>
         <Typography variant="body1">{user?.user_metadata?.name}</Typography>

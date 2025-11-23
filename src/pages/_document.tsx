@@ -1,3 +1,4 @@
+import InitColorSchemeScript from "@mui/material/InitColorSchemeScript";
 import type { DocumentHeadTagsProps } from "@mui/material-nextjs/v15-pagesRouter";
 import {
   DocumentHeadTags,
@@ -16,6 +17,7 @@ export default function Document(props: DocumentProps & DocumentHeadTagsProps) {
   return (
     <Html lang="en">
       <Head>
+        <InitColorSchemeScript />
         <DocumentHeadTags {...props} />
       </Head>
       <body>

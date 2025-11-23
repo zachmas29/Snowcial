@@ -1,5 +1,10 @@
 import "@/styles/globals.css";
-import { Box, CircularProgress, ThemeProvider } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  CssBaseline,
+  ThemeProvider,
+} from "@mui/material";
 import { AppCacheProvider } from "@mui/material-nextjs/v15-pagesRouter";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
@@ -61,6 +66,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <AuthContext.Provider value={authData}>
         <AppCacheProvider {...pageProps}>
           <Component {...pageProps} />

@@ -1,8 +1,9 @@
-import { Avatar, Box, Chip, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Chip, Stack, Typography, useTheme } from "@mui/material";
 import type { UserProfileHeaderProps } from "@/types/app.types";
 
 export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
   const fullName = `${user.first_name} ${user.last_name}`.trim();
+  const theme = useTheme();
 
   return (
     <Box
@@ -11,7 +12,7 @@ export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
         position: "relative",
         borderRadius: 2,
         overflow: "hidden",
-        backgroundColor: "white",
+        backgroundColor: "background.paper",
         boxShadow: 1,
       }}
     >
@@ -19,9 +20,9 @@ export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
       <Box
         sx={{
           height: { xs: 120, sm: 180 },
-          backgroundImage: user.banner_photo_path 
-            ? `url(${user.banner_photo_path})` 
-            : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          backgroundImage: user.banner_photo_path
+            ? `url(${user.banner_photo_path})`
+            : `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -38,11 +39,10 @@ export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
           position: "absolute",
           top: { xs: 80, sm: 130 },
           left: 20,
-          border: "3px solid white",
+          border: `3px solid ${theme.palette.background.paper}`,
           boxShadow: 2,
         }}
-      >
-      </Avatar>
+      ></Avatar>
 
       {/* Content */}
       <Box sx={{ pt: { xs: 6, sm: 7 }, pb: 3, px: 2 }}>
@@ -51,9 +51,7 @@ export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
             <Typography variant="h4" fontWeight={700}>
               {fullName || "Unnamed User"}
             </Typography>
-            <Typography color="text.secondary">
-              {user.email}
-            </Typography>
+            <Typography color="text.secondary">{user.email}</Typography>
           </Box>
 
           <Stack direction="row" flexWrap="wrap" gap={1}>
@@ -67,7 +65,11 @@ export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
                 />
               ))
             ) : (
-              <Typography variant="body2" color="text.secondary" fontStyle="italic">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                fontStyle="italic"
+              >
                 No tags yet.
               </Typography>
             )}

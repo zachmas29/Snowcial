@@ -1,9 +1,4 @@
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, CircularProgress, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -125,12 +120,7 @@ export default function UserProfilePage() {
             <UserBioSection bioText={profile.user.bio_text} />
             <UserGallery photos={profile.galleryPhotos} />
             <Box>
-              <Typography
-                variant="h6"
-                component="h2"
-                fontWeight={600}
-                mb={1.5}
-              >
+              <Typography variant="h6" component="h2" fontWeight={600} mb={1.5}>
                 {isOwnProfile
                   ? "My Events"
                   : getPossessiveForm(profile.user.first_name)}
