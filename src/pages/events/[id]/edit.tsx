@@ -1,9 +1,10 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
-import { Alert, CircularProgress } from "@mui/material";
+import { Alert, Box, CircularProgress, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import EventCreator from "@/components/EventCreator";
+import PageLayout from "@/components/PageLayout";
 import { useAuthContext } from "@/hooks/useAuth";
 import {
   deleteEvent,
@@ -11,7 +12,6 @@ import {
   fetchEventTags,
   updateEventWithTags,
 } from "@/lib/db_functions";
-import styles from "@/styles/Home.module.css";
 import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
 
@@ -106,23 +106,28 @@ export default function EditEvent() {
 
   if (loading) {
     return (
-      <div className={styles.page}>
-        <main className={styles.main}>
+      <PageLayout>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "40vh",
+          }}
+        >
           <CircularProgress />
-        </main>
-      </div>
+        </Box>
+      </PageLayout>
     );
   }
 
   if (hasError) {
     return (
-      <div className={styles.page}>
-        <main className={styles.main}>
-          <Alert severity="error" sx={{ width: "100%", maxWidth: 640 }}>
-            {errorMessage}
-          </Alert>
-        </main>
-      </div>
+      <PageLayout>
+        <Alert severity="error" sx={{ width: "100%" }}>
+          {errorMessage}
+        </Alert>
+      </PageLayout>
     );
   }
 
@@ -131,26 +136,25 @@ export default function EditEvent() {
       <Head>
         <title>Edit Event | Snowcial</title>
       </Head>
-
-      <div className={styles.page}>
-        <main className={styles.main}>
-          <h1 style={{ textAlign: "center" }}>EDIT EVENT</h1>
-          <EventCreator
-            initialData={
-              originalEventData
-                ? {
-                    title: originalEventData.title,
-                    description: originalEventData.description ?? "",
-                    event_time: new Date(originalEventData.event_time),
-                    tags: eventTags,
-                  }
-                : undefined
-            }
-            onSubmit={handleSubmit}
-            handleClick={handleClick}
-          />
-        </main>
-      </div>
+      <PageLayout maxWidth="sm">
+        <Typography variant="h3" component="h1" fontWeight={600} textAlign="center" mb={1}>
+          Edit Event
+        </Typography>
+        <EventCreator
+          initialData={
+            originalEventData
+              ? {
+                  title: originalEventData.title,
+                  description: originalEventData.description ?? "",
+                  event_time: new Date(originalEventData.event_time),
+                  tags: eventTags,
+                }
+              : undefined
+          }
+          onSubmit={handleSubmit}
+          handleClick={handleClick}
+        />
+      </PageLayout>
     </>
   );
 }

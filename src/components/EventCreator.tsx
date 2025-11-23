@@ -60,14 +60,13 @@ export default function EventCreator({
   return (
     <Box
       sx={{
-        width: "600px",
-        mx: "auto",
+        width: "100%",
         display: "flex",
         flexDirection: "column",
         gap: 2,
       }}
     >
-      <Stack spacing={2} width="100%" maxWidth={800}>
+      <Stack spacing={2} width="100%">
         <TextField
           label="Event Name"
           value={eventFormData.title}

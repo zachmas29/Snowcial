@@ -2,9 +2,9 @@ import { Alert, CircularProgress, Typography } from "@mui/material";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import PeopleFeed from "@/components/PeopleFeed";
+import PageLayout from "@/components/PageLayout";
 import SearchFilterBar from "@/components/SearchFilterBar";
 import { fetchUsersWithTags } from "@/lib/db_functions";
-import styles from "@/styles/Home.module.css";
 import type { SortType } from "@/types/Sort.types";
 import type { UserWithTags } from "@/types/User";
 
@@ -38,41 +38,38 @@ export default function People() {
       <Head>
         <title>People | Snowcial</title>
       </Head>
-      <div className={styles.page}>
-        <main className={styles.main}>
-          <Typography
-            variant="h3"
-            component="h1"
-            fontWeight={600}
-            textAlign="center"
-            mb={1}
-          >
-            People
-          </Typography>
+      <PageLayout>
+        <Typography
+          variant="h3"
+          component="h1"
+          fontWeight={600}
+          textAlign="center"
+          mb={1}
+        >
+          People
+        </Typography>
 
-          <SearchFilterBar
+        <SearchFilterBar
+          searchTerm={searchTerm}
+          sortType={sortType}
+          setTerm={setSearchTerm}
+          setSortType={setSortType}
+        />
+
+        {loading ? (
+          <CircularProgress />
+        ) : hasError ? (
+          <Alert severity="error" sx={{ width: "100%" }}>
+            Unable to load people right now.
+          </Alert>
+        ) : (
+          <PeopleFeed
+            users={users}
             searchTerm={searchTerm}
             sortType={sortType}
-            setTerm={setSearchTerm}
-            setSortType={setSortType}
           />
-
-          {loading ? (
-            <CircularProgress />
-          ) : hasError ? (
-            <Alert severity="error" sx={{ width: "100%", maxWidth: 640 }}>
-              Unable to load people right now.
-            </Alert>
-          ) : (
-            <PeopleFeed
-              users={users}
-              maxWidth={640}
-              searchTerm={searchTerm}
-              sortType={sortType}
-            />
-          )}
-        </main>
-      </div>
+        )}
+      </PageLayout>
     </>
   );
 }

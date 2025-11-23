@@ -13,7 +13,6 @@ type SearchFilterBarProps = {
   sortType: SortType;
   setTerm: (term: string) => void;
   setSortType: (type: SortType) => void;
-  width?: string | number;
 };
 
 export default function SearchFilterBar({
@@ -21,7 +20,6 @@ export default function SearchFilterBar({
   sortType,
   setTerm,
   setSortType,
-  width = "100%",
 }: SearchFilterBarProps) {
   const sortOptions = [
     {
@@ -46,7 +44,7 @@ export default function SearchFilterBar({
     <Box
       sx={{
         display: "flex",
-        width: width,
+        width: "100%",
         gap: 2,
       }}
     >

@@ -25,7 +25,6 @@ export interface SmallProfileCardProps {
 export interface PeopleFeedProps {
   users: UserWithTags[];
   emptyMessage?: string;
-  maxWidth?: number | string;
   spacing?: number;
   searchTerm: string;
   sortType: SortType;

@@ -43,23 +43,13 @@ export default function Event({ eventData, userData }: EventProps) {
   const { user } = useAuthContext();
 
   return (
-    <Box
+    <Card
       sx={{
         width: "100%",
-        mt: "10%", // 10% margin from top
-        px: 2,
+        borderRadius: 3,
+        boxShadow: 2,
       }}
     >
-      {/* Event Card */}
-      <Card
-        sx={{
-          width: "100%",
-          maxWidth: 640,
-          borderRadius: 3,
-          boxShadow: 2,
-          mx: "auto",
-        }}
-      >
         <CardContent
           sx={{
             p: 3,
@@ -160,6 +150,5 @@ export default function Event({ eventData, userData }: EventProps) {
           )}
         </CardContent>
       </Card>
-    </Box>
   );
 }

@@ -32,7 +32,6 @@ export default function SmallProfileCard({ user }: SmallProfileCardProps) {
     <Card
       sx={{
         width: "100%",
-        maxWidth: { xs: "100%", sm: 360 },
         borderRadius: 3,
         boxShadow: 2,
       }}

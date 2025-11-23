@@ -106,7 +106,7 @@ export default function EventFeed({ includeUserId }: EventFeedProps) {
   }
   if (error) {
     return (
-      <Alert severity="error" sx={{ width: "100%", maxWidth: 640 }}>
+      <Alert severity="error" sx={{ width: "100%" }}>
         Unable to fetch event feed right now.
       </Alert>
     );
@@ -132,7 +132,7 @@ export default function EventFeed({ includeUserId }: EventFeedProps) {
       <Alert
         key={`empty-feed-index-`}
         severity="warning"
-        sx={{ width: "100%", maxWidth: 640 }}
+        sx={{ width: "100%" }}
       >
         There are no events to display
       </Alert>
