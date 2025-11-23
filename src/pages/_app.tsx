@@ -66,7 +66,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
+      <CssBaseline enableColorScheme />
       <AuthContext.Provider value={authData}>
         <AppCacheProvider {...pageProps}>
           <Component {...pageProps} />

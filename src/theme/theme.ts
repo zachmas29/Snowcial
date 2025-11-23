@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/useNamingConvention: <MUI component uses CapitalCase> */
 import { createTheme } from "@mui/material/styles";
 
 export const theme = createTheme({

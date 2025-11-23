@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -9,8 +9,7 @@ import { useAuthContext } from "@/hooks/useAuth";
 export default function Home() {
   const { user } = useAuthContext();
   const router = useRouter();
-  // const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  const prefersDarkMode = false;
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: light)");
 
   // Redirect authenticated users to the people page
   useEffect(() => {

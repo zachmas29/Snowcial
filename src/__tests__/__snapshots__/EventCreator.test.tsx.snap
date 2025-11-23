@@ -3,10 +3,10 @@
 exports[`EventCreator > Snapshot test - renders consistently 1`] = `
 <DocumentFragment>
   <div
-    class="MuiBox-root css-1ff2d3q"
+    class="MuiBox-root css-flbvz9"
   >
     <div
-      class="MuiStack-root css-96zufj-MuiStack-root"
+      class="MuiStack-root css-lbjakd-MuiStack-root"
     >
       <div
         class="MuiFormControl-root MuiTextField-root css-1xp5r68-MuiFormControl-root-MuiTextField-root"
