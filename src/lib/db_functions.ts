@@ -309,6 +309,7 @@ export async function fetchEventComments(
         created_at,
         creator_id,
         comment_text,
+        is_deleted,
         author:users (
           id,
           first_name,
@@ -368,6 +369,7 @@ export async function createEventComment(
         created_at,
         creator_id,
         comment_text,
+        is_deleted,
         author:users (
           id,
           first_name,
@@ -389,7 +391,9 @@ export async function createEventComment(
   return data as EventCommentWithAuthor;
 }
 
-export async function deleteEventComment(commentId: number): Promise<void> {
+export async function deleteEventComment(
+  commentId: number,
+): Promise<EventCommentWithAuthor> {
   const {
     data: { user },
     error: authError,
@@ -399,15 +403,42 @@ export async function deleteEventComment(commentId: number): Promise<void> {
     throw authError || new Error("No authenticated user");
   }
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("event_comments")
-    .delete()
+    .update({
+      comment_text: "[deleted]",
+      is_deleted: true,
+    })
     .eq("id", commentId)
-    .eq("creator_id", user.id);
+    .eq("creator_id", user.id)
+    .select(
+      `
+        id,
+        event_id,
+        parent_comment_id,
+        created_at,
+        creator_id,
+        comment_text,
+        is_deleted,
+        author:users (
+          id,
+          first_name,
+          last_name,
+          profile_photo_path
+        )
+      `,
+    )
+    .single();
 
   if (error) {
     throw error;
   }
+
+  if (!data) {
+    throw new Error("Failed to delete comment");
+  }
+
+  return data as EventCommentWithAuthor;
 }
 
 /** fetchEventTagOptions

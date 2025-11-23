@@ -1,7 +1,7 @@
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import { Avatar, Box, Button, Stack, Typography } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CommentNode } from "@/types/Comment.types";
 import CommentForm from "./CommentForm";
 
@@ -20,6 +20,7 @@ export default function CommentItem({
   onReply,
   onDelete,
 }: CommentItemProps) {
+  const isDeleted = comment.is_deleted;
   const [showReply, setShowReply] = useState(false);
   const [replying, setReplying] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -27,9 +28,10 @@ export default function CommentItem({
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const authorName = useMemo(() => {
+    if (isDeleted) return "Deleted user";
     if (!comment.author) return "Unknown user";
     return `${comment.author.first_name} ${comment.author.last_name}`.trim();
-  }, [comment.author]);
+  }, [comment.author, isDeleted]);
 
   const createdAtLabel = useMemo(
     () =>
@@ -38,6 +40,12 @@ export default function CommentItem({
       }),
     [comment.created_at],
   );
+
+  useEffect(() => {
+    if (isDeleted) {
+      setShowReply(false);
+    }
+  }, [isDeleted]);
 
   const handleReplySubmit = async (text: string) => {
     setReplyError(null);
@@ -81,11 +89,17 @@ export default function CommentItem({
     >
       <Stack direction="row" spacing={2} alignItems="flex-start">
         <Avatar
-          src={comment.author?.profile_photo_path ?? undefined}
+          src={
+            isDeleted
+              ? undefined
+              : (comment.author?.profile_photo_path ?? undefined)
+          }
           alt={authorName}
           sx={{ width: 36, height: 36, mt: 0.5 }}
         >
-          {comment.author?.first_name?.[0]?.toUpperCase()}
+          {isDeleted
+            ? authorName[0]
+            : comment.author?.first_name?.[0]?.toUpperCase()}
         </Avatar>
         <Box flex={1}>
           <Stack direction="row" spacing={1} alignItems="baseline">
@@ -94,31 +108,43 @@ export default function CommentItem({
               {createdAtLabel}
             </Typography>
           </Stack>
-          <Typography
-            variant="body2"
-            sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word", mt: 0.5 }}
-          >
-            {comment.comment_text}
-          </Typography>
-          <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-            <Button
-              size="small"
-              startIcon={<ChatBubbleOutlineIcon fontSize="small" />}
-              onClick={() => setShowReply((prev) => !prev)}
+          {isDeleted ? (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ mt: 0.5, fontStyle: "italic" }}
             >
-              Reply
-            </Button>
-            {currentUserId === comment.creator_id && (
+              This comment was deleted.
+            </Typography>
+          ) : (
+            <Typography
+              variant="body2"
+              sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word", mt: 0.5 }}
+            >
+              {comment.comment_text}
+            </Typography>
+          )}
+          {!isDeleted && (
+            <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
               <Button
                 size="small"
-                color="error"
-                disabled={deleting}
-                onClick={handleDelete}
+                startIcon={<ChatBubbleOutlineIcon fontSize="small" />}
+                onClick={() => setShowReply((prev) => !prev)}
               >
-                {deleting ? "Deleting..." : "Delete"}
+                Reply
               </Button>
-            )}
-          </Stack>
+              {currentUserId === comment.creator_id && (
+                <Button
+                  size="small"
+                  color="error"
+                  disabled={deleting}
+                  onClick={handleDelete}
+                >
+                  {deleting ? "Deleting..." : "Delete"}
+                </Button>
+              )}
+            </Stack>
+          )}
           {replyError && (
             <Typography variant="caption" color="error" sx={{ mt: 0.5 }}>
               {replyError}
@@ -129,7 +155,7 @@ export default function CommentItem({
               {deleteError}
             </Typography>
           )}
-          {showReply && (
+          {showReply && !isDeleted && (
             <Box sx={{ mt: 1.5 }}>
               <CommentForm
                 onSubmit={handleReplySubmit}

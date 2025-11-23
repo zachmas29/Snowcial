@@ -43,6 +43,7 @@ export type Database = {
           creator_id: string;
           event_id: number;
           id: number;
+          is_deleted: boolean;
           parent_comment_id: number | null;
         };
         Insert: {
@@ -51,6 +52,7 @@ export type Database = {
           creator_id: string;
           event_id: number;
           id?: never;
+          is_deleted?: boolean;
           parent_comment_id?: number | null;
         };
         Update: {
@@ -59,6 +61,7 @@ export type Database = {
           creator_id?: string;
           event_id?: number;
           id?: never;
+          is_deleted?: boolean;
           parent_comment_id?: number | null;
         };
         Relationships: [

@@ -50,7 +50,9 @@ export default function CommentThread({ eventId }: CommentThreadProps) {
     parentCommentId: number | null = null,
   ) => {
     setSubmitting(true);
-    setError(null);
+    if (parentCommentId === null) {
+      setError(null);
+    }
     try {
       const created = await createEventComment({
         eventId,
@@ -58,8 +60,15 @@ export default function CommentThread({ eventId }: CommentThreadProps) {
         parentCommentId,
       });
       setComments((prev) => [...prev, created]);
+      return created;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to post comment");
+      const message =
+        err instanceof Error ? err.message : "Failed to post comment";
+      // Only set the global error for top-level comment submissions
+      if (parentCommentId === null) {
+        setError(message);
+      }
+      throw err instanceof Error ? err : new Error(message);
     } finally {
       setSubmitting(false);
     }
@@ -68,27 +77,10 @@ export default function CommentThread({ eventId }: CommentThreadProps) {
   const handleDelete = async (commentId: number) => {
     setError(null);
     try {
-      await deleteEventComment(commentId);
-      setComments((prev) => {
-        const toRemove = new Set<number>([commentId]);
-        let expanded = true;
-
-        while (expanded) {
-          expanded = false;
-          prev.forEach((comment) => {
-            if (
-              comment.parent_comment_id &&
-              toRemove.has(comment.parent_comment_id) &&
-              !toRemove.has(comment.id)
-            ) {
-              toRemove.add(comment.id);
-              expanded = true;
-            }
-          });
-        }
-
-        return prev.filter((comment) => !toRemove.has(comment.id));
-      });
+      const updated = await deleteEventComment(commentId);
+      setComments((prev) =>
+        prev.map((comment) => (comment.id === commentId ? updated : comment)),
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete comment");
     }
@@ -141,7 +133,13 @@ export default function CommentThread({ eventId }: CommentThreadProps) {
             )}
             <Box sx={{ mt: 2 }}>
               <CommentForm
-                onSubmit={(text) => handleAddComment(text, null)}
+                onSubmit={async (text) => {
+                  try {
+                    await handleAddComment(text, null);
+                  } catch {
+                    // Error is handled in handleAddComment
+                  }
+                }}
                 submitting={submitting}
                 placeholder="Add a comment..."
               />
