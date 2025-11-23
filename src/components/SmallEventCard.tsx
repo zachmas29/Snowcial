@@ -57,7 +57,7 @@ export default function SmallEventCard({
       : `${attendingCount?.total ?? 0}`;
   const attendeesNotice = `${attendees} ${attendingCount?.total !== 1 ? "people" : "person"}`;
 
-  // Truncate description to 100 words
+  // Truncate description to 50 words
   const truncateDescription = (text: string, wordLimit: number = 50) => {
     const words = text.trim().split(/\s+/);
     if (words.length <= wordLimit) return text;
