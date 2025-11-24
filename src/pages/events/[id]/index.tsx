@@ -1,14 +1,14 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
-import { Alert, CircularProgress } from "@mui/material";
+import { Alert, Box, CircularProgress } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Event from "@/components/Event";
+import PageLayout from "@/components/PageLayout";
 import {
   fetchEvent,
   fetchEventTags,
   fetchUserFromEventId,
 } from "@/lib/db_functions";
-import styles from "@/styles/Home.module.css";
 import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
 
@@ -54,21 +54,36 @@ export default function eventPage() {
     loadEvent();
   }, [event_id]);
 
+  if (loading) {
+    return (
+      <PageLayout>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "40vh",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      </PageLayout>
+    );
+  }
+
+  if (hasError || !eventData) {
+    return (
+      <PageLayout>
+        <Alert severity="error" sx={{ width: "100%" }}>
+          Unable to load event right now.
+        </Alert>
+      </PageLayout>
+    );
+  }
+
   return (
-    <div>
-      {loading ? (
-        <CircularProgress />
-      ) : hasError || !eventData ? (
-        <div className={styles.page}>
-          <main className={styles.main}>
-            <Alert severity="error" sx={{ width: "100%", maxWidth: 640 }}>
-              Unable to load event right now.
-            </Alert>
-          </main>
-        </div>
-      ) : (
-        <Event eventData={eventData} userData={userData ?? null} />
-      )}
-    </div>
+    <PageLayout>
+      <Event eventData={eventData} userData={userData ?? null} />
+    </PageLayout>
   );
 }

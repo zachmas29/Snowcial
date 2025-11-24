@@ -1,20 +1,14 @@
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  Container,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, CircularProgress, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import EventFeed from "@/components/EventFeed";
+import PageLayout from "@/components/PageLayout";
 import UserBioSection from "@/components/UserBioSection";
 import UserGallery from "@/components/UserGallery";
 import UserProfileHeader from "@/components/UserProfileHeader";
 import { useAuthContext } from "@/hooks/useAuth";
 import { fetchUserProfile } from "@/lib/db_functions";
-import styles from "@/styles/Home.module.css";
 import type { UserProfileData } from "@/types/app.types";
 
 function isValidUuid(value: string): boolean {
@@ -105,50 +99,41 @@ export default function UserProfilePage() {
       <Head>
         <title>{pageTitle}</title>
       </Head>
-      <div className={styles.page}>
-        <main className={styles.main}>
-          <Container maxWidth="md" sx={{ py: { xs: 2, sm: 4 } }}>
-            {loading ? (
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  minHeight: "40vh",
-                }}
-              >
-                <CircularProgress />
-              </Box>
-            ) : error ? (
-              <Alert severity="error">{error}</Alert>
-            ) : profile ? (
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                <UserProfileHeader user={profile.user} tags={profile.tags} />
-                <UserBioSection bioText={profile.user.bio_text} />
-                <UserGallery photos={profile.galleryPhotos} />
-                <Box>
-                  <Typography
-                    variant="h6"
-                    component="h2"
-                    fontWeight={600}
-                    mb={1.5}
-                  >
-                    {isOwnProfile
-                      ? "My Events"
-                      : getPossessiveForm(profile.user.first_name)}
-                  </Typography>
-                  <EventFeed includeUserId={userId || undefined} />
-                </Box>
-              </Box>
-            ) : (
-              <Typography color="text.secondary">
-                No profile data available.
+      <PageLayout>
+        {loading ? (
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "40vh",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        ) : error ? (
+          <Alert severity="error">{error}</Alert>
+        ) : profile ? (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <UserProfileHeader user={profile.user} tags={profile.tags} />
+            <UserBioSection bioText={profile.user.bio_text} />
+            <UserGallery photos={profile.galleryPhotos} />
+            <Box>
+              <Typography variant="h6" component="h2" fontWeight={600} mb={1.5}>
+                {isOwnProfile
+                  ? "My Events"
+                  : getPossessiveForm(profile.user.first_name)}
               </Typography>
-            )}
-          </Container>
-        </main>
-      </div>
+              <EventFeed includeUserId={userId || undefined} />
+            </Box>
+          </Box>
+        ) : (
+          <Typography color="text.secondary">
+            No profile data available.
+          </Typography>
+        )}
+      </PageLayout>
     </>
   );
 }

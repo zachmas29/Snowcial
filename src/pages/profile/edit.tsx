@@ -1,6 +1,7 @@
+import { Typography } from "@mui/material";
 import Head from "next/head";
+import PageLayout from "@/components/PageLayout";
 import { useAuthContext } from "@/hooks/useAuth";
-import styles from "@/styles/Home.module.css";
 
 export default function EditProfile() {
   const { user } = useAuthContext();
@@ -10,12 +11,17 @@ export default function EditProfile() {
       <Head>
         <title>Edit Profile | Snowcial</title>
       </Head>
-      <div className={styles.page}>
-        <main className={styles.main}>
-          <h1>EDIT PROFILE</h1>
-          <p>{user?.user_metadata?.name}</p>
-        </main>
-      </div>
+      <PageLayout maxWidth="sm">
+        <Typography
+          variant="h3"
+          component="h1"
+          fontWeight={600}
+          textAlign="center"
+        >
+          Edit Profile
+        </Typography>
+        <Typography variant="body1">{user?.user_metadata?.name}</Typography>
+      </PageLayout>
     </>
   );
 }

@@ -187,19 +187,6 @@ describe("PeopleFeed", () => {
     expect(screen.queryByText("Maya Patel")).not.toBeInTheDocument();
   });
 
-  test("Respects maxWidth prop", () => {
-    const { container } = render(
-      <PeopleFeed
-        users={mockUsers}
-        searchTerm=""
-        sortType="alphabetical"
-        maxWidth={800}
-      />,
-    );
-    const feedBox = container.firstChild as HTMLElement;
-    expect(feedBox).toHaveStyle({ maxWidth: "800px" });
-  });
-
   test("Respects spacing prop", () => {
     render(
       <PeopleFeed

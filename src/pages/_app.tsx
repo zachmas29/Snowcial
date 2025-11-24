@@ -1,11 +1,17 @@
 import "@/styles/globals.css";
-import { Box, CircularProgress } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  CssBaseline,
+  ThemeProvider,
+} from "@mui/material";
 import { AppCacheProvider } from "@mui/material-nextjs/v15-pagesRouter";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { NavBar } from "@/components/NavBar";
 import useAuth, { AuthContext } from "@/hooks/useAuth";
+import { theme } from "@/theme/theme";
 
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -46,6 +52,7 @@ export default function App({ Component, pageProps }: AppProps) {
           justifyContent: "center",
           alignItems: "center",
           minHeight: "100vh",
+          backgroundColor: "background.default",
         }}
       >
         <CircularProgress />
@@ -59,11 +66,14 @@ export default function App({ Component, pageProps }: AppProps) {
   }
 
   return (
-    <AuthContext.Provider value={authData}>
-      <AppCacheProvider {...pageProps}>
-        <Component {...pageProps} />
-        {authData.user && <NavBar />}
-      </AppCacheProvider>
-    </AuthContext.Provider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline enableColorScheme />
+      <AuthContext.Provider value={authData}>
+        <AppCacheProvider {...pageProps}>
+          <Component {...pageProps} />
+          {authData.user && <NavBar />}
+        </AppCacheProvider>
+      </AuthContext.Provider>
+    </ThemeProvider>
   );
 }

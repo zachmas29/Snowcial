@@ -106,7 +106,7 @@ export default function EventFeed({ includeUserId }: EventFeedProps) {
   }
   if (error) {
     return (
-      <Alert severity="error" sx={{ width: "100%", maxWidth: 640 }}>
+      <Alert severity="error" sx={{ width: "100%" }}>
         Unable to fetch event feed right now.
       </Alert>
     );
@@ -119,9 +119,9 @@ export default function EventFeed({ includeUserId }: EventFeedProps) {
         sx={{
           p: 3,
           textAlign: "center",
-          backgroundColor: "grey.50",
+          backgroundColor: "background.paper",
           border: "1px dashed",
-          borderColor: "grey.300",
+          borderColor: "divider",
         }}
       >
         <Typography variant="body1" color="text.secondary">
@@ -132,7 +132,7 @@ export default function EventFeed({ includeUserId }: EventFeedProps) {
       <Alert
         key={`empty-feed-index-`}
         severity="warning"
-        sx={{ width: "100%", maxWidth: 640 }}
+        sx={{ width: "100%" }}
       >
         There are no events to display
       </Alert>

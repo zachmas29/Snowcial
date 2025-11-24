@@ -3,13 +3,13 @@
 exports[`PeopleFeed > Snapshot test - renders consistently 1`] = `
 <DocumentFragment>
   <div
-    class="MuiBox-root css-1qs9f1i"
+    class="MuiBox-root css-1ngcugk"
   >
     <div
       class="MuiBox-root css-8atqhb"
     >
       <div
-        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-sehagt-MuiPaper-root-MuiCard-root"
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-f81hp0-MuiPaper-root-MuiCard-root"
         style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
       >
         <a
@@ -64,7 +64,7 @@ exports[`PeopleFeed > Snapshot test - renders consistently 1`] = `
       class="MuiBox-root css-8atqhb"
     >
       <div
-        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-sehagt-MuiPaper-root-MuiCard-root"
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-f81hp0-MuiPaper-root-MuiCard-root"
         style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
       >
         <a
@@ -96,7 +96,7 @@ exports[`PeopleFeed > Snapshot test - renders consistently 1`] = `
       class="MuiBox-root css-8atqhb"
     >
       <div
-        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-sehagt-MuiPaper-root-MuiCard-root"
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-f81hp0-MuiPaper-root-MuiCard-root"
         style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
       >
         <a

@@ -11,7 +11,6 @@ import type { PeopleFeedProps } from "@/types/app.types";
 export default function PeopleFeed({
   users,
   emptyMessage = "No people found.",
-  maxWidth = 640,
   spacing = 2,
   searchTerm,
   sortType,
@@ -50,11 +49,9 @@ export default function PeopleFeed({
       <Box
         sx={{
           width: "100%",
-          maxWidth,
-          mx: "auto",
           display: "flex",
           justifyContent: "center",
-          py: 4,
+          py: (theme) => theme.spacing(4),
         }}
       >
         <Typography color="text.secondary">{emptyMessage}</Typography>
@@ -66,8 +63,6 @@ export default function PeopleFeed({
     <Box
       sx={{
         width: "100%",
-        maxWidth,
-        mx: "auto",
         display: "grid",
         gridTemplateColumns: {
           xs: "minmax(0, 1fr)",

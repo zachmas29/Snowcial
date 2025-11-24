@@ -20,10 +20,6 @@ export function LoginButton() {
         startIcon={<GoogleIcon />}
         onClick={signIn}
         sx={{
-          backgroundColor: "#4285F4",
-          "&:hover": {
-            backgroundColor: "#357ae8",
-          },
           textTransform: "none",
           fontSize: "1.1rem",
           padding: "12px 24px",

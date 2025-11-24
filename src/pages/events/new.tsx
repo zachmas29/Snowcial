@@ -1,11 +1,12 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB types to make Supabase happy> */
+import { Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import EventCreator from "@/components/EventCreator";
+import PageLayout from "@/components/PageLayout";
 import { useAuthContext } from "@/hooks/useAuth";
 import { insertEventWithTags } from "@/lib/db_functions";
-import styles from "@/styles/Home.module.css";
 import type { EventFormData } from "@/types/EventCreator.types";
 
 export default function NewEvent() {
@@ -60,13 +61,18 @@ export default function NewEvent() {
       <Head>
         <title>Create Event | Snowcial</title>
       </Head>
-
-      <div className={styles.page}>
-        <main className={styles.main}>
-          <h1 style={{ textAlign: "center" }}>CREATE EVENT</h1>
-          <EventCreator onSubmit={handleSubmit} handleClick={handleClick} />
-        </main>
-      </div>
+      <PageLayout maxWidth="sm">
+        <Typography
+          variant="h3"
+          component="h1"
+          fontWeight={600}
+          textAlign="center"
+          mb={1}
+        >
+          Create Event
+        </Typography>
+        <EventCreator onSubmit={handleSubmit} handleClick={handleClick} />
+      </PageLayout>
     </>
   );
 }
