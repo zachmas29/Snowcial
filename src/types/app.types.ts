@@ -1,4 +1,5 @@
 import type { GenericTagType } from "@/types/EventCreator.types";
+import type { AttendeeCountType } from "./AttendeeCountType.type";
 import type { Tables } from "./database.types";
 import type { UserWithTags } from "./User";
 
@@ -29,4 +30,20 @@ export interface PeopleFeedProps {
   searchTerm: string;
   sortType: string;
   selectedTags: GenericTagType[];
+}
+
+export interface EnrichedEvent {
+  event: Tables<"events">;
+  user: Tables<"users"> | null;
+  eventTags: Tables<"event_tags">[];
+  attendingCount?: AttendeeCountType;
+}
+
+export interface EventFeedProps {
+  events: EnrichedEvent[];
+  searchTerm?: string;
+  sortType?: string;
+  selectedTags?: GenericTagType[];
+  emptyMessage?: string;
+  maxWidth?: number | string;
 }

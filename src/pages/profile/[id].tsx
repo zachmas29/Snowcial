@@ -8,8 +8,14 @@ import UserBioSection from "@/components/UserBioSection";
 import UserGallery from "@/components/UserGallery";
 import UserProfileHeader from "@/components/UserProfileHeader";
 import { useAuthContext } from "@/hooks/useAuth";
-import { fetchUserProfile } from "@/lib/db_functions";
-import type { UserProfileData } from "@/types/app.types";
+import {
+  fetchEventsByUser,
+  fetchEventTags,
+  fetchUser,
+  fetchUserProfile,
+  getAttendeeCount,
+} from "@/lib/db_functions";
+import type { EnrichedEvent, UserProfileData } from "@/types/app.types";
 
 function isValidUuid(value: string): boolean {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
@@ -27,6 +33,11 @@ export default function UserProfilePage() {
   const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // User events state
+  const [userEvents, setUserEvents] = useState<EnrichedEvent[]>([]);
+  const [userEventsLoading, setUserEventsLoading] = useState(true);
+  const [userEventsError, setUserEventsError] = useState(false);
 
   // function to handle possessive grammar for names
   const getPossessiveForm = (name: string): string => {
@@ -48,6 +59,61 @@ export default function UserProfilePage() {
     }
 
     let isMounted = true;
+
+    async function loadUserEvents(validUserId: string) {
+      setUserEventsLoading(true);
+      setUserEventsError(false);
+
+      try {
+        const baseEvents = await fetchEventsByUser(validUserId);
+
+        // Enrich each event with user, tags, and attendee data
+        const enrichedPromises = baseEvents.map(async (event) => {
+          try {
+            const [eventUser, attendingCount, eventTags] = await Promise.all([
+              fetchUser(event.creator_id),
+              getAttendeeCount(event.id),
+              fetchEventTags(event.id),
+            ]);
+            return {
+              event,
+              user: eventUser,
+              eventTags,
+              attendingCount,
+            } as EnrichedEvent;
+          } catch (err) {
+            // If individual event enrichment fails, include with default values
+            // biome-ignore lint/suspicious/noConsole: intended logging
+            console.error(
+              `Failed to fetch extra data for event ${event.id}:`,
+              err,
+            );
+            return {
+              event,
+              user: null,
+              eventTags: [],
+              attendingCount: undefined,
+            } as EnrichedEvent;
+          }
+        });
+
+        const enrichedEvents = await Promise.all(enrichedPromises);
+
+        if (isMounted) {
+          setUserEvents(enrichedEvents);
+        }
+      } catch (err) {
+        if (isMounted) {
+          // biome-ignore lint/suspicious/noConsole: just for testing
+          console.error("Failed to fetch user events:", err);
+          setUserEventsError(true);
+        }
+      } finally {
+        if (isMounted) {
+          setUserEventsLoading(false);
+        }
+      }
+    }
 
     async function loadProfile(validUserId: string) {
       setLoading(true);
@@ -84,6 +150,7 @@ export default function UserProfilePage() {
     }
 
     void loadProfile(userId);
+    void loadUserEvents(userId);
 
     return () => {
       isMounted = false;
@@ -125,7 +192,16 @@ export default function UserProfilePage() {
                   ? "My Events"
                   : getPossessiveForm(profile.user.first_name)}
               </Typography>
-              <EventFeed includeUserId={userId || undefined} />
+              {userEventsLoading ? (
+                <CircularProgress />
+              ) : userEventsError ? (
+                <Alert severity="error">Could not load events</Alert>
+              ) : (
+                <EventFeed
+                  events={userEvents}
+                  emptyMessage="No events yet. Create your first event!"
+                />
+              )}
             </Box>
           </Box>
         ) : (
