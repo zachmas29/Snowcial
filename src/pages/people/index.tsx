@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import PeopleFeed from "@/components/PeopleFeed";
 import SearchFilterBar from "@/components/SearchFilterBar";
-import { fetchUsersWithTags } from "@/lib/db_functions";
-import type { SortType } from "@/types/Sort.types";
+import { fetchUsersWithTags, fetchUserTagOptions } from "@/lib/db_functions";
+import type { GenericTagType } from "@/types/EventCreator.types";
 import type { UserWithTags } from "@/types/User";
 
 export default function People() {
@@ -14,14 +14,25 @@ export default function People() {
   const [hasError, setHasError] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [sortType, setSortType] = useState<SortType>("none");
+  const [sortType, setSortType] = useState<string>("none");
+  const [selectedTags, setSelectedTags] = useState<GenericTagType[]>([]);
+  const [availableTags, setAvailableTags] = useState<GenericTagType[]>([]);
+
+  const sortOptions = [
+    { value: "alphabetical", label: "Alphabetical" },
+    { value: "last-active", label: "Last Active" },
+    { value: "none", label: "None" },
+  ];
 
   // Initial load users from DB on page load
   useEffect(() => {
     async function loadUsers() {
       try {
-        const data = await fetchUsersWithTags();
-        setUsers(data);
+        const users = await fetchUsersWithTags();
+        setUsers(users);
+
+        const tags = await fetchUserTagOptions();
+        setAvailableTags(tags);
       } catch (error) {
         // biome-ignore lint/suspicious/noConsole: just for testing
         console.error("Failed to fetch users:", error);
@@ -54,6 +65,10 @@ export default function People() {
           sortType={sortType}
           setTerm={setSearchTerm}
           setSortType={setSortType}
+          availableTags={availableTags}
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+          sortOptions={sortOptions}
         />
 
         {loading ? (
@@ -67,6 +82,7 @@ export default function People() {
             users={users}
             searchTerm={searchTerm}
             sortType={sortType}
+            selectedTags={selectedTags}
           />
         )}
       </PageLayout>
