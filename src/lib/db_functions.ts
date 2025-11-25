@@ -313,9 +313,21 @@ export async function fetchEventComments(
 /** fetchEventTagOptions
  * @returns A list of all possible event tags
  */
-
 export async function fetchEventTagOptions(): Promise<Tables<"event_tags">[]> {
   const { data, error } = await supabase.from("event_tags").select("*");
+
+  if (error) {
+    throw error;
+  }
+
+  return data ?? [];
+}
+
+/** fetchUserTagOptions
+ * @returns A list of all possible user tags
+ */
+export async function fetchUserTagOptions(): Promise<Tables<"user_tags">[]> {
+  const { data, error } = await supabase.from("user_tags").select("*");
 
   if (error) {
     throw error;

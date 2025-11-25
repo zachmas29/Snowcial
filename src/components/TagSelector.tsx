@@ -5,12 +5,14 @@ interface TagSelectorProps {
   availableTags: GenericTagType[];
   selectedTags: GenericTagType[];
   setSelectedTags: (tags: GenericTagType[]) => void;
+  label: string;
 }
 
 export default function TagSelector({
   availableTags,
   selectedTags,
   setSelectedTags,
+  label,
 }: TagSelectorProps) {
   return (
     <div>
@@ -26,7 +28,7 @@ export default function TagSelector({
           <TextField
             {...params}
             variant="standard"
-            label="Add Event Tags"
+            label={label}
             placeholder="Tags"
           />
         )}

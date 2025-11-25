@@ -1,5 +1,5 @@
+import type { GenericTagType } from "@/types/EventCreator.types";
 import type { Tables } from "./database.types";
-import type { SortType } from "./Sort.types";
 import type { UserWithTags } from "./User";
 
 // Application-level shared types
@@ -27,5 +27,6 @@ export interface PeopleFeedProps {
   emptyMessage?: string;
   spacing?: number;
   searchTerm: string;
-  sortType: SortType;
+  sortType: string;
+  selectedTags: GenericTagType[];
 }

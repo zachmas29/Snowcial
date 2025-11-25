@@ -103,6 +103,7 @@ export default function EventCreator({
           setSelectedTags={(tags) =>
             setEventFormData({ ...eventFormData, tags })
           }
+          label="Add Event Tags"
         />
         <Stack direction="row" spacing={2}>
           <Button variant="outlined" onClick={() => handleClick("cancel")}>

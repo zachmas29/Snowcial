@@ -14,6 +14,7 @@ export default function PeopleFeed({
   spacing = 2,
   searchTerm,
   sortType,
+  selectedTags,
 }: PeopleFeedProps) {
   let displayedUsers = [...users];
 
@@ -23,6 +24,14 @@ export default function PeopleFeed({
     return fullName.includes(searchTerm.toLowerCase());
   });
 
+  if (selectedTags.length > 0) {
+    displayedUsers = displayedUsers.filter((user) => {
+      return selectedTags.every((selectedTag) =>
+        user.tags.some((userTag) => userTag.id === selectedTag.id),
+      );
+    });
+  }
+
   // Sort by sort term
   displayedUsers = displayedUsers.sort((a, b) => {
     switch (sortType) {
@@ -31,13 +40,9 @@ export default function PeopleFeed({
         const nameB = `${b.first_name} ${b.last_name}`.toLowerCase();
         return nameA.localeCompare(nameB);
       }
-      case "newest":
+      case "last-active":
         return (
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-      case "oldest":
-        return (
-          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          new Date(b.last_active).getTime() - new Date(a.last_active).getTime()
         );
       default:
         return 0;
