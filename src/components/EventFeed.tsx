@@ -9,7 +9,6 @@ export default function EventFeed({
   sortType = "happening-soon",
   selectedTags = [],
   emptyMessage = "No events found.",
-  maxWidth = 640,
 }: EventFeedProps) {
   const router = useRouter();
 
@@ -60,8 +59,6 @@ export default function EventFeed({
       <Box
         sx={{
           width: "100%",
-          maxWidth,
-          mx: "auto",
           display: "flex",
           justifyContent: "center",
           py: 4,
@@ -86,7 +83,7 @@ export default function EventFeed({
   });
 
   return (
-    <Box sx={{ width: "100%", maxWidth, mx: "auto" }}>
+    <Box sx={{ width: "100%" }}>
       <Stack spacing={4}>{eventCards}</Stack>
     </Box>
   );
