@@ -1,9 +1,4 @@
-/*
-  SmallProfileCard.tsx
-
-  Compact profile tile used in the people feed. Displays avatar, name, and bio,
-  then renders any tag chips passed in alongside the user data.
-*/
+//biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB types to make Supabase happy>
 
 import {
   Box,
@@ -18,7 +13,7 @@ import type { SmallProfileCardProps } from "@/types/app.types";
 import UserAvatar from "./UserAvatar";
 
 export default function SmallProfileCard({ user }: SmallProfileCardProps) {
-  const { id, first_name, last_name, nick_name, bio_text, tags } = user;
+  const { id, first_name, last_name, bio_text, tags } = user;
 
   return (
     <Card
@@ -58,16 +53,12 @@ export default function SmallProfileCard({ user }: SmallProfileCardProps) {
             width: "100%",
           }}
         >
+          {/* Name */}
           <Typography variant="h6" fontWeight="bold">
             {first_name} {last_name}
           </Typography>
 
-          {nick_name && (
-            <Typography variant="subtitle2" color="text.secondary">
-              @{nick_name}
-            </Typography>
-          )}
-
+          {/* Bio */}
           {bio_text && (
             <Typography
               variant="body2"
@@ -82,6 +73,7 @@ export default function SmallProfileCard({ user }: SmallProfileCardProps) {
             </Typography>
           )}
 
+          {/* Tags */}
           {tags && tags.length > 0 && (
             <Box
               sx={{

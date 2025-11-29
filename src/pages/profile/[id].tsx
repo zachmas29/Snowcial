@@ -16,10 +16,11 @@ import {
   getAttendeeCount,
 } from "@/lib/db_functions";
 import type { EnrichedEvent, UserProfileData } from "@/types/app.types";
+import { getPublicUrl } from "@/lib/getPublicURL";
 
 function isValidUuid(value: string): boolean {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-    value,
+    value
   );
 }
 
@@ -39,7 +40,6 @@ export default function UserProfilePage() {
   const [userEventsLoading, setUserEventsLoading] = useState(true);
   const [userEventsError, setUserEventsError] = useState(false);
 
-  // function to handle possessive grammar for names
   const getPossessiveForm = (name: string): string => {
     return name.toLowerCase().endsWith("s")
       ? `${name}' Events`
@@ -82,11 +82,9 @@ export default function UserProfilePage() {
               attendingCount,
             } as EnrichedEvent;
           } catch (err) {
-            // If individual event enrichment fails, include with default values
-            // biome-ignore lint/suspicious/noConsole: intended logging
             console.error(
               `Failed to fetch extra data for event ${event.id}:`,
-              err,
+              err
             );
             return {
               event,
@@ -104,7 +102,6 @@ export default function UserProfilePage() {
         }
       } catch (err) {
         if (isMounted) {
-          // biome-ignore lint/suspicious/noConsole: just for testing
           console.error("Failed to fetch user events:", err);
           setUserEventsError(true);
         }
@@ -138,7 +135,6 @@ export default function UserProfilePage() {
           return;
         }
 
-        // biome-ignore lint/suspicious/noConsole: helpful during development
         console.error("Failed to fetch profile:", fetchError);
         setProfile(null);
         setError("Something went wrong while loading this profile.");
@@ -185,7 +181,20 @@ export default function UserProfilePage() {
           <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
             <UserProfileHeader user={profile.user} tags={profile.tags} />
             <UserBioSection bioText={profile.user.bio_text} />
-            <UserGallery photos={profile.galleryPhotos} />
+
+            {/*
+              ⭐ FIX: Convert gallery photo paths into full public URLs
+            */}
+            <UserGallery
+              photos={profile.galleryPhotos
+                .filter((p) => p.photo_path) 
+                .map((p) => ({
+                  ...p,
+                  photo_path: getPublicUrl("gallery-photos", p.photo_path!),
+                }))}
+            />
+
+
             <Box>
               <Typography variant="h6" component="h2" fontWeight={600} mb={1.5}>
                 {isOwnProfile

@@ -610,6 +610,7 @@ export async function fetchUserFromEventId(
   return data.users;
 }
 
+<<<<<<< HEAD
 /* fetchEventRSVPs
  * params: eventId - an event id to search for
  * returns: array of RSVPs with user information, ordered by created_at
@@ -683,12 +684,24 @@ export async function deleteRSVP(eventId: number, userId: string) {
     .delete()
     .eq("event_id", eventId)
     .eq("user_id", userId);
+=======
+/* clearUserTagAssignments
+ * params: user id to clear tag assignments
+ */
+export async function clearUserTagAssignments(user_id: string) {
+
+  const { error } = await supabase
+    .from("user_tag_assignments")
+    .delete()
+    .eq("user_id", user_id);
+>>>>>>> be95300 (updated usergallery.tsx to accomodate urls that pertain to userID's, also profile/id, updated apptypes so photo path could be null as well, edit profile has a banner and gallery photos)
 
   if (error) {
     throw error;
   }
 }
 
+<<<<<<< HEAD
 /* getCurrentUserRSVP
  * params: eventId - the event id
  * returns: the current user's RSVP status or null
@@ -715,4 +728,116 @@ export async function getCurrentUserRSVP(eventId: number) {
   }
 
   return data;
+=======
+/* updateUserTagAssignments
+ * params: user id to assign tags to
+ */
+export async function updateUserTagAssignments(
+  user_id: string,
+  tagIds: number[],
+) {
+  await clearUserTagAssignments(user_id);
+
+  if (tagIds.length > 0) {
+
+    const rows = tagIds.map((tag_id) => ({ user_id, tag_id }));
+
+    const { error } = await supabase
+      .from("user_tag_assignments")
+      .insert(rows);
+
+    if (error) {
+      throw error;
+    }
+  }
+}
+
+/*
+ * Updates the database row for the currently authenticated user.
+ */
+export async function updateCurrentUserProfile(updates: any) {
+
+  const userId = updates.id;
+  
+  if (!userId) {
+    throw new Error("Missing user id");
+  }
+
+  // remove id from the object before updating
+  const copy = { ...updates };
+  delete copy.id;
+
+  const result = await supabase
+    .from("users")
+    .update(copy)
+    .eq("id", userId)
+    .select()
+    .maybeSingle();
+
+  if (result.error) {
+    throw result.error;
+  }
+
+  return result.data;
+}
+
+
+/* uploadGalleryPhoto
+ * Uploads a gallery image for a user and stores the path in DB
+ */
+export async function uploadGalleryPhoto(userId: string, file: File) {
+
+  const path = `${userId}-${Date.now()}-${file.name}`;
+
+  const send = await supabase
+    .storage
+    .from("gallery-photos")
+    .upload(path, file, {
+      contentType: file.type,
+    });
+
+  if (send.error) throw send.error;
+
+  const data = await supabase
+    .from("gallery_photos")
+    .insert({
+      user_id: userId,
+      photo_path: path
+    })
+    .select()
+    .single();
+
+  if (data.error) throw data.error;
+
+  return data.data;
+}
+   
+
+// Uploads a profile photo for a user and stores the path in database
+export async function uploadProfilePhoto(userId: string, file: File) {
+  
+  const path = `${userId}-profile-${Date.now()}-${file.name}`;
+
+  const { error } = await supabase.storage
+    .from("profile-photos")
+    .upload(path, file);
+
+  if (error) throw error;
+
+  return path;
+}
+
+// Uploads a banner photo for a user and stores the path in database
+export async function uploadBannerPhoto(userId: string, file: File) {
+
+  const path = `${userId}-banner-${Date.now()}-${file.name}`;
+
+  const { error } = await supabase.storage
+    .from("banner-photos")
+    .upload(path, file);
+
+  if (error) throw error;
+
+  return path;
+>>>>>>> be95300 (updated usergallery.tsx to accomodate urls that pertain to userID's, also profile/id, updated apptypes so photo path could be null as well, edit profile has a banner and gallery photos)
 }
