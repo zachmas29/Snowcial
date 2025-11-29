@@ -51,13 +51,6 @@ exports[`EventFeed > Snapshot test - renders consistently 1`] = `
           <div
             class="MuiCardContent-root css-6khfle-MuiCardContent-root"
           >
-            <div
-              class="MuiStack-root css-1hyf038-MuiStack-root"
-            >
-              <div
-                class="MuiBox-root css-1xhmi63"
-              />
-            </div>
             <p
               class="MuiTypography-root MuiTypography-body2 css-10d2o18-MuiTypography-root"
             >

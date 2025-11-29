@@ -90,19 +90,6 @@ export default function SmallEventCard({
             gap: 1.5,
           }}
         >
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <Box sx={{ minWidth: 0, flex: 1 }}>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
-              >
-                {user ? `${user.first_name} ${user.last_name}` : "Event"} •{" "}
-                {formatEventDate(event.event_time)}
-              </Typography>
-            </Box>
-          </Stack>
-
           {event.description && (
             <Typography
               variant="body2"
