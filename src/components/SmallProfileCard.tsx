@@ -18,15 +18,7 @@ import type { SmallProfileCardProps } from "@/types/app.types";
 import UserAvatar from "./UserAvatar";
 
 export default function SmallProfileCard({ user }: SmallProfileCardProps) {
-  const {
-    id,
-    profile_photo_path,
-    first_name,
-    last_name,
-    nick_name,
-    bio_text,
-    tags,
-  } = user;
+  const { id, first_name, last_name, nick_name, bio_text, tags } = user;
 
   return (
     <Card
