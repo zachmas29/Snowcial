@@ -34,7 +34,7 @@ export interface PeopleFeedProps {
 
 export interface EnrichedEvent {
   event: Tables<"events">;
-  user: Tables<"users"> | null;
+  user: Tables<"users"> | undefined;
   eventTags: Tables<"event_tags">[];
   attendingCount?: AttendeeCountType;
 }
