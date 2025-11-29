@@ -7,8 +7,7 @@ import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Paper from "@mui/material/Paper";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import { useAuthContext } from "@/hooks/useAuth";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -21,13 +20,12 @@ type NavItem = {
 
 export function NavBar() {
   const { user } = useAuthContext();
-  const router = useRouter();
-  const pathname = router.pathname;
-  const isProfileSection = pathname.startsWith("/profile");
+  const [currentNavMenu, setCurrentNavMenu] = useState(0);
+
   const authUserId = user?.id ?? null;
   const profileHref = authUserId ? `/profile/${authUserId}` : "/profile";
 
-  const baseNavItems: NavItem[] = [
+  const navItems: NavItem[] = [
     {
       label: "Profile",
       href: profileHref,
@@ -36,19 +34,8 @@ export function NavBar() {
     },
     { label: "Events", href: "/events", icon: <EventIcon /> },
     { label: "People", href: "/people", icon: <PeopleAltIcon /> },
+    { label: "New Event", href: "/events/new", icon: <AddBoxIcon /> },
   ];
-
-  const navItems: NavItem[] = [
-    ...baseNavItems,
-    {
-      label: "New Event",
-      href: "/events/new",
-      icon: <AddBoxIcon />,
-      value: "/events/new",
-    },
-  ];
-
-  const activeNavValue = isProfileSection ? "/profile" : pathname;
 
   return (
     <Paper
@@ -64,7 +51,11 @@ export function NavBar() {
       aria-label="Primary navigation"
     >
       <Box sx={{ position: "relative" }}>
-        <BottomNavigation value={activeNavValue} showLabels>
+        <BottomNavigation
+          value={currentNavMenu}
+          onChange={(_event, newNavMenu) => setCurrentNavMenu(newNavMenu)}
+          showLabels
+        >
           {navItems.map((item) => (
             <BottomNavigationAction
               key={item.href}

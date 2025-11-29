@@ -17,6 +17,15 @@ export function UserProfileHeader({
   const fullName = `${user.first_name} ${user.last_name}`.trim();
   const theme = useTheme();
 
+  /*
+  const isProfileEditPage = pathname === "/profile/edit";
+  const viewingOwnProfile =
+    Boolean(authUserId) &&
+    (pathname === "/profile" ||
+      isProfileEditPage ||
+      (pathname === "/profile/[id]" && profileRouteId === authUserId));
+      */
+
   return (
     <Box
       sx={{
