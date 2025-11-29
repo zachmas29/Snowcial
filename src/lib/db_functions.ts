@@ -234,8 +234,21 @@ export async function deleteEvent(id: number): Promise<void> {
  *    yes - the number of people who answered 'yes'
  *    maybe - the number of people who answered 'maybe'
  *    total - yes + maybe
+ *    capacity - the event's capacity limit (null if unlimited)
+ *    waitlistCount - number of people on waitlist (0 if no capacity or not full)
  */
 export async function getAttendeeCount(eventId: number) {
+  // Fetch event to get capacity
+  const { data: event, error: eventError } = await supabase
+    .from("events")
+    .select("capacity")
+    .eq("id", eventId)
+    .single();
+
+  if (eventError) {
+    throw eventError;
+  }
+
   const yesPromise = supabase
     .from("event_rsvps")
     .select("*", { count: "exact", head: true })
@@ -262,11 +275,20 @@ export async function getAttendeeCount(eventId: number) {
   const yesCount = yesResult.count ?? 0;
   const maybeCount = maybeResult.count ?? 0;
   const totalCount = yesCount + maybeCount;
+  const capacity = event?.capacity ?? null;
+
+  // Calculate waitlist count
+  let waitlistCount = 0;
+  if (capacity !== null) {
+    waitlistCount = Math.max(0, yesCount - capacity);
+  }
 
   return {
     yes: yesCount,
     maybe: maybeCount,
     total: totalCount,
+    capacity,
+    waitlistCount,
   } as AttendeeCountType;
 }
 /* fetchEventTags
@@ -487,6 +509,7 @@ export async function insertEventWithTags(
       description: eventFormData.description,
       event_time: eventFormData.event_time?.toISOString(),
       creator_id: user_id,
+      capacity: eventFormData.capacity ?? null,
     })
     .select()
     .single();
@@ -533,6 +556,7 @@ export async function updateEventWithTags(
       title: eventData.title,
       description: eventData.description,
       event_time: eventData.event_time,
+      capacity: eventData.capacity,
     })
     .eq("id", eventData.id)
     .select()
@@ -597,4 +621,115 @@ export async function fetchUserFromEventId(
   }
 
   return data.users;
+}
+
+/* fetchEventRSVPs
+ * params: eventId - an event id to search for
+ * returns: array of RSVPs with user information, ordered by created_at
+ */
+export async function fetchEventRSVPs(eventId: number) {
+  const { data, error } = await supabase
+    .from("event_rsvps")
+    .select(
+      `
+      user_id,
+      status,
+      created_at,
+      users:user_id (first_name, last_name, profile_photo_path)
+    `,
+    )
+    .eq("event_id", eventId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    throw error;
+  }
+
+  return data ?? [];
+}
+
+/* upsertRSVP
+ * params:
+ *   eventId - the event to RSVP to
+ *   userId - the user creating the RSVP
+ *   status - "yes" or "maybe"
+ * returns: void - throws error if fails
+ * note: preserves original created_at timestamp when updating status
+ */
+export async function upsertRSVP(
+  eventId: number,
+  userId: string,
+  status: "yes" | "maybe",
+) {
+  // Check if RSVP exists
+  const { data: existing } = await supabase
+    .from("event_rsvps")
+    .select("created_at")
+    .eq("event_id", eventId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (existing) {
+    // Update only status, preserve created_at
+    const { error } = await supabase
+      .from("event_rsvps")
+      .update({ status })
+      .eq("event_id", eventId)
+      .eq("user_id", userId);
+
+    if (error) throw error;
+  } else {
+    // Insert new RSVP
+    const { error } = await supabase
+      .from("event_rsvps")
+      .insert({ event_id: eventId, user_id: userId, status });
+
+    if (error) throw error;
+  }
+}
+
+/* deleteRSVP
+ * params:
+ *   eventId - the event
+ *   userId - the user
+ * returns: void - throws error if fails
+ */
+export async function deleteRSVP(eventId: number, userId: string) {
+  const { error } = await supabase
+    .from("event_rsvps")
+    .delete()
+    .eq("event_id", eventId)
+    .eq("user_id", userId);
+
+  if (error) {
+    throw error;
+  }
+}
+
+/* getCurrentUserRSVP
+ * params: eventId - the event id
+ * returns: the current user's RSVP status or null
+ */
+export async function getCurrentUserRSVP(eventId: number) {
+  const {
+    data: { user: authUser },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !authUser) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("event_rsvps")
+    .select("*")
+    .eq("event_id", eventId)
+    .eq("user_id", authUser.id)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
 }

@@ -1,14 +1,19 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
-import { Alert, Box, CircularProgress } from "@mui/material";
+import { Alert, Box, CircularProgress, Stack } from "@mui/material";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import AttendeeList from "@/components/AttendeeList";
 import CommentThread from "@/components/CommentThread";
 import Event from "@/components/Event";
 import PageLayout from "@/components/PageLayout";
+import RSVPButton from "@/components/RSVPButton";
+import { useAuthContext } from "@/hooks/useAuth";
 import {
   fetchEvent,
+  fetchEventRSVPs,
   fetchEventTags,
   fetchUserFromEventId,
+  getCurrentUserRSVP,
 } from "@/lib/db_functions";
 // import styles removed; use MUI Box for layout instead
 import type { Tables } from "@/types/database.types";
@@ -20,6 +25,23 @@ export default function eventPage() {
   const [userData, setUserData] = useState<Tables<"users"> | null>();
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [rsvps, setRsvps] = useState<
+    Array<{
+      user_id: string;
+      status: "yes" | "maybe";
+      created_at: string;
+      users: {
+        first_name: string;
+        last_name: string;
+        profile_photo_path: string | null;
+      };
+    }>
+  >([]);
+  const [eventCapacity, setEventCapacity] = useState<number | null>(null);
+  const [userRsvpStatus, setUserRsvpStatus] = useState<"yes" | "maybe" | null>(
+    null,
+  );
+  const { user } = useAuthContext();
   const event_id: number = Number(router.query.id);
 
   useEffect(() => {
@@ -27,10 +49,20 @@ export default function eventPage() {
       return;
     }
     async function loadEvent() {
+      // Guard against router not being ready
+      if (!event_id || Number.isNaN(event_id)) {
+        return;
+      }
+
+      // Reset error state when attempting a new fetch
+      setHasError(false);
+
       try {
         const data = await fetchEvent(event_id);
         const tags = await fetchEventTags(event_id);
         const userData = await fetchUserFromEventId(event_id);
+        const rsvpList = await fetchEventRSVPs(event_id);
+        const userRsvp = user ? await getCurrentUserRSVP(event_id) : null;
 
         if (!data) {
           setHasError(true);
@@ -42,6 +74,7 @@ export default function eventPage() {
           description: data.description ?? "",
           event_time: new Date(data.event_time),
           tags: tags,
+          capacity: data.capacity,
         };
 
         if (!typedData) {
@@ -50,6 +83,9 @@ export default function eventPage() {
 
         setEventData(typedData);
         setUserData(userData ?? null);
+        setEventCapacity(data.capacity);
+        setRsvps(rsvpList);
+        setUserRsvpStatus(userRsvp?.status ?? null);
       } catch (_error) {
         setHasError(true);
       } finally {
@@ -57,7 +93,14 @@ export default function eventPage() {
       }
     }
     loadEvent();
-  }, [event_id, router.isReady]);
+  }, [event_id, router.isReady, user]);
+
+  const handleRSVPChange = useCallback(async () => {
+    const rsvpList = await fetchEventRSVPs(event_id);
+    const userRsvp = user ? await getCurrentUserRSVP(event_id) : null;
+    setRsvps(rsvpList);
+    setUserRsvpStatus(userRsvp?.status ?? null);
+  }, [event_id, user]);
 
   if (loading) {
     return (
@@ -108,10 +151,24 @@ export default function eventPage() {
             </Box>
           </Box>
         ) : (
-          <>
+          <Stack spacing={3}>
             <Event eventData={eventData} userData={userData ?? null} />
+
+            {user && (
+              <RSVPButton
+                eventId={event_id}
+                currentStatus={userRsvpStatus}
+                capacity={eventCapacity}
+                rsvps={rsvps}
+                userId={user.id}
+                onRSVPChange={handleRSVPChange}
+              />
+            )}
+
+            <AttendeeList rsvps={rsvps} capacity={eventCapacity} />
+
             <CommentThread eventId={event_id} />
-          </>
+          </Stack>
         )}
       </PageLayout>
     </div>

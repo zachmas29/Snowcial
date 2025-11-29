@@ -69,11 +69,15 @@ exports[`EventFeed > Snapshot test - renders consistently 1`] = `
                 </span>
               </div>
             </div>
-            <p
-              class="MuiTypography-root MuiTypography-body2 css-1rw3ird-MuiTypography-root"
+            <div
+              class="MuiBox-root css-10wperl"
             >
-              3 people attending
-            </p>
+              <p
+                class="MuiTypography-root MuiTypography-body2 css-bvuapi-MuiTypography-root"
+              >
+                3 people attending
+              </p>
+            </div>
           </div>
           <span
             class="MuiCardActionArea-focusHighlight css-1h5un5t-MuiCardActionArea-focusHighlight"

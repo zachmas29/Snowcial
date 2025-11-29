@@ -21,6 +21,7 @@ const mockEvent: Tables<"events"> = {
   creator_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
   created_at: "2025-11-01T12:00:00+00:00",
   last_updated: "2025-11-01T12:00:00+00:00",
+  capacity: null,
 };
 
 const mockUser: Tables<"users"> = {
@@ -42,6 +43,8 @@ const mockAttendeeCount = {
   yes: 3,
   maybe: 0,
   total: 3,
+  capacity: null,
+  waitlistCount: 0,
 };
 
 const mockTags: Tables<"event_tags">[] = [

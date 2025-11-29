@@ -81,6 +81,7 @@ export default function EditEvent() {
         title: formData.title,
         description: formData.description,
         event_time: formData.event_time.toISOString(),
+        capacity: formData.capacity ?? null,
       };
 
       const result = await updateEventWithTags(updatedEventData, formData.tags);
@@ -154,6 +155,7 @@ export default function EditEvent() {
                   description: originalEventData.description ?? "",
                   event_time: new Date(originalEventData.event_time),
                   tags: eventTags,
+                  capacity: originalEventData.capacity,
                 }
               : undefined
           }

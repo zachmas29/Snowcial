@@ -4,6 +4,7 @@ export interface EventFormData {
   // biome-ignore lint/style/useNamingConvention: <Supabase wants snake_case>
   event_time: Date | null;
   tags: GenericTagType[];
+  capacity?: number | null;
 }
 
 export interface GenericTagType {

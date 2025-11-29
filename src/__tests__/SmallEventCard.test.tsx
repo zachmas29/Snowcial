@@ -16,6 +16,7 @@ const mockEvent: Tables<"events"> = {
   creator_id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
   created_at: "2025-11-01T12:00:00+00:00",
   last_updated: "2025-11-01T12:00:00+00:00",
+  capacity: null,
 };
 
 const mockUser: Tables<"users"> = {
@@ -43,6 +44,8 @@ const mockAttendingCount: AttendeeCountType = {
   yes: 15,
   maybe: 5,
   total: 22,
+  capacity: null,
+  waitlistCount: 0,
 };
 
 const mockHandleEventClick = vi.fn();
@@ -165,6 +168,8 @@ describe("SmallEventCard", () => {
       yes: 20,
       maybe: 0,
       total: 20,
+      capacity: null,
+      waitlistCount: 0,
     };
     render(
       <SmallEventCard
@@ -316,6 +321,8 @@ describe("SmallEventCard", () => {
       yes: 1,
       maybe: 0,
       total: 1,
+      capacity: null,
+      waitlistCount: 0,
     };
     render(
       <SmallEventCard
@@ -333,6 +340,8 @@ describe("SmallEventCard", () => {
       yes: 5,
       maybe: 3,
       total: 9,
+      capacity: null,
+      waitlistCount: 0,
     };
     render(
       <SmallEventCard
@@ -350,6 +359,8 @@ describe("SmallEventCard", () => {
       yes: 0,
       maybe: 5,
       total: 7,
+      capacity: null,
+      waitlistCount: 0,
     };
     render(
       <SmallEventCard
@@ -369,6 +380,8 @@ describe("SmallEventCard", () => {
       yes: 0,
       maybe: 5,
       total: 7,
+      capacity: null,
+      waitlistCount: 0,
     };
     render(
       <SmallEventCard
