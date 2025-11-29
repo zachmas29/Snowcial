@@ -1,5 +1,6 @@
+import type { GenericTagType } from "@/types/EventCreator.types";
+import type { AttendeeCountType } from "./AttendeeCountType.type";
 import type { Tables } from "./database.types";
-import type { SortType } from "./Sort.types";
 import type { UserWithTags } from "./User";
 
 // Application-level shared types
@@ -25,8 +26,24 @@ export interface SmallProfileCardProps {
 export interface PeopleFeedProps {
   users: UserWithTags[];
   emptyMessage?: string;
-  maxWidth?: number | string;
   spacing?: number;
   searchTerm: string;
-  sortType: SortType;
+  sortType: string;
+  selectedTags: GenericTagType[];
+}
+
+export interface EnrichedEvent {
+  event: Tables<"events">;
+  user: Tables<"users"> | null;
+  eventTags: Tables<"event_tags">[];
+  attendingCount?: AttendeeCountType;
+}
+
+export interface EventFeedProps {
+  events: EnrichedEvent[];
+  searchTerm?: string;
+  sortType?: string;
+  selectedTags?: GenericTagType[];
+  emptyMessage?: string;
+  maxWidth?: number | string;
 }

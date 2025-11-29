@@ -3,12 +3,13 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { describe, expect, test, vi } from "vitest";
 import EventFeed from "@/components/EventFeed";
-import * as dbFunctions from "@/lib/db_functions";
+import type { EnrichedEvent } from "@/types/app.types";
 import type { Tables } from "@/types/database.types";
 
-vi.mock("@/lib/db_functions");
 vi.mock("next/router", () => ({
-  useRouter: vi.fn(),
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+  })),
 }));
 
 const mockEvent: Tables<"events"> = {
@@ -50,180 +51,121 @@ const mockTags: Tables<"event_tags">[] = [
   },
 ];
 
-describe("EventFeed", () => {
-  test("Smoke test - renders without crashing", async () => {
-    vi.mocked(dbFunctions.fetchEvents).mockResolvedValue([mockEvent]);
-    vi.mocked(dbFunctions.fetchUser).mockResolvedValue(mockUser);
-    vi.mocked(dbFunctions.getAttendeeCount).mockResolvedValue(
-      mockAttendeeCount,
-    );
-    vi.mocked(dbFunctions.fetchEventTags).mockResolvedValue(mockTags);
+const mockEnrichedEvent: EnrichedEvent = {
+  event: mockEvent,
+  user: mockUser,
+  eventTags: mockTags,
+  attendingCount: mockAttendeeCount,
+};
 
-    render(<EventFeed />);
-    await screen.findByText("Morning Powder Run at Snowbowl");
+const mockEnrichedEventWithoutUser: EnrichedEvent = {
+  event: mockEvent,
+  user: undefined,
+  eventTags: mockTags,
+  attendingCount: mockAttendeeCount,
+};
+
+const mockEnrichedEventWithoutTags: EnrichedEvent = {
+  event: mockEvent,
+  user: mockUser,
+  eventTags: [],
+  attendingCount: mockAttendeeCount,
+};
+
+describe("EventFeed", () => {
+  test("Smoke test - renders without crashing", () => {
+    render(<EventFeed events={[mockEnrichedEvent]} />);
     expect(
       screen.getByText("Morning Powder Run at Snowbowl"),
     ).toBeInTheDocument();
   });
 
-  test("Snapshot test - renders consistently", async () => {
-    vi.mocked(dbFunctions.fetchEvents).mockResolvedValue([mockEvent]);
-    vi.mocked(dbFunctions.fetchUser).mockResolvedValue(mockUser);
-    vi.mocked(dbFunctions.getAttendeeCount).mockResolvedValue(
-      mockAttendeeCount,
-    );
-    vi.mocked(dbFunctions.fetchEventTags).mockResolvedValue(mockTags);
-
-    render(<EventFeed />);
-    await screen.findByText("Morning Powder Run at Snowbowl");
-    // Verify key content instead of snapshot
-    expect(
-      screen.getByText((content) => content.includes("Emma Johnson")),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Snowbowl")).toBeInTheDocument();
+  test("Snapshot test - renders consistently", () => {
+    const { asFragment } = render(<EventFeed events={[mockEnrichedEvent]} />);
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  test("Shows loading spinner initially", () => {
-    vi.mocked(dbFunctions.fetchEvents).mockImplementation(
-      () => new Promise(() => {}),
-    );
-
-    const { container } = render(<EventFeed />);
-    expect(
-      container.querySelector("[class*='MuiCircularProgress']"),
-    ).toBeInTheDocument();
+  test("Displays empty state when no events", () => {
+    render(<EventFeed events={[]} />);
+    expect(screen.getByText("No events found.")).toBeInTheDocument();
   });
 
-  test("Fetches and displays events", async () => {
-    vi.mocked(dbFunctions.fetchEvents).mockResolvedValue([mockEvent]);
-    vi.mocked(dbFunctions.fetchUser).mockResolvedValue(mockUser);
-    vi.mocked(dbFunctions.getAttendeeCount).mockResolvedValue(
-      mockAttendeeCount,
-    );
-    vi.mocked(dbFunctions.fetchEventTags).mockResolvedValue(mockTags);
-
-    render(<EventFeed />);
-    await screen.findByText("Morning Powder Run at Snowbowl");
-    expect(
-      screen.getByText((content) => content.includes("Emma Johnson")),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Snowbowl")).toBeInTheDocument();
-  });
-
-  test("Displays error message when fetch fails", async () => {
-    vi.mocked(dbFunctions.fetchEvents).mockRejectedValue(
-      new Error("Network error"),
-    );
-
-    render(<EventFeed />);
-    await screen.findByText("Unable to fetch event feed right now.");
-    expect(
-      screen.getByText("Unable to fetch event feed right now."),
-    ).toBeInTheDocument();
-  });
-
-  test("Displays empty state when no events", async () => {
-    vi.mocked(dbFunctions.fetchEvents).mockResolvedValue([]);
-
-    render(<EventFeed />);
-    await screen.findByText("There are no events to display");
-    expect(
-      screen.getByText("There are no events to display"),
-    ).toBeInTheDocument();
-  });
-
-  test("Handles multiple events", async () => {
-    const mockEvent2 = {
-      ...mockEvent,
-      id: 2,
-      title: "Park Session at Snowbowl",
+  test("Handles multiple events", () => {
+    const mockEvent2: EnrichedEvent = {
+      event: { ...mockEvent, id: 2, title: "Park Session at Snowbowl" },
+      user: mockUser,
+      eventTags: mockTags,
+      attendingCount: mockAttendeeCount,
     };
-    vi.mocked(dbFunctions.fetchEvents).mockResolvedValue([
-      mockEvent,
-      mockEvent2,
-    ]);
-    vi.mocked(dbFunctions.fetchUser).mockResolvedValue(mockUser);
-    vi.mocked(dbFunctions.getAttendeeCount).mockResolvedValue(
-      mockAttendeeCount,
-    );
-    vi.mocked(dbFunctions.fetchEventTags).mockResolvedValue(mockTags);
 
-    render(<EventFeed />);
-    await screen.findByText("Morning Powder Run at Snowbowl");
+    render(<EventFeed events={[mockEnrichedEvent, mockEvent2]} />);
     expect(
       screen.getByText("Morning Powder Run at Snowbowl"),
     ).toBeInTheDocument();
     expect(screen.getByText("Park Session at Snowbowl")).toBeInTheDocument();
   });
 
-  test("Handles event with missing user gracefully", async () => {
-    vi.mocked(dbFunctions.fetchEvents).mockResolvedValue([mockEvent]);
-    vi.mocked(dbFunctions.fetchUser).mockResolvedValue(null);
-    vi.mocked(dbFunctions.getAttendeeCount).mockResolvedValue(
-      mockAttendeeCount,
-    );
-    vi.mocked(dbFunctions.fetchEventTags).mockResolvedValue(mockTags);
-
-    render(<EventFeed />);
-    await screen.findByText("Morning Powder Run at Snowbowl");
+  test("Handles event with missing user gracefully", () => {
+    render(<EventFeed events={[mockEnrichedEventWithoutUser]} />);
     expect(
       screen.getByText("Morning Powder Run at Snowbowl"),
     ).toBeInTheDocument();
   });
 
-  test("Handles event with missing tags", async () => {
-    vi.mocked(dbFunctions.fetchEvents).mockResolvedValue([mockEvent]);
-    vi.mocked(dbFunctions.fetchUser).mockResolvedValue(mockUser);
-    vi.mocked(dbFunctions.getAttendeeCount).mockResolvedValue(
-      mockAttendeeCount,
-    );
-    vi.mocked(dbFunctions.fetchEventTags).mockResolvedValue([]);
-
-    render(<EventFeed />);
-    await screen.findByText("Morning Powder Run at Snowbowl");
+  test("Handles event with missing tags", () => {
+    render(<EventFeed events={[mockEnrichedEventWithoutTags]} />);
     expect(
       screen.getByText("Morning Powder Run at Snowbowl"),
     ).toBeInTheDocument();
   });
 
-  test("Calls fetchUser with correct event creator_id", async () => {
-    vi.mocked(dbFunctions.fetchEvents).mockResolvedValue([mockEvent]);
-    vi.mocked(dbFunctions.fetchUser).mockResolvedValue(mockUser);
-    vi.mocked(dbFunctions.getAttendeeCount).mockResolvedValue(
-      mockAttendeeCount,
-    );
-    vi.mocked(dbFunctions.fetchEventTags).mockResolvedValue(mockTags);
-
-    render(<EventFeed />);
-    await screen.findByText("Morning Powder Run at Snowbowl");
-    expect(vi.mocked(dbFunctions.fetchUser)).toHaveBeenCalledWith(
-      "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
-    );
+  test("Displays user information correctly", () => {
+    render(<EventFeed events={[mockEnrichedEvent]} />);
+    expect(
+      screen.getByText((content) => content.includes("Emma Johnson")),
+    ).toBeInTheDocument();
   });
 
-  test("Calls getAttendeeCount with correct event id", async () => {
-    vi.mocked(dbFunctions.fetchEvents).mockResolvedValue([mockEvent]);
-    vi.mocked(dbFunctions.fetchUser).mockResolvedValue(mockUser);
-    vi.mocked(dbFunctions.getAttendeeCount).mockResolvedValue(
-      mockAttendeeCount,
-    );
-    vi.mocked(dbFunctions.fetchEventTags).mockResolvedValue(mockTags);
-
-    render(<EventFeed />);
-    await screen.findByText("Morning Powder Run at Snowbowl");
-    expect(vi.mocked(dbFunctions.getAttendeeCount)).toHaveBeenCalledWith(1);
+  test("Displays tags correctly", () => {
+    render(<EventFeed events={[mockEnrichedEvent]} />);
+    expect(screen.getByText("Snowbowl")).toBeInTheDocument();
   });
 
-  test("Calls fetchEventTags with correct event id", async () => {
-    vi.mocked(dbFunctions.fetchEvents).mockResolvedValue([mockEvent]);
-    vi.mocked(dbFunctions.fetchUser).mockResolvedValue(mockUser);
-    vi.mocked(dbFunctions.getAttendeeCount).mockResolvedValue(
-      mockAttendeeCount,
+  test("Filters by search term in title", () => {
+    render(
+      <EventFeed events={[mockEnrichedEvent]} searchTerm="Morning Powder" />,
     );
-    vi.mocked(dbFunctions.fetchEventTags).mockResolvedValue(mockTags);
+    expect(
+      screen.getByText("Morning Powder Run at Snowbowl"),
+    ).toBeInTheDocument();
+  });
 
-    render(<EventFeed />);
-    await screen.findByText("Morning Powder Run at Snowbowl");
-    expect(vi.mocked(dbFunctions.fetchEventTags)).toHaveBeenCalledWith(1);
+  test("Filters by search term in description", () => {
+    render(<EventFeed events={[mockEnrichedEvent]} searchTerm="Fresh snow" />);
+    expect(
+      screen.getByText("Morning Powder Run at Snowbowl"),
+    ).toBeInTheDocument();
+  });
+
+  test("Filters by search term in creator name", () => {
+    render(<EventFeed events={[mockEnrichedEvent]} searchTerm="Emma" />);
+    expect(
+      screen.getByText("Morning Powder Run at Snowbowl"),
+    ).toBeInTheDocument();
+  });
+
+  test("Filters out events that don't match search term", () => {
+    render(<EventFeed events={[mockEnrichedEvent]} searchTerm="nonexistent" />);
+    expect(screen.getByText("No events found.")).toBeInTheDocument();
+  });
+
+  test("Filters by selected tags (OR logic)", () => {
+    const snowbowlTag: Tables<"event_tags"> = { id: 1, name: "Snowbowl" };
+    render(
+      <EventFeed events={[mockEnrichedEvent]} selectedTags={[snowbowlTag]} />,
+    );
+    expect(
+      screen.getByText("Morning Powder Run at Snowbowl"),
+    ).toBeInTheDocument();
   });
 });

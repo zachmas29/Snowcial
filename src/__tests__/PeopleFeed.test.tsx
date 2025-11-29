@@ -17,7 +17,7 @@ const mockUsers: UserWithTags[] = [
     banner_photo_path: null,
     profile_photo_path: null,
     nick_name: "sophieshreds",
-    last_active: "2025-11-13T00:00:00+00:00",
+    last_active: "2025-11-10T00:00:00+00:00",
     tags: [
       { id: 1, name: "Snowbowl" },
       { id: 2, name: "Park" },
@@ -48,7 +48,7 @@ const mockUsers: UserWithTags[] = [
     banner_photo_path: null,
     profile_photo_path: null,
     nick_name: null,
-    last_active: "2025-11-13T00:00:00+00:00",
+    last_active: "2025-11-15T00:00:00+00:00",
     tags: [],
   },
 ];
@@ -56,14 +56,24 @@ const mockUsers: UserWithTags[] = [
 describe("PeopleFeed", () => {
   test("Smoke test - renders without crashing", () => {
     render(
-      <PeopleFeed users={mockUsers} searchTerm="" sortType="alphabetical" />,
+      <PeopleFeed
+        users={mockUsers}
+        searchTerm=""
+        sortType="alphabetical"
+        selectedTags={[]}
+      />,
     );
     expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
   });
 
   test("Snapshot test - renders consistently", () => {
     render(
-      <PeopleFeed users={mockUsers} searchTerm="" sortType="alphabetical" />,
+      <PeopleFeed
+        users={mockUsers}
+        searchTerm=""
+        sortType="alphabetical"
+        selectedTags={[]}
+      />,
     );
     // Verify a few users and their nicknames instead of a snapshot
     expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
@@ -73,7 +83,12 @@ describe("PeopleFeed", () => {
 
   test("Displays all users initially", () => {
     render(
-      <PeopleFeed users={mockUsers} searchTerm="" sortType="alphabetical" />,
+      <PeopleFeed
+        users={mockUsers}
+        searchTerm=""
+        sortType="alphabetical"
+        selectedTags={[]}
+      />,
     );
     expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
     expect(screen.getByText("Jake Thompson")).toBeInTheDocument();
@@ -81,7 +96,14 @@ describe("PeopleFeed", () => {
   });
 
   test("Displays empty message when no users provided", () => {
-    render(<PeopleFeed users={[]} searchTerm="" sortType="alphabetical" />);
+    render(
+      <PeopleFeed
+        users={[]}
+        searchTerm=""
+        sortType="alphabetical"
+        selectedTags={[]}
+      />,
+    );
     expect(screen.getByText("No people found.")).toBeInTheDocument();
   });
 
@@ -92,6 +114,7 @@ describe("PeopleFeed", () => {
         emptyMessage="No members found"
         searchTerm=""
         sortType="alphabetical"
+        selectedTags={[]}
       />,
     );
     expect(screen.getByText("No members found")).toBeInTheDocument();
@@ -103,6 +126,7 @@ describe("PeopleFeed", () => {
         users={mockUsers}
         searchTerm="Sophie"
         sortType="alphabetical"
+        selectedTags={[]}
       />,
     );
     expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
@@ -116,6 +140,7 @@ describe("PeopleFeed", () => {
         users={mockUsers}
         searchTerm="Thompson"
         sortType="alphabetical"
+        selectedTags={[]}
       />,
     );
     expect(screen.getByText("Jake Thompson")).toBeInTheDocument();
@@ -128,6 +153,7 @@ describe("PeopleFeed", () => {
         users={mockUsers}
         searchTerm="sophie"
         sortType="alphabetical"
+        selectedTags={[]}
       />,
     );
     expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
@@ -139,6 +165,7 @@ describe("PeopleFeed", () => {
         users={mockUsers}
         searchTerm="NonExistent"
         sortType="alphabetical"
+        selectedTags={[]}
       />,
     );
     expect(screen.getByText("No people found.")).toBeInTheDocument();
@@ -146,30 +173,54 @@ describe("PeopleFeed", () => {
 
   test("Sorts users alphabetically", () => {
     render(
-      <PeopleFeed users={mockUsers} searchTerm="" sortType="alphabetical" />,
+      <PeopleFeed
+        users={mockUsers}
+        searchTerm=""
+        sortType="alphabetical"
+        selectedTags={[]}
+      />,
     );
     // Verify all users are rendered in alphabetical order
     const allElements = screen.getAllByText(/Martinez|Thompson|Patel/);
     expect(allElements[0]?.textContent).toContain("Jake Thompson");
   });
 
-  test("Sorts users by newest", () => {
-    render(<PeopleFeed users={mockUsers} searchTerm="" sortType="newest" />);
-    // Newest sort should show Maya (created 2025-03-01) first
+  test("Sorts users by last active", () => {
+    render(
+      <PeopleFeed
+        users={mockUsers}
+        searchTerm=""
+        sortType="last-active"
+        selectedTags={[]}
+      />,
+    );
+    // Last-active sort should show Maya (created 2025-03-01) first
     const allElements = screen.getAllByText(/Martinez|Thompson|Patel/);
     expect(allElements[0]?.textContent).toContain("Maya Patel");
   });
 
-  test("Sorts users by oldest", () => {
-    render(<PeopleFeed users={mockUsers} searchTerm="" sortType="oldest" />);
-    // Oldest sort should show Sophie (created 2025-01-01) first
+  test("Sorts users alphabetically", () => {
+    render(
+      <PeopleFeed
+        users={mockUsers}
+        searchTerm=""
+        sortType="alphabetical"
+        selectedTags={[]}
+      />,
+    );
+    // Alphabetical sort should show Alex Thompson first
     const allElements = screen.getAllByText(/Martinez|Thompson|Patel/);
-    expect(allElements[0]?.textContent).toContain("Sophie Martinez");
+    expect(allElements[0]?.textContent).toContain("Jake Thompson");
   });
 
   test("Displays user bio text when available", () => {
     render(
-      <PeopleFeed users={mockUsers} searchTerm="" sortType="alphabetical" />,
+      <PeopleFeed
+        users={mockUsers}
+        searchTerm=""
+        sortType="alphabetical"
+        selectedTags={[]}
+      />,
     );
     expect(
       screen.getByText("Snowboarder who loves park features"),
@@ -181,26 +232,18 @@ describe("PeopleFeed", () => {
 
   test("Combines search and sort correctly", () => {
     render(
-      <PeopleFeed users={mockUsers} searchTerm="o" sortType="alphabetical" />,
+      <PeopleFeed
+        users={mockUsers}
+        searchTerm="o"
+        sortType="alphabetical"
+        selectedTags={[]}
+      />,
     );
 
     // Should match "Sophie", "Thompson" (contains 'o')
     expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
     expect(screen.getByText("Jake Thompson")).toBeInTheDocument();
     expect(screen.queryByText("Maya Patel")).not.toBeInTheDocument();
-  });
-
-  test("Respects maxWidth prop", () => {
-    const { container } = render(
-      <PeopleFeed
-        users={mockUsers}
-        searchTerm=""
-        sortType="alphabetical"
-        maxWidth={800}
-      />,
-    );
-    const feedBox = container.firstChild as HTMLElement;
-    expect(feedBox).toHaveStyle({ maxWidth: "800px" });
   });
 
   test("Respects spacing prop", () => {
@@ -210,6 +253,7 @@ describe("PeopleFeed", () => {
         searchTerm=""
         sortType="alphabetical"
         spacing={4}
+        selectedTags={[]}
       />,
     );
     // Spacing affects grid gap
@@ -218,7 +262,12 @@ describe("PeopleFeed", () => {
 
   test("Displays nicknames with @ prefix when available", () => {
     render(
-      <PeopleFeed users={mockUsers} searchTerm="" sortType="alphabetical" />,
+      <PeopleFeed
+        users={mockUsers}
+        searchTerm=""
+        sortType="alphabetical"
+        selectedTags={[]}
+      />,
     );
     expect(screen.getByText("@sophieshreds")).toBeInTheDocument();
     expect(screen.getByText("@jakerides")).toBeInTheDocument();
@@ -226,7 +275,12 @@ describe("PeopleFeed", () => {
 
   test("Handles users without nicknames", () => {
     render(
-      <PeopleFeed users={mockUsers} searchTerm="" sortType="alphabetical" />,
+      <PeopleFeed
+        users={mockUsers}
+        searchTerm=""
+        sortType="alphabetical"
+        selectedTags={[]}
+      />,
     );
     // Maya Patel has no nickname, should still render
     expect(screen.getByText("Maya Patel")).toBeInTheDocument();

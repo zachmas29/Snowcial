@@ -3,89 +3,84 @@
 exports[`EventFeed > Snapshot test - renders consistently 1`] = `
 <DocumentFragment>
   <div
-    class="MuiStack-root css-8mcjw0-MuiStack-root"
+    class="MuiBox-root css-8atqhb"
   >
-    <button
-      class="MuiButtonBase-root MuiCardActionArea-root css-coyn9m-MuiButtonBase-root-MuiCardActionArea-root"
-      tabindex="0"
-      type="button"
+    <div
+      class="MuiStack-root css-8mcjw0-MuiStack-root"
     >
       <div
-        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-11zyimi-MuiPaper-root-MuiCard-root"
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-dfa0q5-MuiPaper-root-MuiCard-root"
         style="--Paper-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);"
       >
-        <div
-          class="MuiCardHeader-root css-149tc0y-MuiCardHeader-root"
+        <button
+          class="MuiButtonBase-root MuiCardActionArea-root css-1vpvro0-MuiButtonBase-root-MuiCardActionArea-root"
+          tabindex="0"
+          type="button"
         >
           <div
-            class="MuiCardHeader-avatar css-1r9wl67-MuiCardHeader-avatar"
-          >
-            <a
-              class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-18rqtra-MuiTypography-root-MuiLink-root"
-              href="/profile/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
-            >
-              <div
-                class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault css-18k2bs-MuiAvatar-root"
-              >
-                EJ
-              </div>
-            </a>
-          </div>
-          <div
-            class="MuiCardHeader-content css-1jkp9bu-MuiCardHeader-content"
-          >
-            <span
-              class="MuiTypography-root MuiTypography-body2 MuiCardHeader-title css-7ctihp-MuiTypography-root"
-            >
-              Morning Powder Run at Snowbowl
-            </span>
-            <span
-              class="MuiTypography-root MuiTypography-body2 MuiCardHeader-subheader css-1a1whku-MuiTypography-root"
-            >
-              Emma Johnson • Sat, Nov 15, 12:00 PM
-            </span>
-          </div>
-        </div>
-        <div
-          class="MuiCardContent-root css-1lt5qva-MuiCardContent-root"
-        >
-          <p
-            class="MuiTypography-root MuiTypography-body2 css-1wle3ir-MuiTypography-root"
-          >
-            Fresh snow expected tonight! Let's meet at the base lodge at 9am for first tracks. All levels welcome, we'll split into groups by ability.
-          </p>
-          <div
-            class="MuiBox-root css-1yuhvjn"
+            class="MuiCardContent-root css-6khfle-MuiCardContent-root"
           >
             <div
-              class="MuiStack-root css-ofxwhm-MuiStack-root"
+              class="MuiStack-root css-1hyf038-MuiStack-root"
+            >
+              <a
+                href="/profile/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+                style="text-decoration: none;"
+              >
+                <div
+                  class="MuiAvatar-root MuiAvatar-circular css-mjprk-MuiAvatar-root"
+                >
+                  <img
+                    class="MuiAvatar-img css-1su80sj-MuiAvatar-img"
+                    src="https://lh3.googleusercontent.com/a/default-user"
+                  />
+                </div>
+              </a>
+              <div
+                class="MuiBox-root css-1xhmi63"
+              >
+                <h6
+                  class="MuiTypography-root MuiTypography-h6 css-1lf2f6i-MuiTypography-root"
+                >
+                  Morning Powder Run at Snowbowl
+                </h6>
+                <p
+                  class="MuiTypography-root MuiTypography-body2 css-1sa4kq8-MuiTypography-root"
+                >
+                  Emma Johnson • Sat, Nov 15, 12:00 PM
+                </p>
+              </div>
+            </div>
+            <p
+              class="MuiTypography-root MuiTypography-body2 css-10d2o18-MuiTypography-root"
+            >
+              Fresh snow expected tonight! Let's meet at the base lodge at 9am for first tracks. All levels welcome, we'll split into groups by ability.
+            </p>
+            <div
+              class="MuiBox-root css-wq87pz"
             >
               <div
-                class="MuiChip-root MuiChip-filled MuiChip-sizeSmall MuiChip-colorDefault MuiChip-filledDefault css-on5xyr-MuiChip-root"
+                class="MuiChip-root MuiChip-outlined MuiChip-sizeSmall MuiChip-colorDefault MuiChip-outlinedDefault css-8m2o99-MuiChip-root"
               >
                 <span
-                  class="MuiChip-label MuiChip-labelSmall css-eccknh-MuiChip-label"
+                  class="MuiChip-label MuiChip-labelSmall css-19m61dl-MuiChip-label"
                 >
                   Snowbowl
                 </span>
               </div>
             </div>
+            <p
+              class="MuiTypography-root MuiTypography-body2 css-1rw3ird-MuiTypography-root"
+            >
+              3 people attending
+            </p>
           </div>
-        </div>
-        <div
-          class="MuiCardActions-root MuiCardActions-spacing css-9t71gs-MuiCardActions-root"
-        >
-          <p
-            class="MuiTypography-root MuiTypography-body2 css-1wle3ir-MuiTypography-root"
-          >
-            3 people attending
-          </p>
-        </div>
+          <span
+            class="MuiCardActionArea-focusHighlight css-1h5un5t-MuiCardActionArea-focusHighlight"
+          />
+        </button>
       </div>
-      <span
-        class="MuiCardActionArea-focusHighlight css-1h5un5t-MuiCardActionArea-focusHighlight"
-      />
-    </button>
+    </div>
   </div>
 </DocumentFragment>
 `;

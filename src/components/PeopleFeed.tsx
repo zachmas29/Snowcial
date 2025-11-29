@@ -11,10 +11,10 @@ import type { PeopleFeedProps } from "@/types/app.types";
 export default function PeopleFeed({
   users,
   emptyMessage = "No people found.",
-  maxWidth = 640,
   spacing = 2,
   searchTerm,
   sortType,
+  selectedTags,
 }: PeopleFeedProps) {
   let displayedUsers = [...users];
 
@@ -24,6 +24,14 @@ export default function PeopleFeed({
     return fullName.includes(searchTerm.toLowerCase());
   });
 
+  if (selectedTags.length > 0) {
+    displayedUsers = displayedUsers.filter((user) => {
+      return selectedTags.every((selectedTag) =>
+        user.tags.some((userTag) => userTag.id === selectedTag.id),
+      );
+    });
+  }
+
   // Sort by sort term
   displayedUsers = displayedUsers.sort((a, b) => {
     switch (sortType) {
@@ -32,13 +40,9 @@ export default function PeopleFeed({
         const nameB = `${b.first_name} ${b.last_name}`.toLowerCase();
         return nameA.localeCompare(nameB);
       }
-      case "newest":
+      case "last-active":
         return (
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        );
-      case "oldest":
-        return (
-          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          new Date(b.last_active).getTime() - new Date(a.last_active).getTime()
         );
       default:
         return 0;
@@ -50,11 +54,9 @@ export default function PeopleFeed({
       <Box
         sx={{
           width: "100%",
-          maxWidth,
-          mx: "auto",
           display: "flex",
           justifyContent: "center",
-          py: 4,
+          py: (theme) => theme.spacing(4),
         }}
       >
         <Typography color="text.secondary">{emptyMessage}</Typography>
@@ -66,8 +68,6 @@ export default function PeopleFeed({
     <Box
       sx={{
         width: "100%",
-        maxWidth,
-        mx: "auto",
         display: "grid",
         gridTemplateColumns: {
           xs: "minmax(0, 1fr)",

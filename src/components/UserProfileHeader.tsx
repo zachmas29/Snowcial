@@ -4,87 +4,88 @@
   Displays a user's avatar, name, email, and associated tags.
 */
 
-import { Box, Chip, Stack, Typography } from "@mui/material";
+import { Box, Chip, Stack, Typography, useTheme } from "@mui/material";
 import type { UserProfileHeaderProps } from "@/types/app.types";
 import UserAvatar from "./UserAvatar";
 
 export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
   const fullName = `${user.first_name} ${user.last_name}`.trim();
+  const theme = useTheme();
 
   return (
     <Box
       sx={{
         width: "100%",
-        display: "flex",
-        flexDirection: { xs: "column", sm: "row" },
-        alignItems: { xs: "center", sm: "flex-start" },
-        gap: { xs: 1.5, sm: 3 },
-        p: { xs: 1.5, sm: 0 },
+        position: "relative",
+        borderRadius: 2,
+        overflow: "hidden",
+        backgroundColor: "background.paper",
+        boxShadow: 3,
+        border: 1,
+        borderColor: "divider",
       }}
     >
-      <UserAvatar
-        user={user}
+      {/* Banner */}
+      <Box
         sx={{
-          width: { xs: 64, sm: 120 },
-          height: { xs: 64, sm: 120 },
-          fontSize: { xs: 24, sm: 36 },
+          height: { xs: 120, sm: 180 },
+          backgroundImage: user.banner_photo_path
+            ? `url(${user.banner_photo_path})`
+            : `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          alt: `${fullName}'s banner photo`,
         }}
       />
 
-      <Stack spacing={{ xs: 0.75, sm: 1 }} sx={{ flex: 1, width: "100%" }}>
-        <Box>
-          <Typography
-            variant="h4"
-            component="h1"
-            fontWeight={700}
-            sx={{ fontSize: { xs: "1.5rem", sm: "2.125rem" } }}
-          >
-            {fullName || "Unnamed User"}
-          </Typography>
-          <Typography
-            variant="body1"
-            color="text.secondary"
-            sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}
-          >
-            {user.email}
-          </Typography>
-        </Box>
+      {/* Profile Picture */}
+      <UserAvatar
+        user={user}
+        sx={{
+          width: { xs: 80, sm: 100 },
+          height: { xs: 80, sm: 100 },
+          fontSize: { xs: "2rem", sm: "2.5rem" },
+          position: "absolute",
+          top: { xs: 80, sm: 130 },
+          left: 20,
+          border: "3px solid",
+          borderColor: "background.paper",
+          boxShadow: 2,
+        }}
+      />
 
-        <Stack
-          direction="row"
-          spacing={1}
-          useFlexGap
-          flexWrap="wrap"
-          sx={{
-            width: "100%",
-            gap: { xs: 0.75, sm: 1 },
-          }}
-        >
-          {tags.length > 0 ? (
-            tags.map((tag) => (
-              <Chip
-                key={tag.id}
-                label={tag.name}
-                color="primary"
-                variant="outlined"
-                size="small"
-                sx={{
-                  height: { xs: 22, sm: 24 },
-                  fontSize: { xs: "0.75rem", sm: "0.8125rem" },
-                }}
-              />
-            ))
-          ) : (
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
-            >
-              No tags yet.
+      {/* Content */}
+      <Box sx={{ pt: { xs: 6, sm: 7 }, pb: 3, px: 2 }}>
+        <Stack spacing={1.5}>
+          <Box>
+            <Typography variant="h4" fontWeight={700}>
+              {fullName || "Unnamed User"}
             </Typography>
-          )}
+            <Typography color="text.secondary">{user.email}</Typography>
+          </Box>
+
+          <Stack direction="row" flexWrap="wrap" gap={1}>
+            {tags.length > 0 ? (
+              tags.map((tag) => (
+                <Chip
+                  key={tag.id}
+                  label={tag.name}
+                  size="small"
+                  color="primary"
+                />
+              ))
+            ) : (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                fontStyle="italic"
+              >
+                No tags yet.
+              </Typography>
+            )}
+          </Stack>
         </Stack>
-      </Stack>
+      </Box>
     </Box>
   );
 }
