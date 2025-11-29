@@ -1,4 +1,6 @@
-import { Box, Container, type ContainerProps } from "@mui/material";
+import { KeyboardBackspace } from "@mui/icons-material";
+import { Box, Button, Container, type ContainerProps } from "@mui/material";
+import { useRouter } from "next/router";
 import type { ReactNode } from "react";
 
 interface PageLayoutProps {
@@ -11,11 +13,18 @@ interface PageLayoutProps {
  * PageLayout component provides consistent page width and spacing
  * across all pages using MUI Container
  */
+
 export default function PageLayout({
   children,
   maxWidth = "md",
   sx,
 }: PageLayoutProps) {
+  const router = useRouter();
+
+  const handleBackButton = () => {
+    router.back();
+  };
+
   return (
     <Container
       maxWidth={maxWidth}
@@ -24,6 +33,11 @@ export default function PageLayout({
         ...sx,
       }}
     >
+      {" "}
+      <Button color="primary" onClick={handleBackButton}>
+        <KeyboardBackspace />
+        BACK
+      </Button>
       <Box
         sx={{
           display: "flex",
