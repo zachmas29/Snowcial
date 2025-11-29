@@ -90,7 +90,7 @@ export default function UserProfilePage() {
             );
             return {
               event,
-              user: null,
+              user: undefined,
               eventTags: [],
               attendingCount: undefined,
             } as EnrichedEvent;
