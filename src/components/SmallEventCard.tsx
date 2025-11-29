@@ -73,15 +73,15 @@ export default function SmallEventCard({
         borderColor: "divider",
       }}
     >
-      <CardHeader
-        avatar={<UserAvatar user={user} fallbackInitials={initials} />}
-        title={event.title}
-        subheader={`${user ? `${user.first_name} ${user.last_name}` : ""} • ${formatEventDate(event.event_time)}`}
-      />
       <CardActionArea
         onClick={() => handleEventClick(event.id)}
         sx={{ height: "100%" }}
       >
+        <CardHeader
+          avatar={<UserAvatar user={user} fallbackInitials={initials} />}
+          title={event.title}
+          subheader={`${user ? `${user.first_name} ${user.last_name}` : ""} • ${formatEventDate(event.event_time)}`}
+        />
         <CardContent
           sx={{
             p: 2,
@@ -92,18 +92,6 @@ export default function SmallEventCard({
         >
           <Stack direction="row" spacing={1.5} alignItems="center">
             <Box sx={{ minWidth: 0, flex: 1 }}>
-              <Typography
-                variant="h6"
-                fontWeight={700}
-                sx={{
-                  lineHeight: 1.2,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {event.title}
-              </Typography>
               <Typography
                 variant="body2"
                 color="text.secondary"

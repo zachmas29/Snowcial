@@ -18,38 +18,45 @@ exports[`EventFeed > Snapshot test - renders consistently 1`] = `
           type="button"
         >
           <div
+            class="MuiCardHeader-root css-149tc0y-MuiCardHeader-root"
+          >
+            <div
+              class="MuiCardHeader-avatar css-1r9wl67-MuiCardHeader-avatar"
+            >
+              <a
+                href="/profile/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+              >
+                <div
+                  class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault css-18k2bs-MuiAvatar-root"
+                >
+                  EJ
+                </div>
+              </a>
+            </div>
+            <div
+              class="MuiCardHeader-content css-1jkp9bu-MuiCardHeader-content"
+            >
+              <span
+                class="MuiTypography-root MuiTypography-body2 MuiCardHeader-title css-7ctihp-MuiTypography-root"
+              >
+                Morning Powder Run at Snowbowl
+              </span>
+              <span
+                class="MuiTypography-root MuiTypography-body2 MuiCardHeader-subheader css-1a1whku-MuiTypography-root"
+              >
+                Emma Johnson • Sat, Nov 15, 12:00 PM
+              </span>
+            </div>
+          </div>
+          <div
             class="MuiCardContent-root css-6khfle-MuiCardContent-root"
           >
             <div
               class="MuiStack-root css-1hyf038-MuiStack-root"
             >
-              <a
-                href="/profile/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
-                style="text-decoration: none;"
-              >
-                <div
-                  class="MuiAvatar-root MuiAvatar-circular css-mjprk-MuiAvatar-root"
-                >
-                  <img
-                    class="MuiAvatar-img css-1su80sj-MuiAvatar-img"
-                    src="https://lh3.googleusercontent.com/a/default-user"
-                  />
-                </div>
-              </a>
               <div
                 class="MuiBox-root css-1xhmi63"
-              >
-                <h6
-                  class="MuiTypography-root MuiTypography-h6 css-1lf2f6i-MuiTypography-root"
-                >
-                  Morning Powder Run at Snowbowl
-                </h6>
-                <p
-                  class="MuiTypography-root MuiTypography-body2 css-1sa4kq8-MuiTypography-root"
-                >
-                  Emma Johnson • Sat, Nov 15, 12:00 PM
-                </p>
-              </div>
+              />
             </div>
             <p
               class="MuiTypography-root MuiTypography-body2 css-10d2o18-MuiTypography-root"
