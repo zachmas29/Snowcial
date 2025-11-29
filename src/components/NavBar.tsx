@@ -23,7 +23,6 @@ type NavItem = {
 export function NavBar() {
   const { user } = useAuthContext();
   const router = useRouter();
-<<<<<<< HEAD
   const pathname = router.pathname;
   const isProfileSection = pathname.startsWith("/profile");
   const authUserId = user?.id ?? null;
@@ -59,20 +58,6 @@ export function NavBar() {
           value: "/profile/edit",
         }
       : { label: "New Event", href: "/events/new", icon: <AddBoxIcon /> },
-=======
-  const isProfileSection =
-    router.pathname === "/profile" || router.pathname === "/profile/edit";
-
-  const navItems = [
-    ...baseNavItems,
-    isProfileSection
-      ? {
-          label: "Edit Profile",
-          href: "/profile/EditProfile",
-          icon: <EditIcon />,
-        }
-      : { label: "New Post", href: "/posts/new", icon: <AddBoxIcon /> },
->>>>>>> 0a57299 (Fix and center Edit Profile layout)
   ];
 
   const activeNavValue = isProfileEditPage

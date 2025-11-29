@@ -3,7 +3,6 @@ import Image from "next/image";
 import type { UserGalleryProps } from "@/types/app.types";
 
 export default function UserGallery({ photos }: UserGalleryProps) {
-  
   const showEmptyState = photos.length === 0;
 
   return (
@@ -29,40 +28,45 @@ export default function UserGallery({ photos }: UserGalleryProps) {
         <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
           <ImageList
             cols={3}
-            gap={16}
-            rowHeight={300}
+            gap={14}
+            rowHeight={200}
             sx={{
               width: "100%",
-              maxWidth: 1000,
+              maxWidth: 650,
               "& .MuiImageListItem-root": {
-                width: 300,
-                height: 300,
+                width: 200,
+                height: 200,
                 borderRadius: 3,
                 overflow: "hidden",
               },
             }}
           >
-            {photos.slice(0, 6).map((photo) => (
-              <ImageListItem key={`${photo.user_id}-${photo.photo_path}`}>
-                <Box
-                  sx={{
-                    position: "relative",
-                    width: "100%",
-                    height: "100%",
-                  }}
-                >
-                  <Image
-                    src={photo.photo_path}
-                    alt="Gallery photo"
-                    fill
-                    sizes="300px"
-                    style={{
-                      objectFit: "cover",
+            {photos.slice(0, 6).map((photo) => {
+              // FIX: prevent Next.js Image crash
+              if (!photo.photo_path) return null;
+
+              return (
+                <ImageListItem key={`${photo.user_id}-${photo.photo_path}`}>
+                  <Box
+                    sx={{
+                      position: "relative",
+                      width: "100%",
+                      height: "100%",
                     }}
-                  />
-                </Box>
-              </ImageListItem>
-            ))}
+                  >
+                    <Image
+                      src={photo.photo_path}
+                      alt="Gallery photo"
+                      fill
+                      sizes="200px"
+                      style={{
+                        objectFit: "cover",
+                      }}
+                    />
+                  </Box>
+                </ImageListItem>
+              );
+            })}
           </ImageList>
         </Box>
       )}

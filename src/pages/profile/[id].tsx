@@ -1,3 +1,5 @@
+//biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB types to make Supabase happy>
+
 import { Alert, Box, CircularProgress, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -35,7 +37,6 @@ export default function UserProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // User events state
   const [userEvents, setUserEvents] = useState<EnrichedEvent[]>([]);
   const [userEventsLoading, setUserEventsLoading] = useState(true);
   const [userEventsError, setUserEventsError] = useState(false);
@@ -67,7 +68,6 @@ export default function UserProfilePage() {
       try {
         const baseEvents = await fetchEventsByUser(validUserId);
 
-        // Enrich each event with user, tags, and attendee data
         const enrichedPromises = baseEvents.map(async (event) => {
           try {
             const [eventUser, attendingCount, eventTags] = await Promise.all([
@@ -75,6 +75,7 @@ export default function UserProfilePage() {
               getAttendeeCount(event.id),
               fetchEventTags(event.id),
             ]);
+
             return {
               event,
               user: eventUser,
@@ -86,6 +87,7 @@ export default function UserProfilePage() {
               `Failed to fetch extra data for event ${event.id}:`,
               err
             );
+
             return {
               event,
               user: undefined,
@@ -119,9 +121,7 @@ export default function UserProfilePage() {
       try {
         const data = await fetchUserProfile(validUserId);
 
-        if (!isMounted) {
-          return;
-        }
+        if (!isMounted) return;
 
         if (!data) {
           setProfile(null);
@@ -129,11 +129,25 @@ export default function UserProfilePage() {
           return;
         }
 
+        // convert stored paths into real public urls so images show up correctly
+        if (data.user.profile_photo_path) {
+          data.user.profile_photo_path = getPublicUrl(
+            "profile-photos",
+            data.user.profile_photo_path
+          );
+        }
+
+        // same idea for the banner image so it can load like the profile photo
+        if (data.user.banner_photo_path) {
+          data.user.banner_photo_path = getPublicUrl(
+            "banner-photos",
+            data.user.banner_photo_path
+          );
+        }
+
         setProfile(data);
       } catch (fetchError) {
-        if (!isMounted) {
-          return;
-        }
+        if (!isMounted) return;
 
         console.error("Failed to fetch profile:", fetchError);
         setProfile(null);
@@ -182,18 +196,18 @@ export default function UserProfilePage() {
             <UserProfileHeader user={profile.user} tags={profile.tags} />
             <UserBioSection bioText={profile.user.bio_text} />
 
-            {/*
-              ⭐ FIX: Convert gallery photo paths into full public URLs
-            */}
+            {/* convert each gallery photo so next/image can load them */}
             <UserGallery
               photos={profile.galleryPhotos
-                .filter((p) => p.photo_path) 
+                .filter((p) => p.photo_path)
                 .map((p) => ({
                   ...p,
-                  photo_path: getPublicUrl("gallery-photos", p.photo_path!),
+                  photo_path: getPublicUrl(
+                    "gallery-photos",
+                    p.photo_path as string
+                  ),
                 }))}
             />
-
 
             <Box>
               <Typography variant="h6" component="h2" fontWeight={600} mb={1.5}>
@@ -201,6 +215,7 @@ export default function UserProfilePage() {
                   ? "My Events"
                   : getPossessiveForm(profile.user.first_name)}
               </Typography>
+
               {userEventsLoading ? (
                 <CircularProgress />
               ) : userEventsError ? (
