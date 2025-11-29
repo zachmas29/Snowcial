@@ -6,3 +6,14 @@ process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "test-anon-key";
 
 // Mock timezone to UTC for consistent test results across environments
 process.env.TZ = "UTC";
+
+// Provide a defensive mock for db functions that may attempt network calls
+import { vi } from "vitest";
+
+vi.mock("@/lib/db_functions", async () => {
+  const actual = await vi.importActual("@/lib/db_functions");
+  return {
+    ...actual,
+    fetchEventTagOptions: vi.fn().mockResolvedValue([]),
+  };
+});

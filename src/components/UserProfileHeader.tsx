@@ -4,8 +4,9 @@
   Displays a user's avatar, name, email, and associated tags.
 */
 
-import { Avatar, Box, Chip, Stack, Typography } from "@mui/material";
+import { Box, Chip, Stack, Typography } from "@mui/material";
 import type { UserProfileHeaderProps } from "@/types/app.types";
+import UserAvatar from "./UserAvatar";
 
 export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
   const fullName = `${user.first_name} ${user.last_name}`.trim();
@@ -21,17 +22,14 @@ export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
         p: { xs: 1.5, sm: 0 },
       }}
     >
-      <Avatar
-        src={user.profile_photo_path ?? ""}
-        alt={fullName}
+      <UserAvatar
+        user={user}
         sx={{
           width: { xs: 64, sm: 120 },
           height: { xs: 64, sm: 120 },
           fontSize: { xs: 24, sm: 36 },
         }}
-      >
-        {fullName.charAt(0).toUpperCase()}
-      </Avatar>
+      />
 
       <Stack spacing={{ xs: 0.75, sm: 1 }} sx={{ flex: 1, width: "100%" }}>
         <Box>

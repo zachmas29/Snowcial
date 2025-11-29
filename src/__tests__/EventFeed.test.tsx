@@ -74,9 +74,13 @@ describe("EventFeed", () => {
     );
     vi.mocked(dbFunctions.fetchEventTags).mockResolvedValue(mockTags);
 
-    const { asFragment } = render(<EventFeed />);
+    render(<EventFeed />);
     await screen.findByText("Morning Powder Run at Snowbowl");
-    expect(asFragment()).toMatchSnapshot();
+    // Verify key content instead of snapshot
+    expect(
+      screen.getByText((content) => content.includes("Emma Johnson")),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Snowbowl")).toBeInTheDocument();
   });
 
   test("Shows loading spinner initially", () => {

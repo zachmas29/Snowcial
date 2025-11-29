@@ -21,7 +21,7 @@ import SmallEventCard from "./SmallEventCard";
 
 type EnrichedEvent = {
   event: Tables<"events">;
-  user: Tables<"users"> | null;
+  user: Tables<"users"> | undefined;
   eventTags: Tables<"event_tags">[];
   attendingCount?: AttendeeCountType;
 };
@@ -67,7 +67,7 @@ export default function EventFeed({ includeUserId }: EventFeedProps) {
             );
             return {
               event,
-              user: null,
+              user: undefined,
               eventTags: [],
               attendingCount: undefined,
             } as EnrichedEvent;

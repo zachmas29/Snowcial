@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Card,
   CardActionArea,
@@ -8,18 +7,18 @@ import {
   CardHeader,
   Chip,
   CircularProgress,
-  Link,
   Stack,
   Typography,
 } from "@mui/material";
 import { formatEventDate } from "@/lib/date_formatters";
 import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
 import type { Tables } from "@/types/database.types";
+import UserAvatar from "./UserAvatar";
 
 type EventCardProps = {
   event: Tables<"events">;
   eventTags: Tables<"event_tags">[];
-  user: Tables<"users"> | null;
+  user: Tables<"users"> | undefined;
   attendingCount?: AttendeeCountType;
   loading?: boolean;
   handleEventClick: (eventId: number) => void;
@@ -67,25 +66,11 @@ export default function SmallEventCard({
       : `${attendingCount?.total ?? 0}`;
   const attendeesNotice = `${attendees} ${attendingCount?.total !== 1 ? "people" : "person"}`;
 
-  const ClickableAvatar = user ? (
-    <Link
-      href={`/profile/${user.id}`}
-      underline="none"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <Avatar>{initials}</Avatar>
-    </Link>
-  ) : (
-    <Box>
-      <Avatar>{initials}</Avatar>
-    </Box>
-  );
-
   return (
     <CardActionArea onClick={() => handleEventClick(event.id)}>
       <Card sx={{ justifyContent: "space-between" }}>
         <CardHeader
-          avatar={ClickableAvatar}
+          avatar={<UserAvatar user={user} fallbackInitials={initials} />}
           title={event.title}
           subheader={`${user ? `${user.first_name} ${user.last_name}` : ""} • ${formatEventDate(event.event_time)}`}
         />

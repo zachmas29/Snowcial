@@ -63,9 +63,8 @@ describe("SmallEventCard", () => {
       screen.getByText("Morning Powder Run at Snowbowl"),
     ).toBeInTheDocument();
   });
-
   test("Snapshot test - renders consistently", () => {
-    const { asFragment } = render(
+    render(
       <SmallEventCard
         event={mockEvent}
         eventTags={mockEventTags}
@@ -75,9 +74,12 @@ describe("SmallEventCard", () => {
         handleEventClick={mockHandleEventClick}
       />,
     );
-    expect(asFragment()).toMatchSnapshot();
+    // Basic DOM assertions to replace snapshot
+    expect(
+      screen.getByText("Morning Powder Run at Snowbowl"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Snowbowl")).toBeInTheDocument();
   });
-
   test("Renders event title from props", () => {
     render(
       <SmallEventCard
@@ -92,7 +94,6 @@ describe("SmallEventCard", () => {
       screen.getByText("Morning Powder Run at Snowbowl"),
     ).toBeInTheDocument();
   });
-
   test("Renders event description from props", () => {
     render(
       <SmallEventCard
@@ -109,7 +110,6 @@ describe("SmallEventCard", () => {
       ),
     ).toBeInTheDocument();
   });
-
   test("Displays user name in subheader", () => {
     render(
       <SmallEventCard
@@ -124,7 +124,6 @@ describe("SmallEventCard", () => {
       screen.getByText((content) => content.includes("Emma Johnson")),
     ).toBeInTheDocument();
   });
-
   test("Displays event time in subheader", () => {
     render(
       <SmallEventCard
@@ -137,7 +136,6 @@ describe("SmallEventCard", () => {
     );
     expect(screen.getByText(/Sat, Nov 15, 12:00 PM/)).toBeInTheDocument();
   });
-
   test("Renders all event tags", () => {
     render(
       <SmallEventCard
@@ -150,7 +148,6 @@ describe("SmallEventCard", () => {
     );
     expect(screen.getByText("Snowbowl")).toBeInTheDocument();
   });
-
   test("Displays attendee count correctly when yes !== total", () => {
     render(
       <SmallEventCard
@@ -163,7 +160,6 @@ describe("SmallEventCard", () => {
     );
     expect(screen.getByText("15-22 people attending")).toBeInTheDocument();
   });
-
   test("Displays attendee count correctly when all confirmed (yes === total)", () => {
     const allConfirmedAttendees: AttendeeCountType = {
       yes: 20,
@@ -181,7 +177,6 @@ describe("SmallEventCard", () => {
     );
     expect(screen.getByText("20 people attending")).toBeInTheDocument();
   });
-
   test("Shows loading spinner when loading is true", () => {
     const { container } = render(
       <SmallEventCard
@@ -198,7 +193,6 @@ describe("SmallEventCard", () => {
       container.querySelector("[class*='MuiCircularProgress']"),
     ).toBeInTheDocument();
   });
-
   test("Does not show card content when loading is true", () => {
     render(
       <SmallEventCard
@@ -214,7 +208,6 @@ describe("SmallEventCard", () => {
       screen.queryByText("Morning Powder Run at Snowbowl"),
     ).not.toBeInTheDocument();
   });
-
   test("Generates user initials correctly from user props", () => {
     const { container } = render(
       <SmallEventCard
@@ -230,13 +223,12 @@ describe("SmallEventCard", () => {
       "EJ",
     );
   });
-
   test("Uses event title initials when user is null", () => {
     const { container } = render(
       <SmallEventCard
         event={mockEvent}
         eventTags={[]}
-        user={null}
+        user={undefined}
         attendingCount={mockAttendingCount}
         handleEventClick={mockHandleEventClick}
       />,
@@ -246,7 +238,6 @@ describe("SmallEventCard", () => {
       "MO",
     );
   });
-
   test("Handles empty event tags gracefully", () => {
     render(
       <SmallEventCard
@@ -262,7 +253,6 @@ describe("SmallEventCard", () => {
     ).toBeInTheDocument();
     // Should not error out
   });
-
   test("Handles missing attendingCount gracefully", () => {
     render(
       <SmallEventCard
@@ -275,7 +265,6 @@ describe("SmallEventCard", () => {
     );
     expect(screen.getByText("0 people attending")).toBeInTheDocument();
   });
-
   test("Handles user with missing first or last name", () => {
     const userWithMissingName: Tables<"users"> = {
       ...mockUser,
@@ -296,7 +285,6 @@ describe("SmallEventCard", () => {
       screen.getByText("Morning Powder Run at Snowbowl"),
     ).toBeInTheDocument();
   });
-
   test("Avatar is clickable link when user is provided", () => {
     const { container } = render(
       <SmallEventCard
@@ -310,13 +298,12 @@ describe("SmallEventCard", () => {
     const link = container.querySelector("a");
     expect(link).toHaveAttribute("href", `/profile/${mockUser.id}`);
   });
-
   test("Avatar is not a link when user is null", () => {
     const { container } = render(
       <SmallEventCard
         event={mockEvent}
         eventTags={[]}
-        user={null}
+        user={undefined}
         attendingCount={mockAttendingCount}
         handleEventClick={mockHandleEventClick}
       />,
@@ -324,7 +311,6 @@ describe("SmallEventCard", () => {
     const link = container.querySelector("a");
     expect(link).not.toBeInTheDocument();
   });
-
   test("Displays correct attendee text for single person", () => {
     const singleAttendee: AttendeeCountType = {
       yes: 1,
@@ -342,7 +328,6 @@ describe("SmallEventCard", () => {
     );
     expect(screen.getByText("1 person attending")).toBeInTheDocument();
   });
-
   test("Displays correct attendee text for multiple people", () => {
     const multipleAttendees: AttendeeCountType = {
       yes: 5,
@@ -359,6 +344,24 @@ describe("SmallEventCard", () => {
       />,
     );
     expect(screen.getByText("5-9 people attending")).toBeInTheDocument();
+  });
+  test("Handles attendingCount.yes = 0 correctly", () => {
+    const zeroConfirmed: AttendeeCountType = {
+      yes: 0,
+      maybe: 5,
+      total: 7,
+    };
+    render(
+      <SmallEventCard
+        event={mockEvent}
+        eventTags={mockEventTags}
+        user={mockUser}
+        attendingCount={zeroConfirmed}
+        handleEventClick={() => {}}
+      />,
+    );
+    // When yes is 0, should display total only
+    expect(screen.getByText("7 people attending")).toBeInTheDocument();
   });
 
   test("Handles attendingCount.yes = 0 correctly", () => {

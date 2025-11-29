@@ -1,9 +1,10 @@
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import { Avatar, Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import type { CommentNode } from "@/types/Comment.types";
 import CommentForm from "./CommentForm";
+import UserAvatar from "./UserAvatar";
 
 type CommentItemProps = {
   comment: CommentNode;
@@ -88,19 +89,10 @@ export default function CommentItem({
       }}
     >
       <Stack direction="row" spacing={2} alignItems="flex-start">
-        <Avatar
-          src={
-            isDeleted
-              ? undefined
-              : (comment.author?.profile_photo_path ?? undefined)
-          }
-          alt={authorName}
+        <UserAvatar
+          user={comment.author ? comment.author : undefined}
           sx={{ width: 36, height: 36, mt: 0.5 }}
-        >
-          {isDeleted
-            ? authorName[0]
-            : comment.author?.first_name?.[0]?.toUpperCase()}
-        </Avatar>
+        />
         <Box flex={1}>
           <Stack direction="row" spacing={1} alignItems="baseline">
             <Typography variant="subtitle2">{authorName}</Typography>

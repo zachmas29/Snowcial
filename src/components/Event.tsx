@@ -3,7 +3,6 @@
  */
 
 import {
-  Avatar,
   Box,
   Button,
   Card,
@@ -18,6 +17,7 @@ import { useAuthContext } from "@/hooks/useAuth";
 import { formatEventDate } from "@/lib/date_formatters";
 import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
+import UserAvatar from "./UserAvatar";
 
 /*
 
@@ -78,17 +78,14 @@ export default function Event({ eventData, userData }: EventProps) {
                   underline="none"
                   sx={{ cursor: "pointer" }}
                 >
-                  <Avatar
-                    src={userData.profile_photo_path ?? ""}
-                    alt={`${userData.first_name} ${userData.last_name}`}
+                  <UserAvatar
+                    user={userData}
                     sx={{
                       width: 48,
                       height: 48,
                       fontSize: 18,
                     }}
-                  >
-                    {userData.first_name?.charAt(0).toUpperCase()}
-                  </Avatar>
+                  />
                 </Link>
                 <Box>
                   <Typography variant="body1" fontWeight="medium">
