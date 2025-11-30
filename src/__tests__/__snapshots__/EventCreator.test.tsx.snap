@@ -166,8 +166,8 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
                 aria-readonly="false"
                 aria-valuemax="30"
                 aria-valuemin="1"
-                aria-valuenow="30"
-                aria-valuetext="30th"
+                aria-valuenow="15"
+                aria-valuetext="15th"
                 autocapitalize="none"
                 autocorrect="off"
                 class="MuiPickersSectionList-sectionContent MuiPickersInputBase-sectionContent css-1jpopwz-MuiPickersSectionList-sectionContent-MuiPickersInputBase-sectionContent"
@@ -177,7 +177,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
                 spellcheck="false"
                 tabindex="-1"
               >
-                30
+                15
               </span>
               <span
                 class="MuiPickersInputBase-sectionAfter css-w1q93y-MuiPickersSectionList-sectionSeparator-MuiPickersInputBase-separator"
@@ -229,7 +229,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
                 aria-readonly="false"
                 aria-valuemax="12"
                 aria-valuemin="1"
-                aria-valuenow="2"
+                aria-valuenow="12"
                 autocapitalize="none"
                 autocorrect="off"
                 class="MuiPickersSectionList-sectionContent MuiPickersInputBase-sectionContent css-1jpopwz-MuiPickersSectionList-sectionContent-MuiPickersInputBase-sectionContent"
@@ -239,7 +239,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
                 spellcheck="false"
                 tabindex="-1"
               >
-                02
+                12
               </span>
               <span
                 class="MuiPickersInputBase-sectionAfter css-w1q93y-MuiPickersSectionList-sectionSeparator-MuiPickersInputBase-separator"
@@ -260,7 +260,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
                 aria-readonly="false"
                 aria-valuemax="59"
                 aria-valuemin="0"
-                aria-valuenow="36"
+                aria-valuenow="0"
                 autocapitalize="none"
                 autocorrect="off"
                 class="MuiPickersSectionList-sectionContent MuiPickersInputBase-sectionContent css-1jpopwz-MuiPickersSectionList-sectionContent-MuiPickersInputBase-sectionContent"
@@ -270,7 +270,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
                 spellcheck="false"
                 tabindex="-1"
               >
-                36
+                00
               </span>
               <span
                 class="MuiPickersInputBase-sectionAfter css-w1q93y-MuiPickersSectionList-sectionSeparator-MuiPickersInputBase-separator"
@@ -291,7 +291,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
                 aria-readonly="false"
                 aria-valuemax="1"
                 aria-valuemin="0"
-                aria-valuenow="0"
+                aria-valuenow="1"
                 autocapitalize="none"
                 autocorrect="off"
                 class="MuiPickersSectionList-sectionContent MuiPickersInputBase-sectionContent css-1jpopwz-MuiPickersSectionList-sectionContent-MuiPickersInputBase-sectionContent"
@@ -301,7 +301,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
                 spellcheck="false"
                 tabindex="-1"
               >
-                AM
+                PM
               </span>
               <span
                 class="MuiPickersInputBase-sectionAfter css-w1q93y-MuiPickersSectionList-sectionSeparator-MuiPickersInputBase-separator"
@@ -312,7 +312,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
             class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-elo8k2-MuiInputAdornment-root"
           >
             <button
-              aria-label="Choose date, selected date is Nov 30, 2025"
+              aria-label="Choose date, selected date is Nov 15, 2025"
               class="MuiButtonBase-root MuiIconButton-root MuiIconButton-edgeEnd MuiIconButton-sizeMedium css-1ysp02-MuiButtonBase-root-MuiIconButton-root"
               tabindex="0"
               type="button"
@@ -349,7 +349,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
             class="MuiPickersInputBase-input MuiPickersOutlinedInput-input css-31lcvl-MuiPickersInputBase-input"
             id="_r_c_"
             tabindex="-1"
-            value="11/30/2025 02:36 AM"
+            value="11/15/2025 12:00 PM"
           />
         </div>
       </div>

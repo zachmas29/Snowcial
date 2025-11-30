@@ -1,19 +1,10 @@
 /** biome-ignore-all lint/style/useNamingConvention: <supabase format> */
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import EventFeed from "@/components/EventFeed";
 import type { EnrichedEvent } from "@/types/app.types";
 import type { Tables } from "@/types/database.types";
-
-beforeAll(() => {
-  vi.useFakeTimers();
-  vi.setSystemTime(new Date("2025-11-15T12:00:00.000Z"));
-});
-
-afterAll(() => {
-  vi.useRealTimers();
-});
 
 vi.mock("next/router", () => ({
   useRouter: vi.fn(() => ({
@@ -90,8 +81,11 @@ describe("EventFeed", () => {
   });
 
   test("Snapshot test - renders consistently", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2025-11-15T12:00:00.000Z"));
     const { asFragment } = render(<EventFeed events={[mockEnrichedEvent]} />);
     expect(asFragment()).toMatchSnapshot();
+    vi.useRealTimers();
   });
 
   test("Displays empty state when no events", () => {
