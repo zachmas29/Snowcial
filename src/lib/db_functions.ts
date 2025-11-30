@@ -328,11 +328,11 @@ export async function fetchEventComments(
   return (data ?? []) as EventCommentWithAuthor[];
 }
 
-type CreateEventCommentInput = {
+interface CreateEventCommentInput {
   eventId: number;
   commentText: string;
   parentCommentId?: number | null;
-};
+}
 
 export async function createEventComment(
   input: CreateEventCommentInput,

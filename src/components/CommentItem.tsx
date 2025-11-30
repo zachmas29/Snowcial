@@ -6,13 +6,13 @@ import type { CommentNode } from "@/types/Comment.types";
 import CommentForm from "./CommentForm";
 import UserAvatar from "./UserAvatar";
 
-type CommentItemProps = {
+interface CommentItemProps {
   comment: CommentNode;
   depth?: number;
   currentUserId?: string | null;
   onReply: (parentId: number, text: string) => Promise<void>;
   onDelete: (commentId: number) => Promise<void>;
-};
+}
 
 export default function CommentItem({
   comment,

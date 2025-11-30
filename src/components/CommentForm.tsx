@@ -1,12 +1,12 @@
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 
-type CommentFormProps = {
+interface CommentFormProps {
   onSubmit: (text: string) => Promise<void> | void;
   submitting?: boolean;
   autoFocus?: boolean;
   placeholder?: string;
-};
+}
 
 const MAX_LENGTH = 500;
 
@@ -37,16 +37,15 @@ export default function CommentForm({
       component="form"
       onSubmit={(event) => {
         event.preventDefault();
-        void handleSubmit();
+        handleSubmit();
       }}
     >
       <Stack spacing={1}>
         <TextField
           value={text}
           onChange={(event) => {
-            const value = event.target.value;
-            if (value.length <= MAX_LENGTH) {
-              setText(value);
+            if (event.target.value.length <= MAX_LENGTH) {
+              setText(event.target.value);
             }
           }}
           autoFocus={autoFocus}
