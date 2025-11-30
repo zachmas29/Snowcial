@@ -654,7 +654,7 @@ export async function fetchEventRSVPs(eventId: number) {
  *   userId - the user creating the RSVP
  *   status - "yes" or "maybe"
  * returns: void - throws error if fails
- * note: preserves original created_at timestamp when updating status
+ * note: updates created_at when status changes so waitlist order is fair
  */
 export async function upsertRSVP(
   eventId: number,
@@ -664,16 +664,21 @@ export async function upsertRSVP(
   // Check if RSVP exists
   const { data: existing } = await supabase
     .from("event_rsvps")
-    .select("created_at")
+    .select("created_at, status")
     .eq("event_id", eventId)
     .eq("user_id", userId)
     .maybeSingle();
 
   if (existing) {
-    // Update only status, preserve created_at
+    // Update status; bump created_at when status changes so waitlist ordering reflects latest intent
+    const updatePayload =
+      existing.status === status
+        ? { status }
+        : { status, created_at: new Date().toISOString() };
+
     const { error } = await supabase
       .from("event_rsvps")
-      .update({ status })
+      .update(updatePayload)
       .eq("event_id", eventId)
       .eq("user_id", userId);
 
