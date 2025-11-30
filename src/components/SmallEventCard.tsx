@@ -6,10 +6,8 @@ import {
   CardHeader,
   Chip,
   CircularProgress,
-  Stack,
   Typography,
 } from "@mui/material";
-import Link from "next/link";
 import { formatEventDate } from "@/lib/date_formatters";
 import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
 import type { Tables } from "@/types/database.types";
@@ -48,7 +46,6 @@ export default function SmallEventCard({
   const initials = user
     ? `${user.first_name?.[0] ?? ""}${user.last_name?.[0] ?? ""}`
     : event.title?.slice(0, 2).toUpperCase();
-  const avatarSrc = user?.profile_photo_path ?? "";
 
   const attendees =
     attendingCount &&
