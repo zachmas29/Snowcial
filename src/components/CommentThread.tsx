@@ -96,7 +96,6 @@ export default function CommentThread({ eventId }: CommentThreadProps) {
       elevation={1}
       sx={{
         width: "100%",
-        maxWidth: 640,
         mx: "auto",
         mt: 4,
         p: 3,

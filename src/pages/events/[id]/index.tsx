@@ -88,30 +88,32 @@ export default function eventPage() {
 
   return (
     <div>
-      {loading ? (
-        <CircularProgress />
-      ) : hasError || !eventData ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: "40vh",
-            width: "100%",
-          }}
-        >
-          <Box component="main" sx={{ width: "100%", maxWidth: 640 }}>
-            <Alert severity="error" sx={{ width: "100%" }}>
-              Unable to load event right now.
-            </Alert>
+      <PageLayout>
+        {loading ? (
+          <CircularProgress />
+        ) : hasError || !eventData ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "40vh",
+              width: "100%",
+            }}
+          >
+            <Box component="main" sx={{ width: "100%", maxWidth: 640 }}>
+              <Alert severity="error" sx={{ width: "100%" }}>
+                Unable to load event right now.
+              </Alert>
+            </Box>
           </Box>
-        </Box>
-      ) : (
-        <>
-          <Event eventData={eventData} userData={userData ?? null} />
-          <CommentThread eventId={event_id} />
-        </>
-      )}
+        ) : (
+          <>
+            <Event eventData={eventData} userData={userData ?? null} />
+            <CommentThread eventId={event_id} />
+          </>
+        )}
+      </PageLayout>
     </div>
   );
 }
