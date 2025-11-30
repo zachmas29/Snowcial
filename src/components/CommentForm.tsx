@@ -30,6 +30,17 @@ export default function CommentForm({
     setText("");
   };
 
+  const handleTextChange = (text: string) => {
+    const lines = text.split("\n");
+    if (lines.length > 10) {
+      text = lines.slice(0, 10).join("\n");
+    }
+
+    if (text.length <= MAX_LENGTH) {
+      setText(text);
+    }
+  };
+
   const remaining = MAX_LENGTH - text.length;
 
   return (
@@ -43,11 +54,7 @@ export default function CommentForm({
       <Stack spacing={1}>
         <TextField
           value={text}
-          onChange={(event) => {
-            if (event.target.value.length <= MAX_LENGTH) {
-              setText(event.target.value);
-            }
-          }}
+          onChange={(event) => handleTextChange(event.target.value)}
           autoFocus={autoFocus}
           placeholder={placeholder}
           multiline
