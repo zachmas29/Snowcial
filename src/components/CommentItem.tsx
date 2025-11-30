@@ -14,6 +14,8 @@ interface CommentItemProps {
   onDelete: (commentId: number) => Promise<void>;
 }
 
+const maxReplyDepth = 5;
+
 export default function CommentItem({
   comment,
   depth = 0,
@@ -116,7 +118,8 @@ export default function CommentItem({
               {comment.comment_text}
             </Typography>
           )}
-          {!isDeleted && (
+          {/* Cap replies at 3 threads deep */}
+          {!isDeleted && depth < maxReplyDepth && (
             <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
               <Button
                 size="small"
