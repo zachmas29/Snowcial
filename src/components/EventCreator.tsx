@@ -115,7 +115,8 @@ export default function EventCreator({
             const value = event.target.value;
             setEventFormData({
               ...eventFormData,
-              capacity: value === "" ? null : Math.max(1, Number.parseInt(value, 10)),
+              capacity:
+                value === "" ? null : Math.max(1, Number.parseInt(value, 10)),
             });
           }}
           placeholder="Unlimited"

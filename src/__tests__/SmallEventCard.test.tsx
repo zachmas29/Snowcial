@@ -415,4 +415,205 @@ describe("SmallEventCard", () => {
     await user.click(cardElement);
     expect(handleEventClick).toHaveBeenCalledWith(mockEvent.id);
   });
+
+  test("Displays capacity when set", () => {
+    const withCapacity: AttendeeCountType = {
+      yes: 5,
+      maybe: 2,
+      total: 7,
+      capacity: 10,
+      waitlistCount: 0,
+    };
+
+    render(
+      <SmallEventCard
+        event={mockEvent}
+        eventTags={mockEventTags}
+        user={mockUser}
+        attendingCount={withCapacity}
+        handleEventClick={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/5-7 \/ 10 people attending/i)).toBeInTheDocument();
+  });
+
+  test("Displays waitlist count when present", () => {
+    const withWaitlist: AttendeeCountType = {
+      yes: 12,
+      maybe: 3,
+      total: 15,
+      capacity: 10,
+      waitlistCount: 2,
+    };
+
+    render(
+      <SmallEventCard
+        event={mockEvent}
+        eventTags={mockEventTags}
+        user={mockUser}
+        attendingCount={withWaitlist}
+        handleEventClick={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/\(2 waitlisted\)/i)).toBeInTheDocument();
+  });
+
+  test("Shows 'Full' chip when event is at capacity", () => {
+    const fullEvent: AttendeeCountType = {
+      yes: 10,
+      maybe: 2,
+      total: 12,
+      capacity: 10,
+      waitlistCount: 0,
+    };
+
+    render(
+      <SmallEventCard
+        event={mockEvent}
+        eventTags={mockEventTags}
+        user={mockUser}
+        attendingCount={fullEvent}
+        handleEventClick={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Full")).toBeInTheDocument();
+  });
+
+  test("Shows 'Full' chip when event exceeds capacity", () => {
+    const overCapacity: AttendeeCountType = {
+      yes: 15,
+      maybe: 2,
+      total: 17,
+      capacity: 10,
+      waitlistCount: 5,
+    };
+
+    render(
+      <SmallEventCard
+        event={mockEvent}
+        eventTags={mockEventTags}
+        user={mockUser}
+        attendingCount={overCapacity}
+        handleEventClick={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Full")).toBeInTheDocument();
+  });
+
+  test("Does not show 'Full' chip when event has capacity remaining", () => {
+    const notFull: AttendeeCountType = {
+      yes: 5,
+      maybe: 2,
+      total: 7,
+      capacity: 10,
+      waitlistCount: 0,
+    };
+
+    render(
+      <SmallEventCard
+        event={mockEvent}
+        eventTags={mockEventTags}
+        user={mockUser}
+        attendingCount={notFull}
+        handleEventClick={vi.fn()}
+      />,
+    );
+
+    expect(screen.queryByText("Full")).not.toBeInTheDocument();
+  });
+
+  test("Does not show 'Full' chip when capacity is unlimited", () => {
+    const unlimitedCapacity: AttendeeCountType = {
+      yes: 100,
+      maybe: 50,
+      total: 150,
+      capacity: null,
+      waitlistCount: 0,
+    };
+
+    render(
+      <SmallEventCard
+        event={mockEvent}
+        eventTags={mockEventTags}
+        user={mockUser}
+        attendingCount={unlimitedCapacity}
+        handleEventClick={vi.fn()}
+      />,
+    );
+
+    expect(screen.queryByText("Full")).not.toBeInTheDocument();
+  });
+
+  test("Displays capacity with single attendee correctly", () => {
+    const singleWithCapacity: AttendeeCountType = {
+      yes: 1,
+      maybe: 0,
+      total: 1,
+      capacity: 5,
+      waitlistCount: 0,
+    };
+
+    render(
+      <SmallEventCard
+        event={mockEvent}
+        eventTags={mockEventTags}
+        user={mockUser}
+        attendingCount={singleWithCapacity}
+        handleEventClick={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/1 \/ 5 person attending/i)).toBeInTheDocument();
+  });
+
+  test("Handles capacity of 1 correctly", () => {
+    const capacityOne: AttendeeCountType = {
+      yes: 1,
+      maybe: 0,
+      total: 1,
+      capacity: 1,
+      waitlistCount: 0,
+    };
+
+    render(
+      <SmallEventCard
+        event={mockEvent}
+        eventTags={mockEventTags}
+        user={mockUser}
+        attendingCount={capacityOne}
+        handleEventClick={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Full")).toBeInTheDocument();
+    expect(screen.getByText(/1 \/ 1 person attending/i)).toBeInTheDocument();
+  });
+
+  test("Displays both capacity and waitlist information together", () => {
+    const fullWithWaitlist: AttendeeCountType = {
+      yes: 13,
+      maybe: 2,
+      total: 15,
+      capacity: 10,
+      waitlistCount: 3,
+    };
+
+    render(
+      <SmallEventCard
+        event={mockEvent}
+        eventTags={mockEventTags}
+        user={mockUser}
+        attendingCount={fullWithWaitlist}
+        handleEventClick={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/13-15 \/ 10/i)).toBeInTheDocument();
+    expect(screen.getByText(/\(3 waitlisted\)/i)).toBeInTheDocument();
+    expect(screen.getByText("Full")).toBeInTheDocument();
+  });
 });
