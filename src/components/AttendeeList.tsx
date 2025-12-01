@@ -33,9 +33,9 @@ interface AttendeeListProps {
 
 export default function AttendeeList({ rsvps, capacity }: AttendeeListProps) {
   // Calculate lists client-side
-  const yesRsvPs = rsvps.filter((r) => r.status === "yes");
-  const confirmed = capacity ? yesRsvPs.slice(0, capacity) : yesRsvPs;
-  const waitlist = capacity ? yesRsvPs.slice(capacity) : [];
+  const yesRsvps = rsvps.filter((r) => r.status === "yes");
+  const confirmed = capacity !== null ? yesRsvps.slice(0, capacity) : yesRsvps;
+  const waitlist = capacity !== null ? yesRsvps.slice(capacity) : [];
   const maybes = rsvps.filter((r) => r.status === "maybe");
 
   const totalConfirmed = confirmed.length;
