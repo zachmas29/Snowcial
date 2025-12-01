@@ -96,10 +96,15 @@ export default function eventPage() {
   }, [event_id, router.isReady, user]);
 
   const handleRSVPChange = useCallback(async () => {
-    const rsvpList = await fetchEventRSVPs(event_id);
-    const userRsvp = user ? await getCurrentUserRSVP(event_id) : null;
-    setRsvps(rsvpList);
-    setUserRsvpStatus(userRsvp?.status ?? null);
+    try {
+      const rsvpList = await fetchEventRSVPs(event_id);
+      const userRsvp = user ? await getCurrentUserRSVP(event_id) : null;
+      setRsvps(rsvpList);
+      setUserRsvpStatus(userRsvp?.status ?? null);
+    } catch (_error) {
+      // biome-ignore lint/suspicious/noConsole: error logging
+      console.error("Failed to refresh RSVP data..");
+    }
   }, [event_id, user]);
 
   if (loading) {
