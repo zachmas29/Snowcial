@@ -142,7 +142,6 @@ export default function SmallEventCard({
               {`${attendeesNotice} attending`}
             </Typography>
             {attendingCount?.capacity !== null &&
-              attendingCount?.capacity !== undefined &&
               attendingCount?.yes !== undefined &&
               attendingCount.yes >= attendingCount.capacity && (
                 <Chip label="Full" size="small" color="warning" />
