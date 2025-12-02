@@ -43,6 +43,8 @@ export type Database = {
           creator_id: string;
           event_id: number;
           id: number;
+          is_deleted: boolean;
+          parent_comment_id: number | null;
         };
         Insert: {
           comment_text: string;
@@ -50,6 +52,8 @@ export type Database = {
           creator_id: string;
           event_id: number;
           id?: never;
+          is_deleted?: boolean;
+          parent_comment_id?: number | null;
         };
         Update: {
           comment_text?: string;
@@ -57,6 +61,8 @@ export type Database = {
           creator_id?: string;
           event_id?: number;
           id?: never;
+          is_deleted?: boolean;
+          parent_comment_id?: number | null;
         };
         Relationships: [
           {
@@ -71,6 +77,13 @@ export type Database = {
             columns: ["event_id"];
             isOneToOne: false;
             referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "event_comments_parent_comment_id_fkey";
+            columns: ["parent_comment_id"];
+            isOneToOne: false;
+            referencedRelation: "event_comments";
             referencedColumns: ["id"];
           },
         ];

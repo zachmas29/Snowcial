@@ -1,23 +1,22 @@
 import {
-  Avatar,
   Box,
   Card,
   CardActionArea,
   CardContent,
+  CardHeader,
   Chip,
   CircularProgress,
-  Stack,
   Typography,
 } from "@mui/material";
-import Link from "next/link";
 import { formatEventDate } from "@/lib/date_formatters";
 import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
 import type { Tables } from "@/types/database.types";
+import UserAvatar from "./UserAvatar";
 
 type EventCardProps = {
   event: Tables<"events">;
   eventTags: Tables<"event_tags">[];
-  user: Tables<"users"> | null;
+  user: Tables<"users"> | undefined;
   attendingCount?: AttendeeCountType;
   loading?: boolean;
   handleEventClick: (eventId: number) => void;
@@ -47,7 +46,6 @@ export default function SmallEventCard({
   const initials = user
     ? `${user.first_name?.[0] ?? ""}${user.last_name?.[0] ?? ""}`
     : event.title?.slice(0, 2).toUpperCase();
-  const avatarSrc = user?.profile_photo_path ?? "";
 
   const attendees =
     attendingCount &&
@@ -56,14 +54,12 @@ export default function SmallEventCard({
       ? `${attendingCount.yes}-${attendingCount.total}`
       : `${attendingCount?.total ?? 0}`;
   const attendeesNotice = `${attendees} ${attendingCount?.total !== 1 ? "people" : "person"}`;
-
   // Truncate description to 50 words
   const truncateDescription = (text: string, wordLimit: number = 50) => {
     const words = text.trim().split(/\s+/);
     if (words.length <= wordLimit) return text;
     return `${words.slice(0, wordLimit).join(" ")}...`;
   };
-
   return (
     <Card
       sx={{
@@ -78,6 +74,11 @@ export default function SmallEventCard({
         onClick={() => handleEventClick(event.id)}
         sx={{ height: "100%" }}
       >
+        <CardHeader
+          avatar={<UserAvatar user={user} fallbackInitials={initials} />}
+          title={event.title}
+          subheader={`${user ? `${user.first_name} ${user.last_name}` : ""} • ${formatEventDate(event.event_time)}`}
+        />
         <CardContent
           sx={{
             p: 2,
@@ -86,60 +87,6 @@ export default function SmallEventCard({
             gap: 1.5,
           }}
         >
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            {user ? (
-              <Link
-                href={`/profile/${user.id}`}
-                onClick={(e) => e.stopPropagation()}
-                style={{ textDecoration: "none" }}
-              >
-                <Avatar
-                  src={avatarSrc}
-                  sx={{
-                    width: 48,
-                    height: 48,
-                    fontSize: 16,
-                  }}
-                >
-                  {initials}
-                </Avatar>
-              </Link>
-            ) : (
-              <Avatar
-                sx={{
-                  width: 48,
-                  height: 48,
-                  fontSize: 16,
-                }}
-              >
-                {initials}
-              </Avatar>
-            )}
-
-            <Box sx={{ minWidth: 0, flex: 1 }}>
-              <Typography
-                variant="h6"
-                fontWeight={700}
-                sx={{
-                  lineHeight: 1.2,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {event.title}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
-              >
-                {user ? `${user.first_name} ${user.last_name}` : "Event"} •{" "}
-                {formatEventDate(event.event_time)}
-              </Typography>
-            </Box>
-          </Stack>
-
           {event.description && (
             <Typography
               variant="body2"

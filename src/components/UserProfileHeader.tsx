@@ -1,5 +1,12 @@
-import { Avatar, Box, Chip, Stack, Typography, useTheme } from "@mui/material";
+/*
+  UserProfileHeader.tsx
+
+  Displays a user's avatar, name, email, and associated tags.
+*/
+
+import { Box, Chip, Stack, Typography, useTheme } from "@mui/material";
 import type { UserProfileHeaderProps } from "@/types/app.types";
+import UserAvatar from "./UserAvatar";
 
 export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
   const fullName = `${user.first_name} ${user.last_name}`.trim();
@@ -32,9 +39,8 @@ export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
       />
 
       {/* Profile Picture */}
-      <Avatar
-        src={user.profile_photo_path ?? ""}
-        alt={fullName}
+      <UserAvatar
+        user={user}
         sx={{
           width: { xs: 80, sm: 100 },
           height: { xs: 80, sm: 100 },
@@ -46,9 +52,7 @@ export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
           borderColor: "background.paper",
           boxShadow: 2,
         }}
-      >
-        {fullName.charAt(0).toUpperCase()}
-      </Avatar>
+      />
 
       {/* Content */}
       <Box sx={{ pt: { xs: 6, sm: 7 }, pb: 3, px: 2 }}>

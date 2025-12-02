@@ -6,7 +6,6 @@
 */
 
 import {
-  Avatar,
   Box,
   Card,
   CardActionArea,
@@ -16,17 +15,10 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import type { SmallProfileCardProps } from "@/types/app.types";
+import UserAvatar from "./UserAvatar";
 
 export default function SmallProfileCard({ user }: SmallProfileCardProps) {
-  const {
-    id,
-    profile_photo_path,
-    first_name,
-    last_name,
-    nick_name,
-    bio_text,
-    tags,
-  } = user;
+  const { id, first_name, last_name, nick_name, bio_text, tags } = user;
 
   return (
     <Card
@@ -49,17 +41,15 @@ export default function SmallProfileCard({ user }: SmallProfileCardProps) {
           gap: { xs: 1.5, sm: 0 },
         }}
       >
-        <Avatar
-          src={profile_photo_path ?? ""}
-          alt={`${first_name} ${last_name}`}
+        <UserAvatar
+          user={user}
+          shouldLink={false}
           sx={{
             width: { xs: 56, sm: 64 },
             height: { xs: 56, sm: 64 },
             mr: { sm: 2 },
           }}
-        >
-          {(first_name ?? "?").charAt(0).toUpperCase()}
-        </Avatar>
+        />
         <CardContent
           sx={{
             flex: 1,

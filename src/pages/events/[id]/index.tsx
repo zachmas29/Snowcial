@@ -2,6 +2,7 @@
 import { Alert, Box, CircularProgress } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import CommentThread from "@/components/CommentThread";
 import Event from "@/components/Event";
 import PageLayout from "@/components/PageLayout";
 import {
@@ -9,6 +10,7 @@ import {
   fetchEventTags,
   fetchUserFromEventId,
 } from "@/lib/db_functions";
+// import styles removed; use MUI Box for layout instead
 import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
 
@@ -21,6 +23,9 @@ export default function eventPage() {
   const event_id: number = Number(router.query.id);
 
   useEffect(() => {
+    if (!router.isReady || Number.isNaN(event_id)) {
+      return;
+    }
     async function loadEvent() {
       try {
         const data = await fetchEvent(event_id);
@@ -52,7 +57,7 @@ export default function eventPage() {
       }
     }
     loadEvent();
-  }, [event_id]);
+  }, [event_id, router.isReady]);
 
   if (loading) {
     return (
@@ -82,8 +87,33 @@ export default function eventPage() {
   }
 
   return (
-    <PageLayout>
-      <Event eventData={eventData} userData={userData ?? null} />
-    </PageLayout>
+    <div>
+      <PageLayout>
+        {loading ? (
+          <CircularProgress />
+        ) : hasError || !eventData ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "40vh",
+              width: "100%",
+            }}
+          >
+            <Box component="main" sx={{ width: "100%", maxWidth: 640 }}>
+              <Alert severity="error" sx={{ width: "100%" }}>
+                Unable to load event right now.
+              </Alert>
+            </Box>
+          </Box>
+        ) : (
+          <>
+            <Event eventData={eventData} userData={userData ?? null} />
+            <CommentThread eventId={event_id} />
+          </>
+        )}
+      </PageLayout>
+    </div>
   );
 }

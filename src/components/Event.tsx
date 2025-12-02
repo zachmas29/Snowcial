@@ -3,13 +3,11 @@
  */
 
 import {
-  Avatar,
   Box,
   Button,
   Card,
   CardContent,
   Chip,
-  Link,
   Stack,
   Typography,
 } from "@mui/material";
@@ -18,6 +16,7 @@ import { useAuthContext } from "@/hooks/useAuth";
 import { formatEventDate } from "@/lib/date_formatters";
 import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
+import UserAvatar from "./UserAvatar";
 
 /*
 
@@ -65,23 +64,14 @@ export default function Event({ eventData, userData }: EventProps) {
         {userData && (
           <Box sx={{ mb: 2 }}>
             <Stack direction="row" spacing={2} alignItems="center">
-              <Link
-                href={`/profile/${userData.id}`}
-                underline="none"
-                sx={{ cursor: "pointer" }}
-              >
-                <Avatar
-                  src={userData.profile_photo_path ?? ""}
-                  alt={`${userData.first_name} ${userData.last_name}`}
-                  sx={{
-                    width: 48,
-                    height: 48,
-                    fontSize: 18,
-                  }}
-                >
-                  {userData.first_name?.charAt(0).toUpperCase()}
-                </Avatar>
-              </Link>
+              <UserAvatar
+                user={userData}
+                sx={{
+                  width: 48,
+                  height: 48,
+                  fontSize: 18,
+                }}
+              />
               <Box>
                 <Typography variant="body1" fontWeight="medium">
                   {userData.first_name} {userData.last_name}

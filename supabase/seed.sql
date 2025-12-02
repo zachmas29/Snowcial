@@ -59,6 +59,28 @@ values
   ('10eebc99-9c0b-4ef8-bb6d-6bb9bd380a77', 6, 'I''m so pumped for this! My first night skiing experience!'),
   ('e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a55', 6, 'Can we make this a regular thing? Night skiing is the best!');
 
+-- Insert threaded replies for event comments
+insert into event_comments (creator_id, event_id, comment_text, parent_comment_id)
+values
+  (
+    'c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a33',
+    1,
+    'Hot chocolate sounds amazing!',
+    (select id from event_comments where event_id = 1 and creator_id = 'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22' limit 1)
+  ),
+  (
+    'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+    1,
+    'Welcome! Happy to show you around.',
+    (select id from event_comments where event_id = 1 and creator_id = 'c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a33' limit 1)
+  ),
+  (
+    '20eebc99-9c0b-4ef8-bb6d-6bb9bd380a88',
+    3,
+    'Bring your camera, Ryan! Sunrise shots would be great.',
+    (select id from event_comments where event_id = 3 and creator_id = '20eebc99-9c0b-4ef8-bb6d-6bb9bd380a88' limit 1)
+  );
+
 -- Insert event RSVPs
 insert into event_rsvps (user_id, event_id, status)
 values

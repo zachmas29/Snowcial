@@ -60,7 +60,7 @@ const mockEnrichedEvent: EnrichedEvent = {
 
 const mockEnrichedEventWithoutUser: EnrichedEvent = {
   event: mockEvent,
-  user: null,
+  user: undefined,
   eventTags: mockTags,
   attendingCount: mockAttendeeCount,
 };
@@ -81,8 +81,11 @@ describe("EventFeed", () => {
   });
 
   test("Snapshot test - renders consistently", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2025-11-15T12:00:00.000Z"));
     const { asFragment } = render(<EventFeed events={[mockEnrichedEvent]} />);
     expect(asFragment()).toMatchSnapshot();
+    vi.useRealTimers();
   });
 
   test("Displays empty state when no events", () => {
