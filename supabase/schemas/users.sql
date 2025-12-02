@@ -6,7 +6,6 @@ CREATE TABLE users (
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
-    nick_name TEXT,
     bio_text TEXT,
     profile_photo_path TEXT,
     banner_photo_path TEXT

@@ -2,17 +2,17 @@
 -- These UUIDs simulate what would come from auth.users
 
 -- Insert test users with UUIDs (simulating auth.users.id)
-insert into users (id, first_name, last_name, email, nick_name, bio_text, profile_photo_path, banner_photo_path)
+insert into users (id, first_name, last_name, email, bio_text, profile_photo_path, banner_photo_path)
 values
-  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Emma', 'Johnson', 'emma.johnson@middlebury.edu', 'EmmaJ', 'Love hitting the slopes early morning! Always looking for powder days at Snowbowl.', 'https://lh3.googleusercontent.com/a/default-user', null),
-  ('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Jake', 'Martinez', 'jake.martinez@middlebury.edu', 'JakeM', 'Snowboarder for 5 years. Down for park laps or backcountry adventures.', 'https://lh3.googleusercontent.com/a/default-user', null),
-  ('c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a33', 'Sarah', 'Chen', 'sarah.chen@middlebury.edu', 'SarahC', 'Just learned to ski last year, looking for beginner-friendly group rides!', 'https://lh3.googleusercontent.com/a/default-user', null),
-  ('d0eebc99-9c0b-4ef8-bb6d-6bb9bd380a44', 'Alex', 'Thompson', 'alex.thompson@middlebury.edu', 'AlexT', 'Backcountry enthusiast and avalanche safety instructor. Let''s explore the sidecountry!', 'https://lh3.googleusercontent.com/a/default-user', null),
-  ('e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a55', 'Maya', 'Patel', 'maya.patel@middlebury.edu', 'MayaP', 'Weekend warrior! Love cruising blues at Sugarbush. Coffee before every run.', 'https://lh3.googleusercontent.com/a/default-user', null),
-  ('f0eebc99-9c0b-4ef8-bb6d-6bb9bd380a66', 'Chris', 'Anderson', 'chris.anderson@middlebury.edu', 'ChrisA', 'Former ski racer, now just here for a good time. Fast and smooth.', 'https://lh3.googleusercontent.com/a/default-user', null),
-  ('10eebc99-9c0b-4ef8-bb6d-6bb9bd380a77', 'Zoe', 'Williams', 'zoe.williams@middlebury.edu', 'ZoeW', 'New to Vermont! Stoked to explore all the mountains. Night skiing anyone?', 'https://lh3.googleusercontent.com/a/default-user', null),
-  ('20eebc99-9c0b-4ef8-bb6d-6bb9bd380a88', 'Ryan', 'Kim', 'ryan.kim@middlebury.edu', 'RyanK', 'Photographer and skier. Always chasing the best light and freshest snow.', 'https://lh3.googleusercontent.com/a/default-user', null),
-  ('30eebc99-9c0b-4ef8-bb6d-6bb9bd380a99', 'Lily', 'Rodriguez', 'lily.rodriguez@middlebury.edu', 'LilyR', 'Ski patrol volunteer. Safety first, fun always! Killington is my home mountain.', 'https://lh3.googleusercontent.com/a/default-user', null);
+  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Emma', 'Johnson', 'emma.johnson@middlebury.edu', 'Love hitting the slopes early morning! Always looking for powder days at Snowbowl.', 'https://lh3.googleusercontent.com/a/default-user', null),
+  ('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Jake', 'Martinez', 'jake.martinez@middlebury.edu', 'Snowboarder for 5 years. Down for park laps or backcountry adventures.', 'https://lh3.googleusercontent.com/a/default-user', null),
+  ('c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a33', 'Sarah', 'Chen', 'sarah.chen@middlebury.edu', 'Just learned to ski last year, looking for beginner-friendly group rides!', 'https://lh3.googleusercontent.com/a/default-user', null),
+  ('d0eebc99-9c0b-4ef8-bb6d-6bb9bd380a44', 'Alex', 'Thompson', 'alex.thompson@middlebury.edu', 'Backcountry enthusiast and avalanche safety instructor. Let''s explore the sidecountry!', 'https://lh3.googleusercontent.com/a/default-user', null),
+  ('e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a55', 'Maya', 'Patel', 'maya.patel@middlebury.edu', 'Weekend warrior! Love cruising blues at Sugarbush. Coffee before every run.', 'https://lh3.googleusercontent.com/a/default-user', null),
+  ('f0eebc99-9c0b-4ef8-bb6d-6bb9bd380a66', 'Chris', 'Anderson', 'chris.anderson@middlebury.edu', 'Former ski racer, now just here for a good time. Fast and smooth.', 'https://lh3.googleusercontent.com/a/default-user', null),
+  ('10eebc99-9c0b-4ef8-bb6d-6bb9bd380a77', 'Zoe', 'Williams', 'zoe.williams@middlebury.edu', 'New to Vermont! Stoked to explore all the mountains. Night skiing anyone?', 'https://lh3.googleusercontent.com/a/default-user', null),
+  ('20eebc99-9c0b-4ef8-bb6d-6bb9bd380a88', 'Ryan', 'Kim', 'ryan.kim@middlebury.edu', 'Photographer and skier. Always chasing the best light and freshest snow.', 'https://lh3.googleusercontent.com/a/default-user', null),
+  ('30eebc99-9c0b-4ef8-bb6d-6bb9bd380a99', 'Lily', 'Rodriguez', 'lily.rodriguez@middlebury.edu', 'Ski patrol volunteer. Safety first, fun always! Killington is my home mountain.', 'https://lh3.googleusercontent.com/a/default-user', null);
 
 -- Insert event tags
 insert into event_tags (name)
