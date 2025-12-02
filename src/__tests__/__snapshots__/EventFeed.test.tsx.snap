@@ -27,9 +27,12 @@ exports[`EventFeed > Snapshot test - renders consistently 1`] = `
                 href="/profile/a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
               >
                 <div
-                  class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault css-18k2bs-MuiAvatar-root"
+                  class="MuiAvatar-root MuiAvatar-circular css-fmeqll-MuiAvatar-root"
                 >
-                  EJ
+                  <img
+                    class="MuiAvatar-img css-1su80sj-MuiAvatar-img"
+                    src="https://lh3.googleusercontent.com/a/default-user"
+                  />
                 </div>
               </a>
             </div>
