@@ -1,13 +1,5 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
 
-/*
- * EventCreator.tsx
- * If no initial data is passed, operates as 
- * an event creator, otherwise will prefill the 
- * form data and be in edit mode.
-
-*/
-
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {

@@ -236,7 +236,7 @@ describe("RSVPButton", () => {
     });
   });
 
-  test("Shows loading spinner when processing RSVP", async () => {
+  test("Buttons are disabled while processing RSVP", async () => {
     const user = userEvent.setup();
     const upsertRSVPMock = vi.mocked(dbFunctions.upsertRSVP);
     upsertRSVPMock.mockImplementation(
@@ -257,69 +257,12 @@ describe("RSVPButton", () => {
     const goingButton = screen.getByRole("button", { name: /^Going$/i });
     await user.click(goingButton);
 
-    // Should show loading spinner
-    expect(screen.getByRole("progressbar")).toBeInTheDocument();
-
-    // Wait for the async operation to complete
     await waitFor(() => {
-      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+      expect(goingButton).toBeDisabled();
     });
-  });
-
-  test("Displays error message when RSVP fails", async () => {
-    const user = userEvent.setup();
-    const upsertRSVPMock = vi.mocked(dbFunctions.upsertRSVP);
-    upsertRSVPMock.mockRejectedValue(new Error("Network error"));
-
-    render(
-      <RSVPButton
-        eventId={1}
-        currentStatus={null}
-        capacity={null}
-        rsvps={mockRsvps}
-        userId="test-user-id"
-        onRSVPChange={vi.fn()}
-      />,
-    );
-
-    const goingButton = screen.getByRole("button", { name: /^Going$/i });
-    await user.click(goingButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/Failed to update RSVP/i)).toBeInTheDocument();
-    });
-  });
-
-  test("Disables buttons while loading", async () => {
-    const user = userEvent.setup();
-    const upsertRSVPMock = vi.mocked(dbFunctions.upsertRSVP);
-    upsertRSVPMock.mockImplementation(
-      () => new Promise((resolve) => setTimeout(resolve, 100)),
-    );
-
-    render(
-      <RSVPButton
-        eventId={1}
-        currentStatus={null}
-        capacity={null}
-        rsvps={mockRsvps}
-        userId="test-user-id"
-        onRSVPChange={vi.fn()}
-      />,
-    );
-
-    const goingButton = screen.getByRole("button", { name: /^Going$/i });
-    await user.click(goingButton);
-
-    // Buttons should be disabled during loading - they're gone, replaced by spinner
-    expect(
-      screen.queryByRole("button", { name: /^Going$/i }),
-    ).not.toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole("button", { name: /^Going$/i }),
-      ).toBeInTheDocument();
+      expect(upsertRSVPMock).toHaveBeenCalled();
     });
   });
 

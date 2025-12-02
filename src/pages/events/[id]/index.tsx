@@ -49,14 +49,6 @@ export default function eventPage() {
       return;
     }
     async function loadEvent() {
-      // Guard against router not being ready
-      if (!event_id || Number.isNaN(event_id)) {
-        return;
-      }
-
-      // Reset error state when attempting a new fetch
-      setHasError(false);
-
       try {
         const data = await fetchEvent(event_id);
         const tags = await fetchEventTags(event_id);
@@ -76,10 +68,6 @@ export default function eventPage() {
           tags: tags,
           capacity: data.capacity,
         };
-
-        if (!typedData) {
-          throw Error("Event undefined.");
-        }
 
         setEventData(typedData);
         setUserData(userData ?? null);
@@ -135,47 +123,25 @@ export default function eventPage() {
   }
 
   return (
-    <div>
-      <PageLayout>
-        {loading ? (
-          <CircularProgress />
-        ) : hasError || !eventData ? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              minHeight: "40vh",
-              width: "100%",
-            }}
-          >
-            <Box component="main" sx={{ width: "100%", maxWidth: 640 }}>
-              <Alert severity="error" sx={{ width: "100%" }}>
-                Unable to load event right now.
-              </Alert>
-            </Box>
-          </Box>
-        ) : (
-          <Stack spacing={3}>
-            <Event eventData={eventData} userData={userData ?? null} />
+    <PageLayout>
+      <Stack spacing={3}>
+        <Event eventData={eventData} userData={userData ?? null} />
 
-            {user && (
-              <RSVPButton
-                eventId={event_id}
-                currentStatus={userRsvpStatus}
-                capacity={eventCapacity}
-                rsvps={rsvps}
-                userId={user.id}
-                onRSVPChange={handleRSVPChange}
-              />
-            )}
-
-            <AttendeeList rsvps={rsvps} capacity={eventCapacity} />
-
-            <CommentThread eventId={event_id} />
-          </Stack>
+        {user && (
+          <RSVPButton
+            eventId={event_id}
+            currentStatus={userRsvpStatus}
+            capacity={eventCapacity}
+            rsvps={rsvps}
+            userId={user.id}
+            onRSVPChange={handleRSVPChange}
+          />
         )}
-      </PageLayout>
-    </div>
+
+        <AttendeeList rsvps={rsvps} capacity={eventCapacity} />
+
+        <CommentThread eventId={event_id} />
+      </Stack>
+    </PageLayout>
   );
 }

@@ -215,10 +215,9 @@ export async function fetchEvent(id: number): Promise<Tables<"events"> | null> {
   return data;
 }
 
-/**
- * deleteEvent
- * @params id - the event id to delete
- * @returns void - throws error if deletion fails
+/* deleteEvent
+ * params: id - the event id to delete
+ * returns: void - throws error if deletion fails
  */
 export async function deleteEvent(id: number): Promise<void> {
   const { error } = await supabase.from("events").delete().eq("id", id);
@@ -230,15 +229,9 @@ export async function deleteEvent(id: number): Promise<void> {
 
 /* getAttendeeCount
  * params: id - the event id to search for
- * returns: an object of type AttendeeCountType containing
- *    yes - the number of people who answered 'yes'
- *    maybe - the number of people who answered 'maybe'
- *    total - yes + maybe
- *    capacity - the event's capacity limit (null if unlimited)
- *    waitlistCount - number of people on waitlist (0 if no capacity or not full)
+ * returns: an object of type AttendeeCountType
  */
 export async function getAttendeeCount(eventId: number) {
-  // Fetch event to get capacity
   const { data: event, error: eventError } = await supabase
     .from("events")
     .select("capacity")
@@ -277,7 +270,6 @@ export async function getAttendeeCount(eventId: number) {
   const totalCount = yesCount + maybeCount;
   const capacity = event?.capacity ?? null;
 
-  // Calculate waitlist count
   let waitlistCount = 0;
   if (capacity !== null) {
     waitlistCount = Math.max(0, yesCount - capacity);
@@ -463,8 +455,8 @@ export async function deleteEventComment(
   return data as EventCommentWithAuthor;
 }
 
-/** fetchEventTagOptions
- * @returns A list of all possible event tags
+/* fetchEventTagOptions
+ * returns: A list of all possible event tags
  */
 export async function fetchEventTagOptions(): Promise<Tables<"event_tags">[]> {
   const { data, error } = await supabase.from("event_tags").select("*");
@@ -476,8 +468,8 @@ export async function fetchEventTagOptions(): Promise<Tables<"event_tags">[]> {
   return data ?? [];
 }
 
-/** fetchUserTagOptions
- * @returns A list of all possible user tags
+/* fetchUserTagOptions
+ * returns: A list of all possible user tags
  */
 export async function fetchUserTagOptions(): Promise<Tables<"user_tags">[]> {
   const { data, error } = await supabase.from("user_tags").select("*");
@@ -489,10 +481,8 @@ export async function fetchUserTagOptions(): Promise<Tables<"user_tags">[]> {
   return data ?? [];
 }
 
-/**
+/* insertEventWithTags
  * Inserts a new event and its tag assignments
- * @param eventFormData - The event data including tags
- * @returns The inserted event or null if failed
  */
 export async function insertEventWithTags(
   eventFormData: EventFormData,
@@ -540,11 +530,8 @@ export async function insertEventWithTags(
   return event;
 }
 
-/**
+/* updateEventWithTags
  * Updates an existing event and its tag assignments
- * @param eventData - The complete event data including id
- * @param tags - Optional array of tags to assign to the event
- * @returns The updated event or null if failed
  */
 export async function updateEventWithTags(
   eventData: Tables<"events">,
@@ -649,19 +636,14 @@ export async function fetchEventRSVPs(eventId: number) {
 }
 
 /* upsertRSVP
- * params:
- *   eventId - the event to RSVP to
- *   userId - the user creating the RSVP
- *   status - "yes" or "maybe"
+ * params: eventId, userId, status - "yes" or "maybe"
  * returns: void - throws error if fails
- * note: updates created_at when status changes so waitlist order is fair
  */
 export async function upsertRSVP(
   eventId: number,
   userId: string,
   status: "yes" | "maybe",
 ) {
-  // Check if RSVP exists
   const { data: existing } = await supabase
     .from("event_rsvps")
     .select("created_at, status")
@@ -670,7 +652,6 @@ export async function upsertRSVP(
     .maybeSingle();
 
   if (existing) {
-    // Update status; bump created_at when status changes so waitlist ordering reflects latest intent
     const updatePayload =
       existing.status === status
         ? { status }
@@ -684,7 +665,6 @@ export async function upsertRSVP(
 
     if (error) throw error;
   } else {
-    // Insert new RSVP
     const { error } = await supabase
       .from("event_rsvps")
       .insert({ event_id: eventId, user_id: userId, status });
@@ -694,9 +674,7 @@ export async function upsertRSVP(
 }
 
 /* deleteRSVP
- * params:
- *   eventId - the event
- *   userId - the user
+ * params: eventId, userId
  * returns: void - throws error if fails
  */
 export async function deleteRSVP(eventId: number, userId: string) {
