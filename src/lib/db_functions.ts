@@ -689,7 +689,6 @@ export async function deleteRSVP(eventId: number, userId: string) {
  * params: user id to clear tag assignments
  */
 export async function clearUserTagAssignments(user_id: string) {
-
   const { error } = await supabase
     .from("user_tag_assignments")
     .delete()
@@ -739,12 +738,9 @@ export async function updateUserTagAssignments(
   await clearUserTagAssignments(user_id);
 
   if (tagIds.length > 0) {
-
     const rows = tagIds.map((tag_id) => ({ user_id, tag_id }));
 
-    const { error } = await supabase
-      .from("user_tag_assignments")
-      .insert(rows);
+    const { error } = await supabase.from("user_tag_assignments").insert(rows);
 
     if (error) {
       throw error;
@@ -756,9 +752,8 @@ export async function updateUserTagAssignments(
  * Updates the database row for the currently authenticated user.
  */
 export async function updateCurrentUserProfile(updates: any) {
-
   const userId = updates.id;
-  
+
   if (!userId) {
     throw new Error("Missing user id");
   }
@@ -781,16 +776,13 @@ export async function updateCurrentUserProfile(updates: any) {
   return result.data;
 }
 
-
 /* uploadGalleryPhoto
  * Uploads a gallery image for a user and stores the path in DB
  */
 export async function uploadGalleryPhoto(userId: string, file: File) {
-
   const path = `${userId}-${Date.now()}-${file.name}`;
 
-  const send = await supabase
-    .storage
+  const send = await supabase.storage
     .from("gallery-photos")
     .upload(path, file, {
       contentType: file.type,
@@ -802,7 +794,7 @@ export async function uploadGalleryPhoto(userId: string, file: File) {
     .from("gallery_photos")
     .insert({
       user_id: userId,
-      photo_path: path
+      photo_path: path,
     })
     .select()
     .single();
@@ -811,11 +803,35 @@ export async function uploadGalleryPhoto(userId: string, file: File) {
 
   return data.data;
 }
-   
+
+/**
+ * Deletes a gallery photo (both storage file and DB record)
+ * Note: gallery_photos has composite primary key (user_id, photo_path)
+ */
+export async function deleteGalleryPhoto(userId: string, photoPath: string) {
+  // Delete from storage bucket
+  const { error: storageError } = await supabase.storage
+    .from("gallery-photos")
+    .remove([photoPath]);
+
+  if (storageError) {
+    throw storageError;
+  }
+
+  // Delete from database
+  const { error: dbError } = await supabase
+    .from("gallery_photos")
+    .delete()
+    .eq("user_id", userId)
+    .eq("photo_path", photoPath);
+
+  if (dbError) {
+    throw dbError;
+  }
+}
 
 // Uploads a profile photo for a user and stores the path in database
 export async function uploadProfilePhoto(userId: string, file: File) {
-  
   const path = `${userId}-profile-${Date.now()}-${file.name}`;
 
   const { error } = await supabase.storage
@@ -829,7 +845,6 @@ export async function uploadProfilePhoto(userId: string, file: File) {
 
 // Uploads a banner photo for a user and stores the path in database
 export async function uploadBannerPhoto(userId: string, file: File) {
-
   const path = `${userId}-banner-${Date.now()}-${file.name}`;
 
   const { error } = await supabase.storage
