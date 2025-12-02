@@ -17,12 +17,12 @@ import {
   fetchUserProfile,
   getAttendeeCount,
 } from "@/lib/db_functions";
-import type { EnrichedEvent, UserProfileData } from "@/types/app.types";
 import { getPublicUrl } from "@/lib/getPublicURL";
+import type { EnrichedEvent, UserProfileData } from "@/types/app.types";
 
 function isValidUuid(value: string): boolean {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-    value
+    value,
   );
 }
 
@@ -85,7 +85,7 @@ export default function UserProfilePage() {
           } catch (err) {
             console.error(
               `Failed to fetch extra data for event ${event.id}:`,
-              err
+              err,
             );
 
             return {
@@ -133,7 +133,7 @@ export default function UserProfilePage() {
         if (data.user.profile_photo_path) {
           data.user.profile_photo_path = getPublicUrl(
             "profile-photos",
-            data.user.profile_photo_path
+            data.user.profile_photo_path,
           );
         }
 
@@ -141,7 +141,7 @@ export default function UserProfilePage() {
         if (data.user.banner_photo_path) {
           data.user.banner_photo_path = getPublicUrl(
             "banner-photos",
-            data.user.banner_photo_path
+            data.user.banner_photo_path,
           );
         }
 
@@ -204,7 +204,7 @@ export default function UserProfilePage() {
                   ...p,
                   photo_path: getPublicUrl(
                     "gallery-photos",
-                    p.photo_path as string
+                    p.photo_path as string,
                   ),
                 }))}
             />
