@@ -76,7 +76,11 @@ export default function SmallEventCard({
       >
         <CardHeader
           avatar={<UserAvatar user={user} fallbackInitials={initials} />}
-          title={event.title}
+          title={
+            <Typography variant="h6" fontWeight="bold">
+              {event.title}
+            </Typography>
+          }
           subheader={`${user ? `${user.first_name} ${user.last_name}` : ""} • ${formatEventDate(event.event_time)}`}
         />
         <CardContent
