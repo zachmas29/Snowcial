@@ -39,11 +39,11 @@ exports[`EventFeed > Snapshot test - renders consistently 1`] = `
             <div
               class="MuiCardHeader-content css-1jkp9bu-MuiCardHeader-content"
             >
-              <span
-                class="MuiTypography-root MuiTypography-body2 MuiCardHeader-title css-7ctihp-MuiTypography-root"
+              <h6
+                class="MuiTypography-root MuiTypography-h6 css-h9fkkg-MuiTypography-root"
               >
                 Morning Powder Run at Snowbowl
-              </span>
+              </h6>
               <span
                 class="MuiTypography-root MuiTypography-body2 MuiCardHeader-subheader css-1a1whku-MuiTypography-root"
               >
