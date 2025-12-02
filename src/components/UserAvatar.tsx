@@ -16,10 +16,17 @@ export default function UserAvatar({
   fallbackInitials = "",
 }: UserAvatarProps) {
   const initials = user
-    ? `${user.first_name?.[0] ?? ""}${user.last_name?.[0] ?? ""}`
+    ? `${user.first_name[0] ?? ""}${user.last_name[0] ?? ""}`
     : fallbackInitials;
 
-  const avatarElement = <Avatar sx={sx}>{initials}</Avatar>;
+  // Try to get avatar URL from user object (Google users)
+  const avatarUrl = user?.profile_photo_path ?? undefined;
+
+  const avatarElement = (
+    <Avatar sx={sx} src={avatarUrl || undefined}>
+      {!avatarUrl && initials}
+    </Avatar>
+  );
 
   if (!shouldLink || !user) {
     return avatarElement;
