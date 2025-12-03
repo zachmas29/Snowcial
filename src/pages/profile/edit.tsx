@@ -1,23 +1,13 @@
 //biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB types to make Supabase happy>
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  IconButton,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
-import { useTheme } from "@mui/material/styles";
+import { Alert, Box, CircularProgress, Paper, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import type { EditProfileFormValues } from "@/components/EditProfileForm";
+import EditProfileForm from "@/components/EditProfileForm";
+import EditProfileGallery from "@/components/EditProfileGallery";
+import EditProfileHeader from "@/components/EditProfileHeader";
 import PageLayout from "@/components/PageLayout";
-import TagSelector from "@/components/TagSelector";
 import { useAuthContext } from "@/hooks/useAuth";
 import {
   deleteGalleryPhoto,
@@ -38,7 +28,6 @@ import type { GenericTagType } from "@/types/EventCreator.types";
 export default function EditProfilePage() {
   const authData = useAuthContext();
   const router = useRouter();
-  const theme = useTheme();
 
   const [profile, setProfile] = useState<Partial<Tables<"users">>>({
     id: undefined,
@@ -64,7 +53,6 @@ export default function EditProfilePage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Consolidated data fetching with Promise.all
   useEffect(() => {
     async function fetchAllData() {
       if (!authData.user) return;
@@ -92,7 +80,6 @@ export default function EditProfilePage() {
               .eq("user_id", authData.user.id),
           ]);
 
-        // Handle profile data
         if (profileResult.error) {
           throw profileResult.error;
         }
@@ -100,7 +87,6 @@ export default function EditProfilePage() {
         if (profileResult.data) {
           setProfile(profileResult.data);
 
-          // Get profile photo URL (handles both Google URLs and storage paths)
           if (profileResult.data.profile_photo_path) {
             const photoUrl = getPublicUrl(
               "profile-photos",
@@ -109,7 +95,6 @@ export default function EditProfilePage() {
             setPhoto(photoUrl);
           }
 
-          // Get banner photo URL (handles both Google URLs and storage paths)
           if (profileResult.data.banner_photo_path) {
             const bannerUrl = getPublicUrl(
               "banner-photos",
@@ -119,20 +104,17 @@ export default function EditProfilePage() {
           }
         }
 
-        // Handle gallery data
         if (galleryResult.error) {
           throw galleryResult.error;
         }
         setGalleryPhotos(galleryResult.data || []);
 
-        // Handle tags data via helper
         const allTags: GenericTagType[] = tagOptions.map((t) => ({
           id: t.id,
           name: t.name,
         }));
         setAvailableTags(allTags);
 
-        // Handle tag assignments
         if (assignmentsResult.error) {
           throw assignmentsResult.error;
         }
@@ -149,7 +131,7 @@ export default function EditProfilePage() {
       }
     }
 
-    fetchAllData();
+    void fetchAllData();
   }, [authData.user]);
 
   async function saveProfile() {
@@ -171,13 +153,11 @@ export default function EditProfilePage() {
         return;
       }
 
-      // Upload new profile photo if user selected one
       let photoPath = profile.profile_photo_path || null;
       if (file) {
         photoPath = await uploadProfileImage(userId, file);
       }
 
-      // Upload new banner photo if user selected one
       let bannerPath = profile.banner_photo_path || null;
       if (bannerFile) {
         bannerPath = await uploadBannerImage(userId, bannerFile);
@@ -192,7 +172,6 @@ export default function EditProfilePage() {
         banner_photo_path: bannerPath,
       });
 
-      // Update tag assignments
       const tagIds = selectedTags.map((tag) => tag.id);
       await updateUserTagAssignments(userId, tagIds);
 
@@ -204,32 +183,26 @@ export default function EditProfilePage() {
     }
   }
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFile(file);
-      setPhoto(URL.createObjectURL(file));
-    }
-  }
+  const handleChangeProfileForm = (patch: Partial<EditProfileFormValues>) => {
+    setProfile((prev) => ({ ...prev, ...patch }));
+  };
 
-  function handleBannerFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) {
-      setBannerFile(file);
-      setBanner(URL.createObjectURL(file));
-    }
-  }
+  const handleChangeProfilePhoto = (newFile: File) => {
+    setFile(newFile);
+    setPhoto(URL.createObjectURL(newFile));
+  };
 
-  async function handleGalleryChange(e: React.ChangeEvent<HTMLInputElement>) {
+  const handleChangeBannerPhoto = (newFile: File) => {
+    setBannerFile(newFile);
+    setBanner(URL.createObjectURL(newFile));
+  };
+
+  async function handleAddGalleryPhoto(file: File) {
     if (!authData.user) return;
-
-    const file = e.target.files?.[0];
-    if (!file) return;
 
     try {
       const imagePath = await uploadGalleryImage(authData.user.id, file);
 
-      // Fetch the newly created record
       const { data: newPhoto, error } = await supabase
         .from("gallery_photos")
         .select("*")
@@ -282,6 +255,12 @@ export default function EditProfilePage() {
   const lastNameValue = (profile.last_name ?? "").trim();
   const isSaveDisabled = saving || !firstNameValue || !lastNameValue;
 
+  const formValues: EditProfileFormValues = {
+    first_name: profile.first_name ?? "",
+    last_name: profile.last_name ?? "",
+    bio_text: profile.bio_text ?? "",
+  };
+
   return (
     <>
       <Head>
@@ -308,7 +287,6 @@ export default function EditProfilePage() {
             overflow: "hidden",
           }}
         >
-          {/* Error Banner */}
           {error && (
             <Box sx={{ px: 4, pt: 2 }}>
               <Alert severity="error" onClose={() => setError(null)}>
@@ -317,297 +295,40 @@ export default function EditProfilePage() {
             </Box>
           )}
 
-          {/* Banner */}
-          <Box
-            sx={{
-              width: "100%",
-              height: 160,
-              position: "relative",
-              backgroundImage: banner
-                ? `url(${banner})`
-                : `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              overflow: "hidden",
-            }}
-          >
-            {/* Profile Photo (Left) */}
-            <Box
-              sx={{
-                width: 140,
-                height: 140,
-                borderRadius: 2,
-                overflow: "hidden",
-                backgroundColor: "background.default",
-                position: "absolute",
-                left: 24,
-                top: "50%",
-                transform: "translateY(-50%)",
-                boxShadow: 4,
-              }}
-            >
-              {photo ? (
-                <Box
-                  component="img"
-                  src={photo}
-                  alt="Profile preview"
-                  sx={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              ) : (
-                <Box
-                  sx={{
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "background.default",
-                    color: "text.secondary",
-                    fontSize: "0.875rem",
-                  }}
-                >
-                  No photo
-                </Box>
-              )}
-              <Button
-                component="label"
-                sx={{
-                  position: "absolute",
-                  bottom: 4,
-                  right: 4,
-                  width: 28,
-                  height: 28,
-                  borderRadius: "50%",
-                  minWidth: 0,
-                  backgroundColor: "white",
-                  border: "2px solid black",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  "&:hover": { backgroundColor: "#f0f0f0" },
-                }}
-              >
-                ✎
-                <input
-                  type="file"
-                  hidden
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
-              </Button>
-            </Box>
+          <EditProfileHeader
+            bannerUrl={banner}
+            photoUrl={photo}
+            onChangeProfilePhoto={handleChangeProfilePhoto}
+            onChangeBannerPhoto={handleChangeBannerPhoto}
+          />
 
-            {/* Banner edit button */}
-            <Button
-              component="label"
-              sx={{
-                position: "absolute",
-                bottom: 10,
-                right: 10,
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                minWidth: 0,
-                backgroundColor: "white",
-                border: "2px solid black",
-                color: "black",
-                cursor: "pointer",
-                "&:hover": { backgroundColor: "#f0f0f0" },
-              }}
-            >
-              ✎
-              <input
-                type="file"
-                hidden
-                accept="image/*"
-                onChange={handleBannerFileChange}
-              />
-            </Button>
-          </Box>
-
-          {/* Main Form */}
           <Box sx={{ p: 4 }}>
-            <Box
-              component="form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                saveProfile();
+            <EditProfileForm
+              values={formValues}
+              onChange={handleChangeProfileForm}
+              availableTags={availableTags}
+              selectedTags={selectedTags}
+              onChangeTags={setSelectedTags}
+              saving={saving}
+              isSaveDisabled={isSaveDisabled}
+              onSubmit={saveProfile}
+              onCancel={() => {
+                if (authData.user) {
+                  void router.push(`/profile/${authData.user.id}`);
+                } else {
+                  router.back();
+                }
               }}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "100%",
-                maxWidth: 500,
-                mx: "auto",
-              }}
-            >
-              <Stack spacing={3}>
-                <TextField
-                  label="First Name"
-                  variant="outlined"
-                  value={profile.first_name}
-                  onChange={(e) =>
-                    setProfile({ ...profile, first_name: e.target.value })
-                  }
-                  fullWidth
-                />
-                <TextField
-                  label="Last Name"
-                  variant="outlined"
-                  value={profile.last_name}
-                  onChange={(e) =>
-                    setProfile({ ...profile, last_name: e.target.value })
-                  }
-                  fullWidth
-                />
-                <TextField
-                  label="Bio"
-                  variant="outlined"
-                  multiline
-                  minRows={3}
-                  value={profile.bio_text}
-                  onChange={(e) =>
-                    setProfile({ ...profile, bio_text: e.target.value })
-                  }
-                  fullWidth
-                />
-
-                {/* Tags */}
-                <TagSelector
-                  availableTags={availableTags}
-                  selectedTags={selectedTags}
-                  setSelectedTags={setSelectedTags}
-                  label="Choose tags"
-                />
-
-                {(!firstNameValue || !lastNameValue) && (
-                  <Alert severity="error">
-                    First and last name are required.
-                  </Alert>
-                )}
-
-                <Stack direction="row" spacing={2} justifyContent="flex-end">
-                  <Button
-                    type="button"
-                    variant="outlined"
-                    disabled={saving}
-                    onClick={() => {
-                      if (authData.user) {
-                        void router.push(`/profile/${authData.user.id}`);
-                      } else {
-                        router.back();
-                      }
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={isSaveDisabled}
-                  >
-                    {saving ? <CircularProgress size={24} /> : "Save"}
-                  </Button>
-                </Stack>
-              </Stack>
-            </Box>
+            />
           </Box>
 
-          {/* Gallery - Moved to bottom */}
-
-          <Box sx={{ px: 4, pb: 4 }}>
-            <Typography variant="h6" fontWeight={700} textAlign="center" mb={2}>
-              Gallery ({galleryPhotos.length}/6)
-            </Typography>
-
-            {galleryPhotos.length > 0 && (
-              <ImageList
-                cols={3}
-                gap={12}
-                rowHeight={240}
-                sx={{
-                  "& .MuiImageListItem-root": {
-                    borderRadius: 2,
-                    overflow: "hidden",
-                  },
-                }}
-              >
-                {galleryPhotos.map((photo) => {
-                  const url = getPublicUrl("gallery-photos", photo.photo_path);
-                  if (!url) return null;
-
-                  return (
-                    <ImageListItem key={photo.photo_path}>
-                      <Box
-                        sx={{
-                          width: "100%",
-                          height: 160,
-                          position: "relative",
-                          backgroundColor: "background.default",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <Box
-                          component="img"
-                          src={url}
-                          alt=""
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                        {/* Delete button */}
-                        <IconButton
-                          onClick={() =>
-                            handleDeleteGalleryPhoto(photo.photo_path)
-                          }
-                          sx={{
-                            position: "absolute",
-                            top: 4,
-                            right: 4,
-                            width: 28,
-                            height: 28,
-                            backgroundColor: "rgba(255, 255, 255, 0.9)",
-                            color: "black",
-                            "&:hover": {
-                              backgroundColor: "rgba(255, 255, 255, 1)",
-                            },
-                          }}
-                        >
-                          ×
-                        </IconButton>
-                      </Box>
-                    </ImageListItem>
-                  );
-                })}
-              </ImageList>
-            )}
-
-            {/* Upload button (only if < 6 photos) */}
-            {galleryPhotos.length < 6 && (
-              <Box sx={{ textAlign: "center", mt: 2 }}>
-                <Button
-                  component="label"
-                  variant="outlined"
-                  sx={{
-                    textTransform: "none",
-                    borderRadius: 2,
-                    px: 3,
-                    py: 1,
-                  }}
-                >
-                  + Add Photo
-                  <input
-                    type="file"
-                    hidden
-                    accept="image/*"
-                    onChange={handleGalleryChange}
-                  />
-                </Button>
-              </Box>
-            )}
-          </Box>
+          <EditProfileGallery
+            photos={galleryPhotos}
+            maxPhotos={6}
+            disabled={saving}
+            onAddPhoto={handleAddGalleryPhoto}
+            onDeletePhoto={handleDeleteGalleryPhoto}
+          />
         </Paper>
       </PageLayout>
     </>

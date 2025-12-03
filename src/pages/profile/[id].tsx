@@ -1,21 +1,11 @@
 //biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB types to make Supabase happy>
 
-import EditIcon from "@mui/icons-material/Edit";
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, CircularProgress, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import EventFeed from "@/components/EventFeed";
 import PageLayout from "@/components/PageLayout";
-import UserBioSection from "@/components/UserBioSection";
-import UserGallery from "@/components/UserGallery";
-import UserProfileHeader from "@/components/UserProfileHeader";
+import UserProfileView from "@/components/UserProfileView";
 import { useAuthContext } from "@/hooks/useAuth";
 import {
   fetchEventsByUser,
@@ -24,7 +14,6 @@ import {
   fetchUserProfile,
   getAttendeeCount,
 } from "@/lib/db_functions";
-import { getPublicUrl } from "@/lib/getPublicURL";
 import type { EnrichedEvent, UserProfileData } from "@/types/app.types";
 
 function isValidUuid(value: string): boolean {
@@ -47,12 +36,6 @@ export default function UserProfilePage() {
   const [userEvents, setUserEvents] = useState<EnrichedEvent[]>([]);
   const [userEventsLoading, setUserEventsLoading] = useState(true);
   const [userEventsError, setUserEventsError] = useState(false);
-
-  const getPossessiveForm = (name: string): string => {
-    return name.toLowerCase().endsWith("s")
-      ? `${name}' Events`
-      : `${name}'s Events`;
-  };
 
   useEffect(() => {
     if (!router.isReady) {
@@ -130,22 +113,6 @@ export default function UserProfilePage() {
           return;
         }
 
-        // convert stored paths into real public urls so images show up correctly
-        if (data.user.profile_photo_path) {
-          data.user.profile_photo_path = getPublicUrl(
-            "profile-photos",
-            data.user.profile_photo_path,
-          );
-        }
-
-        // same idea for the banner image so it can load like the profile photo
-        if (data.user.banner_photo_path) {
-          data.user.banner_photo_path = getPublicUrl(
-            "banner-photos",
-            data.user.banner_photo_path,
-          );
-        }
-
         setProfile(data);
       } catch (_fetchError) {
         if (!isMounted) return;
@@ -192,55 +159,14 @@ export default function UserProfilePage() {
         ) : error ? (
           <Alert severity="error">{error}</Alert>
         ) : profile ? (
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <UserProfileHeader user={profile.user} tags={profile.tags} />
-              {isOwnProfile && (
-                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Button
-                    variant="outlined"
-                    startIcon={<EditIcon />}
-                    onClick={() => router.push("/profile/edit")}
-                  >
-                    Edit Profile
-                  </Button>
-                </Box>
-              )}
-            </Box>
-            <UserBioSection bioText={profile.user.bio_text} />
-
-            {/* convert each gallery photo so next/image can load them */}
-            <UserGallery
-              photos={profile.galleryPhotos
-                .filter((p) => p.photo_path)
-                .map((p) => ({
-                  ...p,
-                  photo_path: getPublicUrl(
-                    "gallery-photos",
-                    p.photo_path as string,
-                  ),
-                }))}
-            />
-
-            <Box>
-              <Typography variant="h6" component="h2" fontWeight={600} mb={1.5}>
-                {isOwnProfile
-                  ? "My Events"
-                  : getPossessiveForm(profile.user.first_name)}
-              </Typography>
-
-              {userEventsLoading ? (
-                <CircularProgress />
-              ) : userEventsError ? (
-                <Alert severity="error">Could not load events</Alert>
-              ) : (
-                <EventFeed
-                  events={userEvents}
-                  emptyMessage="No events yet. Create your first event!"
-                />
-              )}
-            </Box>
-          </Box>
+          <UserProfileView
+            profile={profile}
+            userEvents={userEvents}
+            userEventsLoading={userEventsLoading}
+            userEventsError={userEventsError}
+            isOwnProfile={isOwnProfile}
+            onEditProfile={() => router.push("/profile/edit")}
+          />
         ) : (
           <Typography color="text.secondary">
             No profile data available.
