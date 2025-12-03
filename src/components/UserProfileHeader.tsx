@@ -4,11 +4,16 @@
   Displays a user's avatar, name, email, and associated tags.
 */
 
-import { Box, Chip, Stack, Typography, useTheme } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import { Box, Button, Chip, Stack, Typography, useTheme } from "@mui/material";
 import type { UserProfileHeaderProps } from "@/types/app.types";
 import UserAvatar from "./UserAvatar";
 
-export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
+export function UserProfileHeader({
+  user,
+  tags,
+  onEditProfile,
+}: UserProfileHeaderProps) {
   const fullName = `${user.first_name} ${user.last_name}`.trim();
   const theme = useTheme();
 
@@ -53,6 +58,24 @@ export function UserProfileHeader({ user, tags }: UserProfileHeaderProps) {
           boxShadow: 2,
         }}
       />
+
+      {/* Edit button for own profile */}
+      {onEditProfile && (
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<EditIcon />}
+          onClick={onEditProfile}
+          sx={{
+            position: "absolute",
+            bottom: 12,
+            right: 12,
+            textTransform: "none",
+          }}
+        >
+          Edit
+        </Button>
+      )}
 
       {/* Content */}
       <Box sx={{ pt: { xs: 6, sm: 7 }, pb: 3, px: 2 }}>

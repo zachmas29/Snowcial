@@ -15,6 +15,7 @@ export interface UserProfileData {
 export interface UserProfileHeaderProps {
   user: Tables<"users">;
   tags: Tables<"user_tags">[];
+  onEditProfile?: () => void;
 }
 
 export interface UserBioSectionProps {

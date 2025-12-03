@@ -1,12 +1,5 @@
 // biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB-shaped types>
-import EditIcon from "@mui/icons-material/Edit";
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, CircularProgress, Typography } from "@mui/material";
 import EventFeed from "@/components/EventFeed";
 import UserBioSection from "@/components/UserBioSection";
 import UserGallery from "@/components/UserGallery";
@@ -52,18 +45,11 @@ export default function UserProfileView({
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        <UserProfileHeader user={profile.user} tags={profile.tags} />
-        {isOwnProfile && (
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              variant="outlined"
-              startIcon={<EditIcon />}
-              onClick={onEditProfile}
-            >
-              Edit Profile
-            </Button>
-          </Box>
-        )}
+        <UserProfileHeader
+          user={profile.user}
+          tags={profile.tags}
+          onEditProfile={isOwnProfile ? onEditProfile : undefined}
+        />
       </Box>
 
       <UserBioSection bioText={profile.user.bio_text} />
