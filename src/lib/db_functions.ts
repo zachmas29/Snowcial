@@ -791,34 +791,6 @@ export async function updateCurrentUserProfile(
   return result.data;
 }
 
-/* uploadGalleryPhoto
- * Uploads a gallery image for a user and stores the path in DB
- */
-export async function uploadGalleryPhoto(userId: string, file: File) {
-  const path = `${userId}-${Date.now()}-${file.name}`;
-
-  const send = await supabase.storage
-    .from("gallery-photos")
-    .upload(path, file, {
-      contentType: file.type,
-    });
-
-  if (send.error) throw send.error;
-
-  const data = await supabase
-    .from("gallery_photos")
-    .insert({
-      user_id: userId,
-      photo_path: path,
-    })
-    .select()
-    .single();
-
-  if (data.error) throw data.error;
-
-  return data.data;
-}
-
 /**
  * Deletes a gallery photo database record.
  * Note: gallery_photos has composite primary key (user_id, photo_path)
@@ -834,6 +806,7 @@ export async function deleteGalleryPhoto(userId: string, photoPath: string) {
     throw dbError;
   }
 }
+<<<<<<< HEAD
 
 // Uploads a profile photo for a user and stores the path in database
 export async function uploadProfilePhoto(userId: string, file: File) {
@@ -861,3 +834,5 @@ export async function uploadBannerPhoto(userId: string, file: File) {
   return path;
 >>>>>>> be95300 (updated usergallery.tsx to accomodate urls that pertain to userID's, also profile/id, updated apptypes so photo path could be null as well, edit profile has a banner and gallery photos)
 }
+=======
+>>>>>>> 8e717f7 (Get rid of old functions)

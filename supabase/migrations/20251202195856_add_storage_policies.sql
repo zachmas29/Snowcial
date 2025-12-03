@@ -1,6 +1,6 @@
 -- Add storage bucket policies for user photos
 -- These policies ensure users can only manage their own photos
--- File naming convention: {userId}-{timestamp}-{filename}
+-- File naming convention: names begin with "{userId}-"
 
 -- Profile photos bucket policies
 CREATE POLICY "Users can upload own profile photos"
