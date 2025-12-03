@@ -793,7 +793,9 @@ export async function updateCurrentUserProfile(
 
 /**
  * Deletes a gallery photo database record.
- * Note: gallery_photos has composite primary key (user_id, photo_path)
+ * Note: gallery_photos has composite primary key (user_id, photo_path).
+ * This does not delete the underlying storage object; we keep
+ * storage insert-only and accept possible orphaned files.
  */
 export async function deleteGalleryPhoto(userId: string, photoPath: string) {
   const { error: dbError } = await supabase

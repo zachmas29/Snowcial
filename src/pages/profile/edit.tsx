@@ -155,11 +155,17 @@ export default function EditProfilePage() {
 
       let photoPath = profile.profile_photo_path || null;
       if (file) {
+        // We intentionally do not delete any existing
+        // profile photo object in storage. A new object
+        // is uploaded and the users row is updated.
         photoPath = await uploadProfileImage(userId, file);
       }
 
       let bannerPath = profile.banner_photo_path || null;
       if (bannerFile) {
+        // Same approach for banner photos: upload a new
+        // object and point the profile at it, without
+        // attempting to remove the previous object.
         bannerPath = await uploadBannerImage(userId, bannerFile);
       }
 
