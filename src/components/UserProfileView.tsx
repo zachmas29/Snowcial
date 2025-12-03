@@ -32,6 +32,29 @@ export default function UserProfileView({
     })
     .filter((p): p is typeof p & { photo_path: string } => p !== null);
 
+  // Normalize user photo paths to public URLs for the header
+  const normalizedUser = (() => {
+    let profile_photo_path = profile.user.profile_photo_path;
+    let banner_photo_path = profile.user.banner_photo_path;
+
+    if (profile_photo_path && !profile_photo_path.startsWith("http")) {
+      profile_photo_path =
+        getPublicUrl("profile-photos", profile_photo_path) ??
+        profile_photo_path;
+    }
+
+    if (banner_photo_path && !banner_photo_path.startsWith("http")) {
+      banner_photo_path =
+        getPublicUrl("banner-photos", banner_photo_path) ?? banner_photo_path;
+    }
+
+    return {
+      ...profile.user,
+      profile_photo_path,
+      banner_photo_path,
+    };
+  })();
+
   const getPossessiveForm = (name: string): string => {
     return name.toLowerCase().endsWith("s")
       ? `${name}' Events`
@@ -46,7 +69,7 @@ export default function UserProfileView({
     <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         <UserProfileHeader
-          user={profile.user}
+          user={normalizedUser}
           tags={profile.tags}
           onEditProfile={isOwnProfile ? onEditProfile : undefined}
         />

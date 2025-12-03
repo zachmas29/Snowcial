@@ -8,7 +8,7 @@ CREATE POLICY "Users can upload own profile photos"
     ON storage.objects FOR INSERT TO authenticated
     WITH CHECK (
         bucket_id = 'profile-photos' AND
-        (select auth.uid())::text = (string_to_array(name, '-'))[1]
+        name LIKE (auth.uid()::text || '-%')
     );
 
 CREATE POLICY "Anyone can view profile photos"
@@ -20,7 +20,7 @@ CREATE POLICY "Users can upload own banner photos"
     ON storage.objects FOR INSERT TO authenticated
     WITH CHECK (
         bucket_id = 'banner-photos' AND
-        (select auth.uid())::text = (string_to_array(name, '-'))[1]
+        name LIKE (auth.uid()::text || '-%')
     );
 
 CREATE POLICY "Anyone can view banner photos"
@@ -32,7 +32,7 @@ CREATE POLICY "Users can upload own gallery photos"
     ON storage.objects FOR INSERT TO authenticated
     WITH CHECK (
         bucket_id = 'gallery-photos' AND
-        (select auth.uid())::text = (string_to_array(name, '-'))[1]
+        name LIKE (auth.uid()::text || '-%')
     );
 
 CREATE POLICY "Anyone can view gallery photos"
