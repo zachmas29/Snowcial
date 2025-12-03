@@ -121,8 +121,9 @@ export async function uploadGalleryImage(
   });
 
   if (dbError) {
-    // Clean up uploaded file if database insert fails
-    await supabase.storage.from("gallery-photos").remove([imagePath]);
+    // Note: we intentionally do not attempt to delete the
+    // uploaded storage object here. This keeps storage RLS
+    // simple (insert-only) at the cost of potential orphans.
     throw new Error(`Failed to save to database: ${dbError.message}`);
   }
 
