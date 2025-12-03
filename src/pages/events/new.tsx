@@ -62,7 +62,7 @@ export default function NewEvent() {
       <Head>
         <title>Create Event | Snowcial</title>
       </Head>
-      <PageLayout maxWidth="sm">
+      <PageLayout>
         <Typography
           variant="h3"
           component="h1"

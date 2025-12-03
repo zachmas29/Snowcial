@@ -137,7 +137,7 @@ export default function EditEvent() {
       <Head>
         <title>Edit Event | Snowcial</title>
       </Head>
-      <PageLayout maxWidth="sm">
+      <PageLayout>
         <Typography
           variant="h3"
           component="h1"
