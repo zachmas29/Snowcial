@@ -1,15 +1,17 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
 
-/*
- * EventCreator.tsx
- * If no initial data is passed, operates as 
- * an event creator, otherwise will prefill the 
- * form data and be in edit mode.
-
-*/
-
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Alert, Box, Button, Stack, TextField } from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import {
+  Alert,
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  Stack,
+  TextField,
+  Tooltip,
+} from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers-pro";
@@ -97,6 +99,35 @@ export default function EventCreator({
             }
           />
         </LocalizationProvider>
+        <TextField
+          label="Event Capacity"
+          type="number"
+          value={eventFormData.capacity ?? ""}
+          onChange={(event) => {
+            const value = event.target.value;
+            setEventFormData({
+              ...eventFormData,
+              capacity:
+                value === "" ? null : Math.max(1, Number.parseInt(value, 10)),
+            });
+          }}
+          placeholder="Unlimited"
+          slotProps={{
+            input: {
+              inputProps: { min: 1 },
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Tooltip title="Maximum number of 'yes' RSVPs. 'Maybe' responses don't count.">
+                    <IconButton size="small">
+                      <InfoOutlinedIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </InputAdornment>
+              ),
+            },
+          }}
+          helperText="Leave empty for unlimited capacity"
+        />
         <TagSelector
           availableTags={typedTagOptions}
           selectedTags={eventFormData.tags}

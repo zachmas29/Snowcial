@@ -14,8 +14,8 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
         <label
           class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary Mui-required MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-19qnlrw-MuiFormLabel-root-MuiInputLabel-root"
           data-shrink="false"
-          for="_r_a_"
-          id="_r_a_-label"
+          for="_r_d_"
+          id="_r_d_-label"
         >
           Event Name
           <span
@@ -31,7 +31,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
           <input
             aria-invalid="false"
             class="MuiInputBase-input MuiOutlinedInput-input css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input"
-            id="_r_a_"
+            id="_r_d_"
             required=""
             type="text"
             value=""
@@ -56,8 +56,8 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
         <label
           class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary Mui-required MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-19qnlrw-MuiFormLabel-root-MuiInputLabel-root"
           data-shrink="false"
-          for="_r_b_"
-          id="_r_b_-label"
+          for="_r_e_"
+          id="_r_e_-label"
         >
           Description
           <span
@@ -73,7 +73,7 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
           <textarea
             aria-invalid="false"
             class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMultiline css-w4nesw-MuiInputBase-input-MuiOutlinedInput-input"
-            id="_r_b_"
+            id="_r_e_"
             required=""
             rows="3"
             style="height: 0px; overflow: hidden;"
@@ -105,14 +105,14 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
         <label
           class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined css-113d811-MuiFormLabel-root-MuiInputLabel-root"
           data-shrink="true"
-          for="_r_c_"
-          id="_r_c_-label"
+          for="_r_f_"
+          id="_r_f_-label"
         >
           Event Time
         </label>
         <div
           aria-invalid="false"
-          aria-labelledby="_r_c_-label"
+          aria-labelledby="_r_f_-label"
           class="MuiPickersInputBase-root MuiPickersOutlinedInput-root MuiPickersInputBase-colorPrimary MuiPickersInputBase-adornedEnd css-vycme6-MuiPickersInputBase-root-MuiPickersOutlinedInput-root"
           role="group"
         >
@@ -347,11 +347,78 @@ exports[`EventCreator > Snapshot test - renders consistently 1`] = `
           <input
             aria-hidden="true"
             class="MuiPickersInputBase-input MuiPickersOutlinedInput-input css-31lcvl-MuiPickersInputBase-input"
-            id="_r_c_"
+            id="_r_f_"
             tabindex="-1"
             value="11/15/2025 12:00 PM"
           />
         </div>
+      </div>
+      <div
+        class="MuiFormControl-root MuiTextField-root css-1xp5r68-MuiFormControl-root-MuiTextField-root"
+      >
+        <label
+          class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined css-19qnlrw-MuiFormLabel-root-MuiInputLabel-root"
+          data-shrink="false"
+          for="_r_i_"
+          id="_r_i_-label"
+        >
+          Event Capacity
+        </label>
+        <div
+          class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedEnd css-jupps9-MuiInputBase-root-MuiOutlinedInput-root"
+        >
+          <input
+            aria-describedby="_r_i_-helper-text"
+            aria-invalid="false"
+            class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedEnd css-1dune0f-MuiInputBase-input-MuiOutlinedInput-input"
+            id="_r_i_"
+            min="1"
+            placeholder="Unlimited"
+            type="number"
+            value=""
+          />
+          <div
+            class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-elo8k2-MuiInputAdornment-root"
+          >
+            <button
+              aria-label="Maximum number of 'yes' RSVPs. 'Maybe' responses don't count."
+              class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
+              data-mui-internal-clone-element="true"
+              tabindex="0"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-120dh41-MuiSvgIcon-root"
+                data-testid="InfoOutlinedIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8"
+                />
+              </svg>
+            </button>
+          </div>
+          <fieldset
+            aria-hidden="true"
+            class="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
+          >
+            <legend
+              class="css-1n64csd-MuiNotchedOutlined-root"
+            >
+              <span>
+                Event Capacity
+              </span>
+            </legend>
+          </fieldset>
+        </div>
+        <p
+          class="MuiFormHelperText-root MuiFormHelperText-sizeMedium MuiFormHelperText-contained css-er619e-MuiFormHelperText-root"
+          id="_r_i_-helper-text"
+        >
+          Leave empty for unlimited capacity
+        </p>
       </div>
       <div>
         <div

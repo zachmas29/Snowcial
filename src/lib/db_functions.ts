@@ -215,10 +215,9 @@ export async function fetchEvent(id: number): Promise<Tables<"events"> | null> {
   return data;
 }
 
-/**
- * deleteEvent
- * @params id - the event id to delete
- * @returns void - throws error if deletion fails
+/* deleteEvent
+ * params: id - the event id to delete
+ * returns: void - throws error if deletion fails
  */
 export async function deleteEvent(id: number): Promise<void> {
   const { error } = await supabase.from("events").delete().eq("id", id);
@@ -230,12 +229,19 @@ export async function deleteEvent(id: number): Promise<void> {
 
 /* getAttendeeCount
  * params: id - the event id to search for
- * returns: an object of type AttendeeCountType containing
- *    yes - the number of people who answered 'yes'
- *    maybe - the number of people who answered 'maybe'
- *    total - yes + maybe
+ * returns: an object of type AttendeeCountType
  */
 export async function getAttendeeCount(eventId: number) {
+  const { data: event, error: eventError } = await supabase
+    .from("events")
+    .select("capacity")
+    .eq("id", eventId)
+    .single();
+
+  if (eventError) {
+    throw eventError;
+  }
+
   const yesPromise = supabase
     .from("event_rsvps")
     .select("*", { count: "exact", head: true })
@@ -262,11 +268,19 @@ export async function getAttendeeCount(eventId: number) {
   const yesCount = yesResult.count ?? 0;
   const maybeCount = maybeResult.count ?? 0;
   const totalCount = yesCount + maybeCount;
+  const capacity = event?.capacity ?? null;
+
+  let waitlistCount = 0;
+  if (capacity !== null) {
+    waitlistCount = Math.max(0, yesCount - capacity);
+  }
 
   return {
     yes: yesCount,
     maybe: maybeCount,
     total: totalCount,
+    capacity,
+    waitlistCount,
   } as AttendeeCountType;
 }
 /* fetchEventTags
@@ -441,8 +455,8 @@ export async function deleteEventComment(
   return data as EventCommentWithAuthor;
 }
 
-/** fetchEventTagOptions
- * @returns A list of all possible event tags
+/* fetchEventTagOptions
+ * returns: A list of all possible event tags
  */
 export async function fetchEventTagOptions(): Promise<Tables<"event_tags">[]> {
   const { data, error } = await supabase.from("event_tags").select("*");
@@ -454,8 +468,8 @@ export async function fetchEventTagOptions(): Promise<Tables<"event_tags">[]> {
   return data ?? [];
 }
 
-/** fetchUserTagOptions
- * @returns A list of all possible user tags
+/* fetchUserTagOptions
+ * returns: A list of all possible user tags
  */
 export async function fetchUserTagOptions(): Promise<Tables<"user_tags">[]> {
   const { data, error } = await supabase.from("user_tags").select("*");
@@ -467,10 +481,8 @@ export async function fetchUserTagOptions(): Promise<Tables<"user_tags">[]> {
   return data ?? [];
 }
 
-/**
+/* insertEventWithTags
  * Inserts a new event and its tag assignments
- * @param eventFormData - The event data including tags
- * @returns The inserted event or null if failed
  */
 export async function insertEventWithTags(
   eventFormData: EventFormData,
@@ -487,6 +499,7 @@ export async function insertEventWithTags(
       description: eventFormData.description,
       event_time: eventFormData.event_time?.toISOString(),
       creator_id: user_id,
+      capacity: eventFormData.capacity ?? null,
     })
     .select()
     .single();
@@ -517,11 +530,8 @@ export async function insertEventWithTags(
   return event;
 }
 
-/**
+/* updateEventWithTags
  * Updates an existing event and its tag assignments
- * @param eventData - The complete event data including id
- * @param tags - Optional array of tags to assign to the event
- * @returns The updated event or null if failed
  */
 export async function updateEventWithTags(
   eventData: Tables<"events">,
@@ -533,6 +543,7 @@ export async function updateEventWithTags(
       title: eventData.title,
       description: eventData.description,
       event_time: eventData.event_time,
+      capacity: eventData.capacity,
     })
     .eq("id", eventData.id)
     .select()
@@ -597,4 +608,111 @@ export async function fetchUserFromEventId(
   }
 
   return data.users;
+}
+
+/* fetchEventRSVPs
+ * params: eventId - an event id to search for
+ * returns: array of RSVPs with user information, ordered by created_at
+ */
+export async function fetchEventRSVPs(eventId: number) {
+  const { data, error } = await supabase
+    .from("event_rsvps")
+    .select(
+      `
+      user_id,
+      status,
+      created_at,
+      users:user_id (first_name, last_name, profile_photo_path)
+    `,
+    )
+    .eq("event_id", eventId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    throw error;
+  }
+
+  return data ?? [];
+}
+
+/* upsertRSVP
+ * params: eventId, userId, status - "yes" or "maybe"
+ * returns: void - throws error if fails
+ */
+export async function upsertRSVP(
+  eventId: number,
+  userId: string,
+  status: "yes" | "maybe",
+) {
+  const { data: existing } = await supabase
+    .from("event_rsvps")
+    .select("created_at, status")
+    .eq("event_id", eventId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (existing) {
+    const updatePayload =
+      existing.status === status
+        ? { status }
+        : { status, created_at: new Date().toISOString() };
+
+    const { error } = await supabase
+      .from("event_rsvps")
+      .update(updatePayload)
+      .eq("event_id", eventId)
+      .eq("user_id", userId);
+
+    if (error) throw error;
+  } else {
+    const { error } = await supabase
+      .from("event_rsvps")
+      .insert({ event_id: eventId, user_id: userId, status });
+
+    if (error) throw error;
+  }
+}
+
+/* deleteRSVP
+ * params: eventId, userId
+ * returns: void - throws error if fails
+ */
+export async function deleteRSVP(eventId: number, userId: string) {
+  const { error } = await supabase
+    .from("event_rsvps")
+    .delete()
+    .eq("event_id", eventId)
+    .eq("user_id", userId);
+
+  if (error) {
+    throw error;
+  }
+}
+
+/* getCurrentUserRSVP
+ * params: eventId - the event id
+ * returns: the current user's RSVP status or null
+ */
+export async function getCurrentUserRSVP(eventId: number) {
+  const {
+    data: { user: authUser },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !authUser) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("event_rsvps")
+    .select("*")
+    .eq("event_id", eventId)
+    .eq("user_id", authUser.id)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
 }

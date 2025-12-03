@@ -38,6 +38,7 @@ export default function NewEvent() {
           description: formData.description,
           event_time: formData.event_time,
           tags: formData.tags,
+          capacity: formData.capacity ?? null,
         },
         authData.user.id,
       );

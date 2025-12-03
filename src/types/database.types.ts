@@ -1,4 +1,4 @@
-// biome-ignore-all lint/style/useNamingConvention: using snake case as is Supabase best practice
+/* biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
 
 export type Json =
   | string
@@ -171,6 +171,7 @@ export type Database = {
       };
       events: {
         Row: {
+          capacity: number | null;
           created_at: string;
           creator_id: string;
           description: string | null;
@@ -180,6 +181,7 @@ export type Database = {
           title: string;
         };
         Insert: {
+          capacity?: number | null;
           created_at?: string;
           creator_id: string;
           description?: string | null;
@@ -189,6 +191,7 @@ export type Database = {
           title: string;
         };
         Update: {
+          capacity?: number | null;
           created_at?: string;
           creator_id?: string;
           description?: string | null;

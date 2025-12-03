@@ -53,7 +53,18 @@ export default function SmallEventCard({
     attendingCount.yes !== attendingCount.total
       ? `${attendingCount.yes}-${attendingCount.total}`
       : `${attendingCount?.total ?? 0}`;
-  const attendeesNotice = `${attendees} ${attendingCount?.total !== 1 ? "people" : "person"}`;
+
+  const capacityText = attendingCount?.capacity
+    ? ` / ${attendingCount.capacity}`
+    : "";
+
+  const waitlistText =
+    attendingCount?.waitlistCount && attendingCount.waitlistCount > 0
+      ? ` (${attendingCount.waitlistCount} waitlisted)`
+      : "";
+
+  const attendeesNotice = `${attendees}${capacityText} ${attendingCount?.total !== 1 ? "people" : "person"}${waitlistText}`;
+
   // Truncate description to 50 words
   const truncateDescription = (text: string, wordLimit: number = 50) => {
     const words = text.trim().split(/\s+/);
@@ -128,9 +139,18 @@ export default function SmallEventCard({
             </Box>
           )}
 
-          <Typography variant="body2" fontWeight={600} sx={{ mt: "auto" }}>
-            {`${attendeesNotice} attending`}
-          </Typography>
+          <Box
+            sx={{ display: "flex", alignItems: "center", gap: 1, mt: "auto" }}
+          >
+            <Typography variant="body2" fontWeight={600}>
+              {`${attendeesNotice} attending`}
+            </Typography>
+            {attendingCount?.capacity !== null &&
+              attendingCount?.yes !== undefined &&
+              attendingCount.yes >= attendingCount.capacity && (
+                <Chip label="Full" size="small" color="warning" />
+              )}
+          </Box>
         </CardContent>
       </CardActionArea>
     </Card>
