@@ -1,5 +1,5 @@
 //biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB types to make Supabase happy>
-import { Alert, Box, CircularProgress, Paper, Typography } from "@mui/material";
+import { Alert, Box, CircularProgress, Paper } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
