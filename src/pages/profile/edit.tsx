@@ -273,15 +273,6 @@ export default function EditProfilePage() {
         <title>Edit Profile | Snowcial</title>
       </Head>
       <PageLayout>
-        <Typography
-          variant="h3"
-          component="h1"
-          fontWeight={600}
-          textAlign="center"
-          mb={1}
-        >
-          Edit Profile
-        </Typography>
         <Paper
           elevation={3}
           sx={{
