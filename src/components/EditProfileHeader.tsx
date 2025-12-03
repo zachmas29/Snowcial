@@ -51,9 +51,9 @@ export default function EditProfileHeader({
       {/* Profile Photo (Left) */}
       <Box
         sx={{
-          width: 140,
-          height: 140,
-          borderRadius: 2,
+          width: { xs: 96, sm: 104 },
+          height: { xs: 96, sm: 104 },
+          borderRadius: "50%",
           overflow: "hidden",
           backgroundColor: "background.default",
           position: "absolute",
@@ -61,6 +61,8 @@ export default function EditProfileHeader({
           top: "50%",
           transform: "translateY(-50%)",
           boxShadow: 4,
+          border: "3px solid",
+          borderColor: "background.paper",
         }}
       >
         {photoUrl ? (
@@ -86,53 +88,46 @@ export default function EditProfileHeader({
             No photo
           </Box>
         )}
-        <Button
-          component="label"
-          sx={{
-            position: "absolute",
-            bottom: 4,
-            right: 4,
-            width: 28,
-            height: 28,
-            borderRadius: "50%",
-            minWidth: 0,
-            backgroundColor: "white",
-            border: "2px solid black",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            "&:hover": { backgroundColor: "#f0f0f0" },
-          }}
-        >
-          ✎
-          <input
-            type="file"
-            hidden
-            accept="image/*"
-            onChange={handleProfileInputChange}
-          />
-        </Button>
       </Box>
+
+      {/* Profile photo action */}
+      <Button
+        component="label"
+        variant="contained"
+        size="small"
+        sx={{
+          position: "absolute",
+          left: { xs: 24 + 96 / 2, sm: 24 + 104 / 2 },
+          bottom: { xs: 8, sm: 12 },
+          transform: "translateX(-50%)",
+          textTransform: "none",
+          boxShadow: 2,
+        }}
+      >
+        Change photo
+        <input
+          type="file"
+          hidden
+          accept="image/*"
+          onChange={handleProfileInputChange}
+        />
+      </Button>
 
       {/* Banner edit button */}
       <Button
         component="label"
+        variant="contained"
+        color="secondary"
+        size="small"
         sx={{
           position: "absolute",
-          bottom: 10,
-          right: 10,
-          width: 40,
-          height: 40,
-          borderRadius: "50%",
-          minWidth: 0,
-          backgroundColor: "white",
-          border: "2px solid black",
-          color: "black",
-          cursor: "pointer",
-          "&:hover": { backgroundColor: "#f0f0f0" },
+          bottom: { xs: 8, sm: 12 },
+          right: { xs: 8, sm: 12 },
+          textTransform: "none",
+          boxShadow: 2,
         }}
       >
-        ✎
+        Change banner
         <input
           type="file"
           hidden

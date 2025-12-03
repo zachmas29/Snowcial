@@ -46,10 +46,7 @@ export default function EditProfileForm({
       }}
       style={{ width: "100%" }}
     >
-      <Stack
-        spacing={3}
-        sx={{ width: "100%", maxWidth: 500, margin: "0 auto" }}
-      >
+      <Stack spacing={2} sx={{ width: "100%" }}>
         <TextField
           label="First Name"
           variant="outlined"
@@ -81,11 +78,7 @@ export default function EditProfileForm({
           label="Choose tags"
         />
 
-        {(!firstNameValue || !lastNameValue) && (
-          <Alert severity="error">First and last name are required.</Alert>
-        )}
-
-        <Stack direction="row" spacing={2} justifyContent="flex-end">
+        <Stack direction="row" spacing={2}>
           <Button
             type="button"
             variant="outlined"
@@ -98,6 +91,10 @@ export default function EditProfileForm({
             {saving ? "Saving..." : "Save"}
           </Button>
         </Stack>
+
+        {(!firstNameValue || !lastNameValue) && (
+          <Alert severity="error">First and last name are required.</Alert>
+        )}
       </Stack>
     </form>
   );

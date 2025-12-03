@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB types to make Supabase happy> */
-import { Typography } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -72,7 +72,20 @@ export default function NewEvent() {
         >
           Create Event
         </Typography>
-        <EventCreator onSubmit={handleSubmit} handleClick={handleClick} />
+        <Paper
+          elevation={3}
+          sx={{
+            width: "100%",
+            borderRadius: 2,
+            boxShadow: 3,
+            border: 1,
+            borderColor: "divider",
+            overflow: "hidden",
+            p: 3,
+          }}
+        >
+          <EventCreator onSubmit={handleSubmit} handleClick={handleClick} />
+        </Paper>
       </PageLayout>
     </>
   );

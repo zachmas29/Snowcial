@@ -272,7 +272,7 @@ export default function EditProfilePage() {
       <Head>
         <title>Edit Profile | Snowcial</title>
       </Head>
-      <PageLayout maxWidth="sm">
+      <PageLayout>
         <Typography
           variant="h3"
           component="h1"
