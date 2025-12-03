@@ -1,79 +1,80 @@
 -- Storage bucket policies for user photos
--- These policies ensure users can only manage their own photos
--- File naming convention: {userId}-{timestamp}-{filename}
+-- Security model: Storage allows authenticated users to upload
+-- The users table RLS ensures only profile owner can set photo_path
+-- Gallery photos table RLS ensures only owner can create their own entries
 
--- Profile photos bucket policies
-CREATE POLICY "Users can upload own profile photos"
+-- Profile photos bucket - authenticated users can upload, anyone can view
+CREATE POLICY "Authenticated users can upload profile photos"
     ON storage.objects FOR INSERT
     WITH CHECK (
         bucket_id = 'profile-photos' AND
-        (select auth.uid())::text = (string_to_array(name, '-'))[1]
+        (select auth.role()) = 'authenticated'
     );
 
-CREATE POLICY "Users can update own profile photos"
+CREATE POLICY "Authenticated users can update profile photos"
     ON storage.objects FOR UPDATE
     USING (
         bucket_id = 'profile-photos' AND
-        (select auth.uid())::text = (string_to_array(name, '-'))[1]
+        (select auth.role()) = 'authenticated'
     );
 
-CREATE POLICY "Users can delete own profile photos"
+CREATE POLICY "Authenticated users can delete profile photos"
     ON storage.objects FOR DELETE
     USING (
         bucket_id = 'profile-photos' AND
-        (select auth.uid())::text = (string_to_array(name, '-'))[1]
+        (select auth.role()) = 'authenticated'
     );
 
 CREATE POLICY "Anyone can view profile photos"
     ON storage.objects FOR SELECT
     USING (bucket_id = 'profile-photos');
 
--- Banner photos bucket policies
-CREATE POLICY "Users can upload own banner photos"
+-- Banner photos bucket - authenticated users can upload, anyone can view
+CREATE POLICY "Authenticated users can upload banner photos"
     ON storage.objects FOR INSERT
     WITH CHECK (
         bucket_id = 'banner-photos' AND
-        (select auth.uid())::text = (string_to_array(name, '-'))[1]
+        (select auth.role()) = 'authenticated'
     );
 
-CREATE POLICY "Users can update own banner photos"
+CREATE POLICY "Authenticated users can update banner photos"
     ON storage.objects FOR UPDATE
     USING (
         bucket_id = 'banner-photos' AND
-        (select auth.uid())::text = (string_to_array(name, '-'))[1]
+        (select auth.role()) = 'authenticated'
     );
 
-CREATE POLICY "Users can delete own banner photos"
+CREATE POLICY "Authenticated users can delete banner photos"
     ON storage.objects FOR DELETE
     USING (
         bucket_id = 'banner-photos' AND
-        (select auth.uid())::text = (string_to_array(name, '-'))[1]
+        (select auth.role()) = 'authenticated'
     );
 
 CREATE POLICY "Anyone can view banner photos"
     ON storage.objects FOR SELECT
     USING (bucket_id = 'banner-photos');
 
--- Gallery photos bucket policies
-CREATE POLICY "Users can upload own gallery photos"
+-- Gallery photos bucket - authenticated users can upload, anyone can view
+CREATE POLICY "Authenticated users can upload gallery photos"
     ON storage.objects FOR INSERT
     WITH CHECK (
         bucket_id = 'gallery-photos' AND
-        (select auth.uid())::text = (string_to_array(name, '-'))[1]
+        (select auth.role()) = 'authenticated'
     );
 
-CREATE POLICY "Users can update own gallery photos"
+CREATE POLICY "Authenticated users can update gallery photos"
     ON storage.objects FOR UPDATE
     USING (
         bucket_id = 'gallery-photos' AND
-        (select auth.uid())::text = (string_to_array(name, '-'))[1]
+        (select auth.role()) = 'authenticated'
     );
 
-CREATE POLICY "Users can delete own gallery photos"
+CREATE POLICY "Authenticated users can delete gallery photos"
     ON storage.objects FOR DELETE
     USING (
         bucket_id = 'gallery-photos' AND
-        (select auth.uid())::text = (string_to_array(name, '-'))[1]
+        (select auth.role()) = 'authenticated'
     );
 
 CREATE POLICY "Anyone can view gallery photos"

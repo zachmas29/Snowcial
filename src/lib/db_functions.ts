@@ -751,20 +751,18 @@ export async function updateUserTagAssignments(
 /*
  * Updates the database row for the currently authenticated user.
  */
-export async function updateCurrentUserProfile(updates: any) {
-  const userId = updates.id;
+export async function updateCurrentUserProfile(
+  updates: Partial<Tables<"users">> & { id: string },
+) {
+  const { id: userId, ...updateData } = updates;
 
   if (!userId) {
     throw new Error("Missing user id");
   }
 
-  // remove id from the object before updating
-  const copy = { ...updates };
-  delete copy.id;
-
   const result = await supabase
     .from("users")
-    .update(copy)
+    .update(updateData)
     .eq("id", userId)
     .select()
     .maybeSingle();

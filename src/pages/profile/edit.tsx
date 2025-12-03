@@ -1,13 +1,12 @@
 //biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB types to make Supabase happy>
 import {
+  Alert,
   Box,
   Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
+  CircularProgress,
+  IconButton,
   Paper,
-  Select,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -15,15 +14,22 @@ import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import TagSelector from "@/components/TagSelector";
 import { useAuthContext } from "@/hooks/useAuth";
 import {
+  deleteGalleryPhoto,
   updateCurrentUserProfile,
-  uploadBannerPhoto,
-  uploadGalleryPhoto,
-  uploadProfilePhoto,
+  updateUserTagAssignments,
 } from "@/lib/db_functions";
+import { getPublicUrl } from "@/lib/getPublicURL";
+import {
+  uploadBannerImage,
+  uploadGalleryImage,
+  uploadProfileImage,
+} from "@/lib/storage_functions";
 import { supabase } from "@/lib/supabase_client";
 import type { Tables } from "@/types/database.types";
+import type { GenericTagType } from "@/types/EventCreator.types";
 
 export default function EditProfilePage() {
   const authData = useAuthContext();
@@ -46,116 +52,142 @@ export default function EditProfilePage() {
   const [banner, setBanner] = useState<string | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
 
-  const [tags, setTags] = useState<Tables<"user_tags">[]>([]);
-  const [tagIds, setTagIds] = useState<number[]>([]);
+  const [availableTags, setAvailableTags] = useState<GenericTagType[]>([]);
+  const [selectedTags, setSelectedTags] = useState<GenericTagType[]>([]);
 
-  // fetch profile data
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Consolidated data fetching with Promise.all
   useEffect(() => {
-    async function fetchProfile() {
+    async function fetchAllData() {
       if (!authData.user) return;
 
-      const { data: profileData, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", authData.user.id)
-        .single();
+      try {
+        setLoading(true);
+        setError(null);
 
-      if (error) {
-        console.log("error fetching profile", error);
-      }
+        const [profileResult, galleryResult, tagsResult, assignmentsResult] =
+          await Promise.all([
+            supabase
+              .from("users")
+              .select("*")
+              .eq("id", authData.user.id)
+              .single(),
+            supabase
+              .from("gallery_photos")
+              .select("*")
+              .eq("user_id", authData.user.id)
+              .order("created_at", { ascending: false }),
+            supabase.from("user_tags").select("*"),
+            supabase
+              .from("user_tag_assignments")
+              .select("tag_id")
+              .eq("user_id", authData.user.id),
+          ]);
 
-      if (profileData) {
-        setProfile(profileData);
-
-        if (profileData.profile_photo_path) {
-          const { data } = supabase.storage
-            .from("profile-photos")
-            .getPublicUrl(profileData.profile_photo_path);
-
-          setPhoto(data.publicUrl);
-
-          setProfile((prev) => ({
-            ...prev,
-            profile_photo_path: profileData.profile_photo_path,
-          }));
+        // Handle profile data
+        if (profileResult.error) {
+          throw profileResult.error;
         }
 
-        if (profileData.banner_photo_path) {
-          const { data } = supabase.storage
-            .from("banner-photos")
-            .getPublicUrl(profileData.banner_photo_path);
+        if (profileResult.data) {
+          setProfile(profileResult.data);
 
-          setBanner(data.publicUrl);
+          // Get profile photo URL (handles both Google URLs and storage paths)
+          if (profileResult.data.profile_photo_path) {
+            const photoUrl = getPublicUrl(
+              "profile-photos",
+              profileResult.data.profile_photo_path,
+            );
+            setPhoto(photoUrl);
+          }
 
-          setProfile((prev) => ({
-            ...prev,
-            banner_photo_path: profileData.banner_photo_path,
-          }));
+          // Get banner photo URL (handles both Google URLs and storage paths)
+          if (profileResult.data.banner_photo_path) {
+            const bannerUrl = getPublicUrl(
+              "banner-photos",
+              profileResult.data.banner_photo_path,
+            );
+            setBanner(bannerUrl);
+          }
         }
+
+        // Handle gallery data
+        if (galleryResult.error) {
+          throw galleryResult.error;
+        }
+        setGalleryPhotos(galleryResult.data || []);
+
+        // Handle tags data
+        if (tagsResult.error) {
+          throw tagsResult.error;
+        }
+        const allTags: GenericTagType[] =
+          tagsResult.data?.map((t) => ({ id: t.id, name: t.name })) || [];
+        setAvailableTags(allTags);
+
+        // Handle tag assignments
+        if (assignmentsResult.error) {
+          throw assignmentsResult.error;
+        }
+        const assignedTagIds =
+          assignmentsResult.data?.map((r) => r.tag_id) || [];
+        const assignedTags = allTags.filter((tag) =>
+          assignedTagIds.includes(tag.id),
+        );
+        setSelectedTags(assignedTags);
+      } catch (_err) {
+        setError("Failed to load profile data. Please try again.");
+      } finally {
+        setLoading(false);
       }
     }
-    fetchProfile();
-  }, [authData.user]);
 
-  useEffect(() => {
-    async function fetchGallery() {
-      if (!authData.user) return;
-
-      const { data, error } = await supabase
-        .from("gallery_photos")
-        .select("*")
-        .eq("user_id", authData.user.id)
-        .order("created_at", { ascending: false });
-
-      if (error) console.log(error);
-      setGalleryPhotos(data || []);
-    }
-    fetchGallery();
-  }, [authData.user]);
-
-  useEffect(() => {
-    async function getTags() {
-      if (!authData.user) return;
-
-      const { data: tagList } = await supabase.from("user_tags").select("*");
-
-      setTags(tagList || []);
-
-      const { data: assignmentRows } = await supabase
-        .from("user_tag_assignments")
-        .select("tag_id")
-        .eq("user_id", authData.user.id);
-
-      setTagIds(assignmentRows?.map((r) => r.tag_id) || []);
-    }
-    getTags();
+    fetchAllData();
   }, [authData.user]);
 
   async function saveProfile() {
     if (!authData.user) return;
-    const userId = authData.user.id;
 
-    let photoPath = profile.profile_photo_path || null;
-    if (file) {
-      photoPath = await uploadProfilePhoto(userId, file);
+    try {
+      setSaving(true);
+      setError(null);
+
+      const userId = authData.user.id;
+
+      // Upload new profile photo if user selected one
+      let photoPath = profile.profile_photo_path || null;
+      if (file) {
+        photoPath = await uploadProfileImage(userId, file);
+      }
+
+      // Upload new banner photo if user selected one
+      let bannerPath = profile.banner_photo_path || null;
+      if (bannerFile) {
+        bannerPath = await uploadBannerImage(userId, bannerFile);
+      }
+
+      await updateCurrentUserProfile({
+        id: userId,
+        first_name: profile.first_name || "",
+        last_name: profile.last_name || "",
+        bio_text: profile.bio_text || "",
+        profile_photo_path: photoPath,
+        banner_photo_path: bannerPath,
+      });
+
+      // Update tag assignments
+      const tagIds = selectedTags.map((tag) => tag.id);
+      await updateUserTagAssignments(userId, tagIds);
+
+      router.push("/profile");
+    } catch (_err) {
+      setError("Failed to save profile. Please try again.");
+    } finally {
+      setSaving(false);
     }
-
-    let bannerPath = profile.banner_photo_path || null;
-    if (bannerFile) {
-      bannerPath = await uploadBannerPhoto(userId, bannerFile);
-    }
-
-    const info: any = {};
-    info.id = userId;
-    info.first_name = profile.first_name || "";
-    info.last_name = profile.last_name || "";
-    info.bio_text = profile.bio_text || "";
-    info.profile_photo_path = photoPath;
-    info.banner_photo_path = bannerPath;
-
-    await updateCurrentUserProfile(info);
-
-    router.push("/profile");
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -180,11 +212,54 @@ export default function EditProfilePage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const newRow = await uploadGalleryPhoto(authData.user.id, file);
-    setGalleryPhotos([newRow, ...galleryPhotos]);
+    try {
+      const imagePath = await uploadGalleryImage(authData.user.id, file);
+
+      // Fetch the newly created record
+      const { data: newPhoto, error } = await supabase
+        .from("gallery_photos")
+        .select("*")
+        .eq("user_id", authData.user.id)
+        .eq("photo_path", imagePath)
+        .single();
+
+      if (error || !newPhoto) {
+        throw new Error("Failed to fetch uploaded photo");
+      }
+
+      setGalleryPhotos([newPhoto, ...galleryPhotos]);
+    } catch (_err) {
+      setError("Failed to upload photo. Please try again.");
+    }
   }
 
-  if (!profile) return;
+  async function handleDeleteGalleryPhoto(photoPath: string) {
+    if (!authData.user) return;
+
+    try {
+      await deleteGalleryPhoto(authData.user.id, photoPath);
+      setGalleryPhotos(galleryPhotos.filter((p) => p.photo_path !== photoPath));
+    } catch (_err) {
+      setError("Failed to delete photo. Please try again.");
+    }
+  }
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!profile) return null;
 
   //author: CHATGPT
   return (
@@ -214,6 +289,15 @@ export default function EditProfilePage() {
           </Typography>
         </Box>
 
+        {/* Error Banner */}
+        {error && (
+          <Box sx={{ px: 4, pt: 2 }}>
+            <Alert severity="error" onClose={() => setError(null)}>
+              {error}
+            </Alert>
+          </Box>
+        )}
+
         {/* Banner */}
         <Box
           sx={{
@@ -240,29 +324,11 @@ export default function EditProfilePage() {
                 alignItems: "center",
                 justifyContent: "center",
                 backgroundColor: "#e4e4e4",
-                overflow: "hidden",
-                position: "relative",
+                color: "#999",
+                fontSize: "0.875rem",
               }}
             >
-              {[...Array(20)].map((_, i) => (
-                <Box
-                  key={i}
-                  sx={{
-                    position: "absolute",
-                    top: -10,
-                    left: `${Math.random() * 100}%`,
-                    fontSize: `${Math.random() * 10 + 10}px`,
-                    opacity: 0.8,
-                    animation: `fall ${Math.random() * 3 + 3}s linear infinite`,
-                    "@keyframes fall": {
-                      "0%": { transform: "translateY(-20px)" },
-                      "100%": { transform: "translateY(200px)" },
-                    },
-                  }}
-                >
-                  ❄
-                </Box>
-              ))}
+              No banner image
             </Box>
           )}
 
@@ -297,28 +363,11 @@ export default function EditProfilePage() {
                   alignItems: "center",
                   justifyContent: "center",
                   backgroundColor: "#eaeaea",
-                  position: "relative",
+                  color: "#999",
+                  fontSize: "0.875rem",
                 }}
               >
-                {[...Array(12)].map((_, i) => (
-                  <Box
-                    key={i}
-                    sx={{
-                      position: "absolute",
-                      top: -10,
-                      left: `${Math.random() * 100}%`,
-                      fontSize: `${Math.random() * 8 + 8}px`,
-                      opacity: 0.8,
-                      animation: `fall2 ${Math.random() * 3 + 3}s linear infinite`,
-                      "@keyframes fall2": {
-                        "0%": { transform: "translateY(-20px)" },
-                        "100%": { transform: "translateY(160px)" },
-                      },
-                    }}
-                  >
-                    ❄
-                  </Box>
-                ))}
+                No photo
               </Box>
             )}
             <Button
@@ -377,161 +426,6 @@ export default function EditProfilePage() {
           </Button>
         </Box>
 
-        {/* Gallery */}
-        <Box sx={{ px: 4, py: 3 }}>
-          <Typography variant="h6" fontWeight={700} textAlign="center" mb={1}>
-            Gallery
-          </Typography>
-
-          <ImageList
-            cols={3}
-            gap={12}
-            rowHeight={240}
-            sx={{
-              "& .MuiImageListItem-root": {
-                borderRadius: 2,
-                overflow: "hidden",
-              },
-            }}
-          >
-            {[...Array(6)].map((_, i) => {
-              const photo = galleryPhotos[i];
-              if (!photo) {
-                // placeholder with snow
-                return (
-                  <ImageListItem key={`placeholder-${i}`}>
-                    <Box
-                      sx={{
-                        width: "100%",
-                        height: "100%",
-                        position: "relative",
-                        backgroundColor: "#ccc",
-                      }}
-                    >
-                      {[...Array(6)].map((__, j) => (
-                        <Box
-                          key={j}
-                          sx={{
-                            position: "absolute",
-                            top: -10,
-                            left: `${Math.random() * 100}%`,
-                            fontSize: `${Math.random() * 8 + 8}px`,
-                            opacity: 0.8,
-                            animation: `fallSnow ${Math.random() * 3 + 3}s linear infinite`,
-                            "@keyframes fallSnow": {
-                              "0%": { transform: "translateY(-20px)" },
-                              "100%": { transform: "translateY(160px)" },
-                            },
-                          }}
-                        >
-                          ❄
-                        </Box>
-                      ))}
-                      <Button
-                        component="label"
-                        sx={{
-                          position: "absolute",
-                          bottom: 4,
-                          right: 4,
-                          width: 28,
-                          height: 28,
-                          borderRadius: "50%",
-                          minWidth: 0,
-                          backgroundColor: "white",
-                          border: "2px solid black",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          "&:hover": { backgroundColor: "#f0f0f0" },
-                        }}
-                      >
-                        ✎
-                        <input
-                          type="file"
-                          hidden
-                          accept="image/*"
-                          onChange={handleGalleryChange}
-                        />
-                      </Button>
-                    </Box>
-                  </ImageListItem>
-                );
-              }
-
-              const { data: urlData } = supabase.storage
-                .from("gallery-photos")
-                .getPublicUrl(photo.photo_path);
-              const url = urlData.publicUrl;
-
-              return (
-                <ImageListItem key={photo.photo_path}>
-                  <Box
-                    sx={{ width: "100%", height: "100%", position: "relative" }}
-                  >
-                    <Box
-                      component="img"
-                      src={url}
-                      alt=""
-                      sx={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    />
-                    <Button
-                      component="label"
-                      sx={{
-                        position: "absolute",
-                        bottom: 4,
-                        right: 4,
-                        width: 28,
-                        height: 28,
-                        borderRadius: "50%",
-                        minWidth: 0,
-                        backgroundColor: "white",
-                        border: "2px solid black",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        "&:hover": { backgroundColor: "#f0f0f0" },
-                      }}
-                    >
-                      ✎
-                      <input
-                        type="file"
-                        hidden
-                        accept="image/*"
-                        onChange={handleGalleryChange}
-                      />
-                    </Button>
-                  </Box>
-                </ImageListItem>
-              );
-            })}
-          </ImageList>
-        </Box>
-
-        {/* Tags */}
-        <Box sx={{ px: 4, pb: 2 }}>
-          <FormControl fullWidth>
-            <InputLabel id="tag-select-label">Choose tags</InputLabel>
-            <Select
-              labelId="tag-select-label"
-              multiple
-              value={tagIds}
-              onChange={(e) => setTagIds(e.target.value as number[])}
-              input={<OutlinedInput label="Choose tags" />}
-              renderValue={(selected) =>
-                selected
-                  .map((id) => tags.find((t) => t.id === id)?.name ?? "")
-                  .join(", ")
-              }
-            >
-              {tags.map((t) => (
-                <MenuItem key={t.id} value={t.id}>
-                  {t.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
-
         {/* Main Form */}
         <Box sx={{ p: 4 }}>
           <Box
@@ -543,61 +437,165 @@ export default function EditProfilePage() {
             sx={{
               display: "flex",
               flexDirection: "column",
-              gap: 2,
               width: "100%",
               maxWidth: 500,
               mx: "auto",
             }}
           >
-            <TextField
-              label="First Name"
-              variant="outlined"
-              value={profile.first_name}
-              onChange={(e) =>
-                setProfile({ ...profile, first_name: e.target.value })
-              }
-              fullWidth
-            />
-            <TextField
-              label="Last Name"
-              variant="outlined"
-              value={profile.last_name}
-              onChange={(e) =>
-                setProfile({ ...profile, last_name: e.target.value })
-              }
-              fullWidth
-            />
-            <TextField
-              label="Bio"
-              variant="outlined"
-              multiline
-              minRows={3}
-              value={profile.bio_text}
-              onChange={(e) =>
-                setProfile({ ...profile, bio_text: e.target.value })
-              }
-              fullWidth
-            />
-            <Button
-              type="submit"
-              variant="contained"
+            <Stack spacing={3}>
+              <TextField
+                label="First Name"
+                variant="outlined"
+                value={profile.first_name}
+                onChange={(e) =>
+                  setProfile({ ...profile, first_name: e.target.value })
+                }
+                fullWidth
+              />
+              <TextField
+                label="Last Name"
+                variant="outlined"
+                value={profile.last_name}
+                onChange={(e) =>
+                  setProfile({ ...profile, last_name: e.target.value })
+                }
+                fullWidth
+              />
+              <TextField
+                label="Bio"
+                variant="outlined"
+                multiline
+                minRows={3}
+                value={profile.bio_text}
+                onChange={(e) =>
+                  setProfile({ ...profile, bio_text: e.target.value })
+                }
+                fullWidth
+              />
+
+              {/* Tags */}
+              <TagSelector
+                availableTags={availableTags}
+                selectedTags={selectedTags}
+                setSelectedTags={setSelectedTags}
+                label="Choose tags"
+              />
+
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={saving}
+                sx={{
+                  mt: 1,
+                  alignSelf: "center",
+                  textTransform: "none",
+                  borderRadius: 2,
+                  px: 4,
+                  py: 1,
+                  fontSize: "1rem",
+                  fontWeight: 600,
+                  backgroundColor: "black",
+                  color: "white",
+                  "&:hover": { backgroundColor: "#333" },
+                }}
+              >
+                {saving ? <CircularProgress size={24} /> : "Save"}
+              </Button>
+            </Stack>
+          </Box>
+        </Box>
+
+        {/* Gallery - Moved to bottom */}
+        <Box sx={{ px: 4, pb: 4 }}>
+          <Typography variant="h6" fontWeight={700} textAlign="center" mb={2}>
+            Gallery ({galleryPhotos.length}/6)
+          </Typography>
+
+          {galleryPhotos.length > 0 && (
+            <ImageList
+              cols={3}
+              gap={12}
+              rowHeight={240}
               sx={{
-                mt: 1,
-                alignSelf: "center",
-                textTransform: "none",
-                borderRadius: 2,
-                px: 4,
-                py: 1,
-                fontSize: "1rem",
-                fontWeight: 600,
-                backgroundColor: "black",
-                color: "white",
-                "&:hover": { backgroundColor: "#333" },
+                "& .MuiImageListItem-root": {
+                  borderRadius: 2,
+                  overflow: "hidden",
+                },
               }}
             >
-              Save
-            </Button>
-          </Box>
+              {galleryPhotos.map((photo) => {
+                const url = getPublicUrl("gallery-photos", photo.photo_path);
+                if (!url) return null;
+
+                return (
+                  <ImageListItem key={photo.photo_path}>
+                    <Box
+                      sx={{
+                        width: "100%",
+                        height: "100%",
+                        position: "relative",
+                      }}
+                    >
+                      <Box
+                        component="img"
+                        src={url}
+                        alt=""
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                      {/* Delete button */}
+                      <IconButton
+                        onClick={() =>
+                          handleDeleteGalleryPhoto(photo.photo_path)
+                        }
+                        sx={{
+                          position: "absolute",
+                          top: 4,
+                          right: 4,
+                          width: 28,
+                          height: 28,
+                          backgroundColor: "rgba(255, 255, 255, 0.9)",
+                          color: "black",
+                          "&:hover": {
+                            backgroundColor: "rgba(255, 255, 255, 1)",
+                          },
+                        }}
+                      >
+                        ×
+                      </IconButton>
+                    </Box>
+                  </ImageListItem>
+                );
+              })}
+            </ImageList>
+          )}
+
+          {/* Upload button (only if < 6 photos) */}
+          {galleryPhotos.length < 6 && (
+            <Box sx={{ textAlign: "center", mt: 2 }}>
+              <Button
+                component="label"
+                variant="outlined"
+                sx={{
+                  textTransform: "none",
+                  borderRadius: 2,
+                  px: 3,
+                  py: 1,
+                }}
+              >
+                + Add Photo
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={handleGalleryChange}
+                />
+              </Button>
+            </Box>
+          )}
         </Box>
       </Paper>
     </Box>
