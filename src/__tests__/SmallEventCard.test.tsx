@@ -353,29 +353,8 @@ describe("SmallEventCard", () => {
     );
     expect(screen.getByText("5-9 people attending")).toBeInTheDocument();
   });
-<<<<<<< HEAD
-  test("Handles attendingCount.yes = 0 correctly", () => {
-    const zeroConfirmed: AttendeeCountType = {
-      yes: 0,
-      maybe: 5,
-      total: 7,
-      capacity: null,
-      waitlistCount: 0,
-    };
-    render(
-      <SmallEventCard
-        event={mockEvent}
-        eventTags={mockEventTags}
-        user={mockUser}
-        attendingCount={zeroConfirmed}
-        handleEventClick={() => {}}
-      />,
-    );
-    // When yes is 0, should display total only
-    expect(screen.getByText("7 people attending")).toBeInTheDocument();
-  });
 
-  test("Handles attendingCount.yes = 0 correctly", () => {
+  test("Displays total when yes is 0", () => {
     const zeroConfirmed: AttendeeCountType = {
       yes: 0,
       maybe: 5,
@@ -395,9 +374,6 @@ describe("SmallEventCard", () => {
     // When yes is 0, should display total only
     expect(screen.getByText("7 people attending")).toBeInTheDocument();
   });
-
-=======
->>>>>>> b9ed378 (Small fixes)
   test("Navigates to event page when clicked", async () => {
     const user = userEvent.setup();
     const handleEventClick = vi.fn();
