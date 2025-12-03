@@ -354,6 +354,7 @@ describe("SmallEventCard", () => {
     );
     expect(screen.getByText("5-9 people attending")).toBeInTheDocument();
   });
+<<<<<<< HEAD
   test("Handles attendingCount.yes = 0 correctly", () => {
     const zeroConfirmed: AttendeeCountType = {
       yes: 0,
@@ -396,6 +397,8 @@ describe("SmallEventCard", () => {
     expect(screen.getByText("7 people attending")).toBeInTheDocument();
   });
 
+=======
+>>>>>>> b9ed378 (Small fixes)
   test("Navigates to event page when clicked", async () => {
     const user = userEvent.setup();
     const handleEventClick = vi.fn();
