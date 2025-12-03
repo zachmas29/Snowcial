@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB types to make Supabase happy> */
-import { Paper, Typography } from "@mui/material";
+import { Alert, Box, Paper, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -19,13 +19,16 @@ export default function NewEvent() {
     setClientLoaded(true);
   }, []);
 
+  const [error, setError] = useState<string>("");
+
   const handleSubmit = async (formData: EventFormData) => {
+    setError("");
     if (
       !formData.title.trim() ||
       !formData.description.trim() ||
       !formData.event_time
     ) {
-      alert("Please fill in a title, description, and date.");
+      setError("Please fill in a title, description, and date.");
       return;
     }
 
@@ -47,7 +50,7 @@ export default function NewEvent() {
         router.push(`/events/${inserted.id}`);
       }
     } catch (err) {
-      alert(`Failed to create event: ${err}`);
+      setError(`Failed to create event: ${err}`);
     }
   };
 
@@ -86,6 +89,12 @@ export default function NewEvent() {
         >
           <EventCreator onSubmit={handleSubmit} handleClick={handleClick} />
         </Paper>
+        {error && (
+          <Box mb={2}>
+            <Alert severity="error">{error}</Alert>
+          </Box>
+        )}
+        <EventCreator onSubmit={handleSubmit} handleClick={handleClick} />
       </PageLayout>
     </>
   );

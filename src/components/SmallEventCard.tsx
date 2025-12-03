@@ -8,7 +8,9 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
+import NextLink from "next/link";
 import UserAvatar from "@/components/UserAvatar";
+
 import { formatEventDate } from "@/lib/date_formatters";
 import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
 import type { Tables } from "@/types/database.types";
@@ -86,7 +88,27 @@ export default function SmallEventCard({
         sx={{ height: "100%" }}
       >
         <CardHeader
-          avatar={<UserAvatar user={user} fallbackInitials={initials} />}
+          avatar={
+            user ? (
+              <Box
+                component={NextLink}
+                href={`/profile/${user.id}`}
+                sx={{ textDecoration: "none" }}
+              >
+                <UserAvatar
+                  user={user}
+                  fallbackInitials={initials}
+                  shouldLink={false}
+                />
+              </Box>
+            ) : (
+              <UserAvatar
+                user={user}
+                fallbackInitials={initials}
+                shouldLink={false}
+              />
+            )
+          }
           title={
             <Typography variant="h6" fontWeight="bold">
               {event.title}
