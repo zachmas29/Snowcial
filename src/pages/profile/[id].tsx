@@ -89,7 +89,7 @@ export default function UserProfilePage() {
               eventTags,
               attendingCount,
             } as EnrichedEvent;
-          } catch (err) {
+          } catch (_err) {
             return {
               event,
               user: undefined,
@@ -104,7 +104,7 @@ export default function UserProfilePage() {
         if (isMounted) {
           setUserEvents(enrichedEvents);
         }
-      } catch (err) {
+      } catch (_err) {
         if (isMounted) {
           setUserEventsError(true);
         }
@@ -147,7 +147,7 @@ export default function UserProfilePage() {
         }
 
         setProfile(data);
-      } catch (fetchError) {
+      } catch (_fetchError) {
         if (!isMounted) return;
 
         setProfile(null);

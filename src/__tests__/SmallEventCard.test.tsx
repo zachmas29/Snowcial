@@ -29,7 +29,6 @@ const mockUser: Tables<"users"> = {
   last_updated: "2025-01-01T00:00:00+00:00",
   banner_photo_path: null,
   profile_photo_path: null,
-  nick_name: "emmaj",
   last_active: "2025-11-13T00:00:00+00:00",
 };
 

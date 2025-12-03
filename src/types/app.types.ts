@@ -1,3 +1,4 @@
+// biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB-shaped types>
 import type { GenericTagType } from "@/types/EventCreator.types";
 import type { AttendeeCountType } from "./AttendeeCountType.type";
 import type { Tables } from "./database.types";

@@ -29,7 +29,6 @@ const mockUser: Tables<"users"> = {
   first_name: "Emma",
   last_name: "Johnson",
   email: "emma.johnson@middlebury.edu",
-  nick_name: "EmmaJ",
   bio_text:
     "Love hitting the slopes early morning! Always looking for powder days at Snowbowl.",
   created_at: "2025-01-01T00:00:00+00:00",
