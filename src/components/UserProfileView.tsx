@@ -32,11 +32,12 @@ export default function UserProfileView({
   onEditProfile,
 }: UserProfileViewProps) {
   const normalizedGalleryPhotos = profile.galleryPhotos
-    .filter((p) => p.photo_path)
-    .map((p) => ({
-      ...p,
-      photo_path: getPublicUrl("gallery-photos", p.photo_path as string),
-    }));
+    .map((p) => {
+      const url = getPublicUrl("gallery-photos", p.photo_path);
+      if (!url) return null;
+      return { ...p, photo_path: url };
+    })
+    .filter((p): p is typeof p & { photo_path: string } => p !== null);
 
   const getPossessiveForm = (name: string): string => {
     return name.toLowerCase().endsWith("s")
