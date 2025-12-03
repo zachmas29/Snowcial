@@ -14,7 +14,7 @@ interface CommentItemProps {
   onDelete: (commentId: number) => Promise<void>;
 }
 
-const maxReplyDepth = 5;
+const maxReplyDepth = 2;
 
 export default function CommentItem({
   comment,
