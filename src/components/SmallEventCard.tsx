@@ -88,27 +88,7 @@ export default function SmallEventCard({
         sx={{ height: "100%" }}
       >
         <CardHeader
-          avatar={
-            user ? (
-              <Box
-                component={NextLink}
-                href={`/profile/${user.id}`}
-                sx={{ textDecoration: "none" }}
-              >
-                <UserAvatar
-                  user={user}
-                  fallbackInitials={initials}
-                  shouldLink={false}
-                />
-              </Box>
-            ) : (
-              <UserAvatar
-                user={user}
-                fallbackInitials={initials}
-                shouldLink={false}
-              />
-            )
-          }
+          avatar={<UserAvatar user={user} fallbackInitials={initials} />}
           title={
             <Typography variant="h6" fontWeight="bold">
               {event.title}
