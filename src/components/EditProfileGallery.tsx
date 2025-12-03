@@ -51,7 +51,7 @@ export default function EditProfileGallery({
             },
           }}
         >
-          {photos.map((photo) => {
+          {photos.map((photo, index) => {
             const url = getPublicUrl("gallery-photos", photo.photo_path);
             if (!url) return null;
 
@@ -69,7 +69,7 @@ export default function EditProfileGallery({
                   <Box
                     component="img"
                     src={url}
-                    alt=""
+                    alt={`Image gallery image ${index + 1}`}
                     sx={{
                       width: "100%",
                       height: "100%",
@@ -78,6 +78,7 @@ export default function EditProfileGallery({
                   />
                   <IconButton
                     onClick={() => onDeletePhoto(photo.photo_path)}
+                    aria-label="Delete photo"
                     sx={{
                       position: "absolute",
                       top: 4,

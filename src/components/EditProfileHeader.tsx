@@ -110,6 +110,7 @@ export default function EditProfileHeader({
           hidden
           accept="image/*"
           onChange={handleProfileInputChange}
+          aria-label="Upload profile photo"
         />
       </Button>
 
@@ -133,6 +134,7 @@ export default function EditProfileHeader({
           hidden
           accept="image/*"
           onChange={handleBannerInputChange}
+          aria-label="Upload banner photo"
         />
       </Button>
     </Box>
