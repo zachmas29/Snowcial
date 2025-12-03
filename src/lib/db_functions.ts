@@ -1,4 +1,6 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
+
+import { getPublicUrl } from "@/lib/getPublicURL";
 import { supabase } from "@/lib/supabase_client";
 import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
 import type { UserProfileData } from "@/types/app.types";
@@ -45,13 +47,28 @@ export async function fetchUsersWithTags(): Promise<UserWithTags[]> {
 
   const rows = (data ?? []) as UserRowWithAssignments[];
 
-  return rows.map(({ userTagAssignments, ...user }) => ({
-    ...user,
-    tags:
-      userTagAssignments
-        ?.map((assignment) => assignment.userTags)
-        .filter((tag): tag is Tables<"user_tags"> => tag !== null) ?? [],
-  }));
+  return rows.map(({ userTagAssignments, ...user }) => {
+    let profile_photo_path = user.profile_photo_path;
+    let banner_photo_path = user.banner_photo_path;
+
+    if (profile_photo_path && !profile_photo_path.startsWith("http")) {
+      profile_photo_path = getPublicUrl("profile-photos", profile_photo_path);
+    }
+
+    if (banner_photo_path && !banner_photo_path.startsWith("http")) {
+      banner_photo_path = getPublicUrl("banner-photos", banner_photo_path);
+    }
+
+    return {
+      ...user,
+      profile_photo_path,
+      banner_photo_path,
+      tags:
+        userTagAssignments
+          ?.map((assignment) => assignment.userTags)
+          .filter((tag): tag is Tables<"user_tags"> => tag !== null) ?? [],
+    };
+  });
 }
 
 /* fetchUser
@@ -803,20 +820,10 @@ export async function uploadGalleryPhoto(userId: string, file: File) {
 }
 
 /**
- * Deletes a gallery photo (both storage file and DB record)
+ * Deletes a gallery photo database record.
  * Note: gallery_photos has composite primary key (user_id, photo_path)
  */
 export async function deleteGalleryPhoto(userId: string, photoPath: string) {
-  // Delete from storage bucket
-  const { error: storageError } = await supabase.storage
-    .from("gallery-photos")
-    .remove([photoPath]);
-
-  if (storageError) {
-    throw storageError;
-  }
-
-  // Delete from database
   const { error: dbError } = await supabase
     .from("gallery_photos")
     .delete()

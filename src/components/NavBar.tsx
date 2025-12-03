@@ -1,6 +1,5 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AddBoxIcon from "@mui/icons-material/AddBox";
-import EditIcon from "@mui/icons-material/Edit";
 import EventIcon from "@mui/icons-material/Event";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Box } from "@mui/material";
@@ -27,15 +26,6 @@ export function NavBar() {
   const isProfileSection = pathname.startsWith("/profile");
   const authUserId = user?.id ?? null;
   const profileHref = authUserId ? `/profile/${authUserId}` : "/profile";
-  const profileRouteId = Array.isArray(router.query.id)
-    ? router.query.id[0]
-    : ((router.query.id as string | undefined) ?? null);
-  const isProfileEditPage = pathname === "/profile/edit";
-  const viewingOwnProfile =
-    Boolean(authUserId) &&
-    (pathname === "/profile" ||
-      isProfileEditPage ||
-      (pathname === "/profile/[id]" && profileRouteId === authUserId));
 
   const baseNavItems: NavItem[] = [
     {
@@ -48,23 +38,17 @@ export function NavBar() {
     { label: "People", href: "/people", icon: <PeopleAltIcon /> },
   ];
 
-  const navItems = [
+  const navItems: NavItem[] = [
     ...baseNavItems,
-    isProfileSection && viewingOwnProfile
-      ? {
-          label: "Edit Profile",
-          href: "/profile/edit",
-          icon: <EditIcon />,
-          value: "/profile/edit",
-        }
-      : { label: "New Event", href: "/events/new", icon: <AddBoxIcon /> },
+    {
+      label: "New Event",
+      href: "/events/new",
+      icon: <AddBoxIcon />,
+      value: "/events/new",
+    },
   ];
 
-  const activeNavValue = isProfileEditPage
-    ? "/profile/edit"
-    : isProfileSection
-      ? "/profile"
-      : pathname;
+  const activeNavValue = isProfileSection ? "/profile" : pathname;
 
   return (
     <Paper

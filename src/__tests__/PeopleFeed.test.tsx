@@ -16,8 +16,8 @@ const mockUsers: UserWithTags[] = [
     last_updated: "2025-01-01T00:00:00+00:00",
     banner_photo_path: null,
     profile_photo_path: null,
-    nick_name: "sophieshreds",
     last_active: "2025-11-10T00:00:00+00:00",
+
     tags: [
       { id: 1, name: "Snowbowl" },
       { id: 2, name: "Park" },
@@ -33,8 +33,8 @@ const mockUsers: UserWithTags[] = [
     last_updated: "2025-02-01T00:00:00+00:00",
     banner_photo_path: null,
     profile_photo_path: null,
-    nick_name: "jakerides",
     last_active: "2025-11-13T00:00:00+00:00",
+
     tags: [{ id: 3, name: "Sugarbush" }],
   },
   {
@@ -47,8 +47,8 @@ const mockUsers: UserWithTags[] = [
     last_updated: "2025-03-01T00:00:00+00:00",
     banner_photo_path: null,
     profile_photo_path: null,
-    nick_name: null,
     last_active: "2025-11-15T00:00:00+00:00",
+
     tags: [],
   },
 ];
@@ -75,10 +75,15 @@ describe("PeopleFeed", () => {
         selectedTags={[]}
       />,
     );
-    // Verify a few users and their nicknames instead of a snapshot
+    // Verify a few users and their bios instead of a snapshot
     expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
-    expect(screen.getByText("@sophieshreds")).toBeInTheDocument();
     expect(screen.getByText("Jake Thompson")).toBeInTheDocument();
+    expect(
+      screen.getByText("Snowboarder who loves park features"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Alpine skier, all-mountain enthusiast"),
+    ).toBeInTheDocument();
   });
 
   test("Displays all users initially", () => {
@@ -260,7 +265,7 @@ describe("PeopleFeed", () => {
     expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
   });
 
-  test("Displays nicknames with @ prefix when available", () => {
+  test("Does not render legacy @nicknames", () => {
     render(
       <PeopleFeed
         users={mockUsers}
@@ -269,8 +274,8 @@ describe("PeopleFeed", () => {
         selectedTags={[]}
       />,
     );
-    expect(screen.getByText("@sophieshreds")).toBeInTheDocument();
-    expect(screen.getByText("@jakerides")).toBeInTheDocument();
+    expect(screen.queryByText("@sophieshreds")).not.toBeInTheDocument();
+    expect(screen.queryByText("@jakerides")).not.toBeInTheDocument();
   });
 
   test("Handles users without nicknames", () => {

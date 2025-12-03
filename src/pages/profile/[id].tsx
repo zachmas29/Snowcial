@@ -1,6 +1,13 @@
 //biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB types to make Supabase happy>
 
-import { Alert, Box, CircularProgress, Typography } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -83,11 +90,6 @@ export default function UserProfilePage() {
               attendingCount,
             } as EnrichedEvent;
           } catch (err) {
-            console.error(
-              `Failed to fetch extra data for event ${event.id}:`,
-              err,
-            );
-
             return {
               event,
               user: undefined,
@@ -104,7 +106,6 @@ export default function UserProfilePage() {
         }
       } catch (err) {
         if (isMounted) {
-          console.error("Failed to fetch user events:", err);
           setUserEventsError(true);
         }
       } finally {
@@ -149,7 +150,6 @@ export default function UserProfilePage() {
       } catch (fetchError) {
         if (!isMounted) return;
 
-        console.error("Failed to fetch profile:", fetchError);
         setProfile(null);
         setError("Something went wrong while loading this profile.");
       } finally {
@@ -193,7 +193,20 @@ export default function UserProfilePage() {
           <Alert severity="error">{error}</Alert>
         ) : profile ? (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            <UserProfileHeader user={profile.user} tags={profile.tags} />
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <UserProfileHeader user={profile.user} tags={profile.tags} />
+              {isOwnProfile && (
+                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<EditIcon />}
+                    onClick={() => router.push("/profile/edit")}
+                  >
+                    Edit Profile
+                  </Button>
+                </Box>
+              )}
+            </Box>
             <UserBioSection bioText={profile.user.bio_text} />
 
             {/* convert each gallery photo so next/image can load them */}
