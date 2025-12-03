@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { useAuthContext } from "@/hooks/useAuth";
+import { createGoogleCalendarUrl } from "@/lib/calendar_url_function";
 import { formatEventDate } from "@/lib/date_formatters";
 import type { Tables } from "@/types/database.types";
 import type { EventFormData } from "@/types/EventCreator.types";
@@ -40,6 +41,22 @@ export default function Event({ eventData, userData }: EventProps) {
   const { title, description, event_time, tags } = eventData;
   const router = useRouter();
   const { user } = useAuthContext();
+
+  // for adding to google calendar
+  let googleCalUrl = null;
+  if (event_time) {
+    const start = new Date(event_time);
+    // only generate URL if date is valid
+    if (!Number.isNaN(start.getTime())) {
+      googleCalUrl = createGoogleCalendarUrl({
+        title,
+        startDate: start,
+        endDate: start,
+        details: description,
+        location: "",
+      });
+    }
+  }
 
   return (
     <Card
@@ -137,6 +154,18 @@ export default function Event({ eventData, userData }: EventProps) {
               onClick={() => router.push(`/events/${router.query.id}/edit`)}
             >
               Edit Event
+            </Button>
+          </Box>
+        )}
+
+        {/* Add to Google Calendar Button */}
+        {googleCalUrl && (
+          <Box sx={{ mt: 1 }}>
+            <Button
+              variant="contained"
+              onClick={() => window.open(googleCalUrl, "_blank")}
+            >
+              Add To Google Calendar
             </Button>
           </Box>
         )}
