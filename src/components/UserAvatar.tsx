@@ -1,10 +1,19 @@
+/** biome-ignore-all lint/style/useNamingConvention: <snake_case to make Supabase happy> */
 import { Avatar, type SxProps, type Theme } from "@mui/material";
 import Link from "next/link";
 import { getPublicUrl } from "@/lib/getPublicURL";
 import type { Tables } from "@/types/database.types";
 
+// Minimal user type for avatar rendering
+export interface UserAvatarUser {
+  id: string;
+  first_name: string;
+  last_name: string;
+  profile_photo_path?: string | null;
+}
+
 interface UserAvatarProps {
-  user: Tables<"users"> | undefined;
+  user: Tables<"users"> | UserAvatarUser | undefined;
   sx?: SxProps<Theme> | undefined;
   shouldLink?: boolean;
   fallbackInitials?: string;
