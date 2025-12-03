@@ -627,7 +627,6 @@ export async function fetchUserFromEventId(
   return data.users;
 }
 
-<<<<<<< HEAD
 /* fetchEventRSVPs
  * params: eventId - an event id to search for
  * returns: array of RSVPs with user information, ordered by created_at
@@ -701,23 +700,12 @@ export async function deleteRSVP(eventId: number, userId: string) {
     .delete()
     .eq("event_id", eventId)
     .eq("user_id", userId);
-=======
-/* clearUserTagAssignments
- * params: user id to clear tag assignments
- */
-export async function clearUserTagAssignments(user_id: string) {
-  const { error } = await supabase
-    .from("user_tag_assignments")
-    .delete()
-    .eq("user_id", user_id);
->>>>>>> be95300 (updated usergallery.tsx to accomodate urls that pertain to userID's, also profile/id, updated apptypes so photo path could be null as well, edit profile has a banner and gallery photos)
 
   if (error) {
     throw error;
   }
 }
 
-<<<<<<< HEAD
 /* getCurrentUserRSVP
  * params: eventId - the event id
  * returns: the current user's RSVP status or null
@@ -744,7 +732,22 @@ export async function getCurrentUserRSVP(eventId: number) {
   }
 
   return data;
-=======
+}
+
+/* clearUserTagAssignments
+ * params: user id to clear tag assignments
+ */
+export async function clearUserTagAssignments(user_id: string) {
+  const { error } = await supabase
+    .from("user_tag_assignments")
+    .delete()
+    .eq("user_id", user_id);
+
+  if (error) {
+    throw error;
+  }
+}
+
 /* updateUserTagAssignments
  * params: user id to assign tags to
  */
@@ -808,33 +811,3 @@ export async function deleteGalleryPhoto(userId: string, photoPath: string) {
     throw dbError;
   }
 }
-<<<<<<< HEAD
-
-// Uploads a profile photo for a user and stores the path in database
-export async function uploadProfilePhoto(userId: string, file: File) {
-  const path = `${userId}-profile-${Date.now()}-${file.name}`;
-
-  const { error } = await supabase.storage
-    .from("profile-photos")
-    .upload(path, file);
-
-  if (error) throw error;
-
-  return path;
-}
-
-// Uploads a banner photo for a user and stores the path in database
-export async function uploadBannerPhoto(userId: string, file: File) {
-  const path = `${userId}-banner-${Date.now()}-${file.name}`;
-
-  const { error } = await supabase.storage
-    .from("banner-photos")
-    .upload(path, file);
-
-  if (error) throw error;
-
-  return path;
->>>>>>> be95300 (updated usergallery.tsx to accomodate urls that pertain to userID's, also profile/id, updated apptypes so photo path could be null as well, edit profile has a banner and gallery photos)
-}
-=======
->>>>>>> 8e717f7 (Get rid of old functions)
