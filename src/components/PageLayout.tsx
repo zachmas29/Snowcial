@@ -1,5 +1,6 @@
 import { KeyboardBackspace } from "@mui/icons-material";
 import { Box, Button, Container, type ContainerProps } from "@mui/material";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 import type { ReactNode } from "react";
 
@@ -21,8 +22,16 @@ export default function PageLayout({
 }: PageLayoutProps) {
   const router = useRouter();
 
-  const handleBackButton = () => {
-    router.back();
+  const showBackButton = () => {
+    const pathname = router.pathname;
+    return pathname === "/profile/[id]" || pathname === "/events/[id]";
+  };
+
+  const getBackHref = () => {
+    const pathname = router.pathname;
+    if (pathname === "/profile/[id]") return "/people";
+    if (pathname === "/events/[id]") return "/events";
+    return "/";
   };
 
   return (
@@ -33,11 +42,14 @@ export default function PageLayout({
         ...sx,
       }}
     >
-      {" "}
-      <Button color="primary" onClick={handleBackButton}>
-        <KeyboardBackspace />
-        BACK
-      </Button>
+      {showBackButton() && (
+        <NextLink href={getBackHref()} passHref legacyBehavior>
+          <Button color="primary" component="a">
+            <KeyboardBackspace />
+            BACK
+          </Button>
+        </NextLink>
+      )}
       <Box
         sx={{
           display: "flex",
