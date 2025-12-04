@@ -151,6 +151,16 @@ export default function SmallEventCard({
                 <Chip label="Full" size="small" color="warning" />
               )}
           </Box>
+
+          {new Date(event.event_time) < new Date() && (
+            <Box sx={{ mt: 1 }}>
+              <Chip
+                label="Event has already started"
+                size="small"
+                color="warning"
+              />
+            </Box>
+          )}
         </CardContent>
       </CardActionArea>
     </Card>
