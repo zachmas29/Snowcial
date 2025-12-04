@@ -9,7 +9,6 @@ import {
   Typography,
 } from "@mui/material";
 import UserAvatar from "@/components/UserAvatar";
-
 import { formatEventDate } from "@/lib/date_formatters";
 import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
 import type { Tables } from "@/types/database.types";
