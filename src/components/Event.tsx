@@ -8,9 +8,12 @@ import {
   Card,
   CardContent,
   Chip,
+  Divider,
   Stack,
   Typography,
 } from "@mui/material";
+import { useColorScheme } from "@mui/material/styles";
+import { AddToCalendarButton } from "add-to-calendar-button-react";
 import { useRouter } from "next/router";
 import { useAuthContext } from "@/hooks/useAuth";
 import { formatEventDate } from "@/lib/date_formatters";
@@ -40,6 +43,27 @@ export default function Event({ eventData, userData }: EventProps) {
   const { title, description, event_time, tags } = eventData;
   const router = useRouter();
   const { user } = useAuthContext();
+  const { mode } = useColorScheme();
+
+  const calendarProps = (() => {
+    if (!event_time) return null;
+
+    const start = event_time;
+    const end = new Date(start.getTime() + 60 * 60 * 1000); // 1 hour length
+
+    const pad = (value: number) => value.toString().padStart(2, "0");
+    const formatDate = (date: Date) =>
+      `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+    const formatTime = (date: Date) =>
+      `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+
+    return {
+      startDate: formatDate(start),
+      startTime: formatTime(start),
+      endDate: formatDate(end),
+      endTime: formatTime(end),
+    };
+  })();
 
   return (
     <Card
@@ -129,16 +153,43 @@ export default function Event({ eventData, userData }: EventProps) {
           </Box>
         )}
 
-        {/* Edit button - only show if current user is the event creator */}
-        {user && userData && user.id === userData.id && (
-          <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              variant="outlined"
-              onClick={() => router.push(`/events/${router.query.id}/edit`)}
+        {/* Bottom action buttons: Add to Calendar + Edit Event */}
+        {(calendarProps || (user && userData && user.id === userData.id)) && (
+          <>
+            <Divider sx={{ my: 2 }} />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 2,
+              }}
             >
-              Edit Event
-            </Button>
-          </Box>
+              {user && userData && user.id === userData.id && (
+                <Button
+                  variant="outlined"
+                  onClick={() => router.push(`/events/${router.query.id}/edit`)}
+                >
+                  Edit Event
+                </Button>
+              )}
+              {!user || !userData || (user.id !== userData.id && <Box />)}
+              {calendarProps && (
+                <AddToCalendarButton
+                  name={title}
+                  description={description}
+                  options={["Google", "Apple", "Microsoft365", "iCal"]}
+                  timeZone="America/New_York"
+                  forceOverlay
+                  listStyle="dropdown"
+                  hideBranding
+                  hideCheckmark
+                  lightMode={mode === "dark" ? "dark" : "light"}
+                  {...calendarProps}
+                ></AddToCalendarButton>
+              )}
+            </Box>
+          </>
         )}
       </CardContent>
     </Card>
