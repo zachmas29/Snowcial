@@ -92,7 +92,7 @@ export default function CommentItem({
     >
       <Stack direction="row" spacing={2} alignItems="flex-start">
         <UserAvatar
-          user={comment.author ? comment.author : undefined}
+          user={isDeleted ? undefined : comment.author}
           sx={{ width: 36, height: 36, mt: 0.5 }}
         />
         <Box flex={1}>
