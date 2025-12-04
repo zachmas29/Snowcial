@@ -8,7 +8,6 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
-import NextLink from "next/link";
 import UserAvatar from "@/components/UserAvatar";
 
 import { formatEventDate } from "@/lib/date_formatters";
