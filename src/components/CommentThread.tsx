@@ -45,6 +45,20 @@ export default function CommentThread({ eventId }: CommentThreadProps) {
       .finally(() => setLoading(false));
   }, [eventId]);
 
+  // Auto-refresh comments every 5 seconds
+  useEffect(() => {
+    if (Number.isNaN(eventId) || loading) {
+      return;
+    }
+
+    const interval = setInterval(async () => {
+      const freshComments = await fetchEventComments(eventId);
+      setComments(freshComments);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [eventId, loading]);
+
   const handleAddComment = async (
     text: string,
     parentCommentId: number | null = null,
