@@ -80,32 +80,40 @@ export function UserProfileHeader({
       {/* Content */}
       <Box sx={{ pt: { xs: 6, sm: 7 }, pb: 3, px: 2 }}>
         <Stack spacing={1.5}>
-          <Box>
-            <Typography variant="h4" fontWeight={700}>
-              {fullName || "Unnamed User"}
-            </Typography>
-            <Typography color="text.secondary">{user.email}</Typography>
-          </Box>
-
-          <Stack direction="row" flexWrap="wrap" gap={1}>
-            {tags.length > 0 ? (
-              tags.map((tag) => (
-                <Chip
-                  key={tag.id}
-                  label={tag.name}
-                  size="small"
-                  color="primary"
-                />
-              ))
-            ) : (
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                fontStyle="italic"
-              >
-                No tags yet.
+          <Stack direction="row" alignItems="center">
+            <Box flex={1}>
+              <Typography variant="h4" fontWeight={700}>
+                {fullName || "Unnamed User"}
               </Typography>
-            )}
+              <Typography color="text.secondary">{user.email}</Typography>
+            </Box>
+          </Stack>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            gap={1}
+          >
+            <Stack direction="row" flexWrap="wrap" gap={1}>
+              {tags.length > 0 ? (
+                tags.map((tag) => (
+                  <Chip
+                    key={tag.id}
+                    label={tag.name}
+                    size="small"
+                    color="primary"
+                  />
+                ))
+              ) : (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  fontStyle="italic"
+                >
+                  No tags yet.
+                </Typography>
+              )}
+            </Stack>
           </Stack>
         </Stack>
       </Box>
