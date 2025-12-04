@@ -7,7 +7,8 @@ import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Paper from "@mui/material/Paper";
 import Link from "next/link";
-import { type ReactNode, useState } from "react";
+import { useRouter } from "next/router";
+import type { ReactNode } from "react";
 import { useAuthContext } from "@/hooks/useAuth";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -20,7 +21,7 @@ type NavItem = {
 
 export function NavBar() {
   const { user } = useAuthContext();
-  const [currentNavMenu, setCurrentNavMenu] = useState(0);
+  const router = useRouter();
 
   const authUserId = user?.id ?? null;
   const profileHref = authUserId ? `/profile/${authUserId}` : "/profile";
@@ -37,6 +38,16 @@ export function NavBar() {
     { label: "New Event", href: "/events/new", icon: <AddBoxIcon /> },
   ];
 
+  // Simple active state based on current pathname
+  const getActiveValue = () => {
+    const pathname = router.pathname;
+    if (pathname.startsWith("/profile")) return "/profile";
+    if (pathname.startsWith("/events/new")) return "/events/new";
+    if (pathname.startsWith("/events")) return "/events";
+    if (pathname.startsWith("/people")) return "/people";
+    return pathname;
+  };
+
   return (
     <Paper
       component="nav"
@@ -51,11 +62,7 @@ export function NavBar() {
       aria-label="Primary navigation"
     >
       <Box sx={{ position: "relative" }}>
-        <BottomNavigation
-          value={currentNavMenu}
-          onChange={(_event, newNavMenu) => setCurrentNavMenu(newNavMenu)}
-          showLabels
-        >
+        <BottomNavigation value={getActiveValue()} showLabels>
           {navItems.map((item) => (
             <BottomNavigationAction
               key={item.href}
