@@ -3,7 +3,6 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import {
-  Avatar,
   Box,
   Divider,
   List,
@@ -14,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
+import UserAvatar from "@/components/UserAvatar";
 
 interface RsvpWithUser {
   user_id: string;
@@ -93,12 +93,16 @@ export default function AttendeeList({ rsvps, capacity }: AttendeeListProps) {
                     }}
                   >
                     <ListItemAvatar sx={{ minWidth: 40 }}>
-                      <Avatar
-                        src={attendee.users.profile_photo_path ?? ""}
+                      <UserAvatar
+                        user={{
+                          id: attendee.user_id,
+                          first_name: attendee.users.first_name,
+                          last_name: attendee.users.last_name,
+                          profile_photo_path: attendee.users.profile_photo_path,
+                        }}
                         sx={{ width: 32, height: 32 }}
-                      >
-                        {attendee.users.first_name.charAt(0)}
-                      </Avatar>
+                        shouldLink={false}
+                      />
                     </ListItemAvatar>
                     <ListItemText
                       primary={`${attendee.users.first_name} ${attendee.users.last_name}`}
@@ -143,12 +147,16 @@ export default function AttendeeList({ rsvps, capacity }: AttendeeListProps) {
                     }}
                   >
                     <ListItemAvatar sx={{ minWidth: 40 }}>
-                      <Avatar
-                        src={attendee.users.profile_photo_path ?? ""}
+                      <UserAvatar
+                        user={{
+                          id: attendee.user_id,
+                          first_name: attendee.users.first_name,
+                          last_name: attendee.users.last_name,
+                          profile_photo_path: attendee.users.profile_photo_path,
+                        }}
                         sx={{ width: 32, height: 32, opacity: 0.7 }}
-                      >
-                        {attendee.users.first_name.charAt(0)}
-                      </Avatar>
+                        shouldLink={false}
+                      />
                     </ListItemAvatar>
                     <ListItemText
                       primary={`${attendee.users.first_name} ${attendee.users.last_name}`}
@@ -193,12 +201,16 @@ export default function AttendeeList({ rsvps, capacity }: AttendeeListProps) {
                     }}
                   >
                     <ListItemAvatar sx={{ minWidth: 40 }}>
-                      <Avatar
-                        src={attendee.users.profile_photo_path ?? ""}
+                      <UserAvatar
+                        user={{
+                          id: attendee.user_id,
+                          first_name: attendee.users.first_name,
+                          last_name: attendee.users.last_name,
+                          profile_photo_path: attendee.users.profile_photo_path,
+                        }}
                         sx={{ width: 32, height: 32 }}
-                      >
-                        {attendee.users.first_name.charAt(0)}
-                      </Avatar>
+                        shouldLink={false}
+                      />
                     </ListItemAvatar>
                     <ListItemText
                       primary={`${attendee.users.first_name} ${attendee.users.last_name}`}

@@ -1,10 +1,19 @@
-import { Typography } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import PageLayout from "@/components/PageLayout";
 import { useAuthContext } from "@/hooks/useAuth";
 
 export default function Profile() {
   const { user } = useAuthContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      void router.replace(`/profile/${user.id}`);
+    }
+  }, [router, user]);
 
   return (
     <>
@@ -12,15 +21,17 @@ export default function Profile() {
         <title>Profile | Snowcial</title>
       </Head>
       <PageLayout>
-        <Typography
-          variant="h3"
-          component="h1"
-          fontWeight={600}
-          textAlign="center"
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "40vh",
+          }}
         >
-          Profile
-        </Typography>
-        <Typography variant="body1">{user?.user_metadata?.name}</Typography>
+          <CircularProgress />
+        </Box>
       </PageLayout>
     </>
   );

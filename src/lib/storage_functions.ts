@@ -55,10 +55,14 @@ async function resizeAndCropImage(
   });
 }
 
-export async function uploadProfileImage(image: File): Promise<string> {
+export async function uploadProfileImage(
+  userId: string,
+  image: File,
+): Promise<string> {
   const processedBlob = await resizeAndCropImage(image, 500, 500);
 
-  const imagePath = `${crypto.randomUUID()}.jpeg`;
+  // Use naming convention: {userId}-{timestamp}-profile.jpeg
+  const imagePath = `${userId}-${Date.now()}-profile.jpeg`;
 
   const { error } = await supabase.storage
     .from("profile-photos")
@@ -66,6 +70,61 @@ export async function uploadProfileImage(image: File): Promise<string> {
 
   if (error) {
     throw new Error(`Failed to upload image: ${error.message}`);
+  }
+
+  return imagePath;
+}
+
+export async function uploadBannerImage(
+  userId: string,
+  image: File,
+): Promise<string> {
+  const processedBlob = await resizeAndCropImage(image, 1200, 300);
+
+  // Use naming convention: {userId}-{timestamp}-banner.jpeg
+  const imagePath = `${userId}-${Date.now()}-banner.jpeg`;
+
+  const { error } = await supabase.storage
+    .from("banner-photos")
+    .upload(imagePath, processedBlob);
+
+  if (error) {
+    throw new Error(`Failed to upload image: ${error.message}`);
+  }
+
+  return imagePath;
+}
+
+export async function uploadGalleryImage(
+  userId: string,
+  image: File,
+): Promise<string> {
+  const processedBlob = await resizeAndCropImage(image, 800, 800);
+
+  // Use naming convention: {userId}-{timestamp}.jpeg
+  const imagePath = `${userId}-${Date.now()}.jpeg`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("gallery-photos")
+    .upload(imagePath, processedBlob);
+
+  if (uploadError) {
+    throw new Error(`Failed to upload image: ${uploadError.message}`);
+  }
+
+  // Insert record in database
+  const { error: dbError } = await supabase.from("gallery_photos").insert({
+    //biome-ignore lint/style/useNamingConvention: <Using snake_case for DB types to make Supabase happy>
+    user_id: userId,
+    //biome-ignore lint/style/useNamingConvention: <Using snake_case for DB types to make Supabase happy>
+    photo_path: imagePath,
+  });
+
+  if (dbError) {
+    // Note: we intentionally do not attempt to delete the
+    // uploaded storage object here. This keeps storage RLS
+    // simple (insert-only) at the cost of potential orphans.
+    throw new Error(`Failed to save to database: ${dbError.message}`);
   }
 
   return imagePath;

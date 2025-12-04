@@ -68,7 +68,7 @@ export default function EventCreator({
         gap: 2,
       }}
     >
-      <Stack spacing={2} width="100%">
+      <Stack spacing={2} sx={{ width: "100%" }}>
         <TextField
           label="Event Name"
           value={eventFormData.title}
@@ -76,6 +76,7 @@ export default function EventCreator({
             setEventFormData({ ...eventFormData, title: event.target.value })
           }
           required
+          fullWidth
         />
         <TextField
           label="Description"
@@ -89,6 +90,7 @@ export default function EventCreator({
           multiline
           rows={3}
           required
+          fullWidth
         />
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateTimePicker

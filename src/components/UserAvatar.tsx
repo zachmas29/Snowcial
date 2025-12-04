@@ -1,9 +1,19 @@
+/** biome-ignore-all lint/style/useNamingConvention: <snake_case to make Supabase happy> */
 import { Avatar, type SxProps, type Theme } from "@mui/material";
 import Link from "next/link";
+import { getPublicUrl } from "@/lib/getPublicURL";
 import type { Tables } from "@/types/database.types";
 
+// Minimal user type for avatar rendering
+export interface UserAvatarUser {
+  id: string;
+  first_name: string;
+  last_name: string;
+  profile_photo_path?: string | null;
+}
+
 interface UserAvatarProps {
-  user: Tables<"users"> | undefined;
+  user: Tables<"users"> | UserAvatarUser | undefined;
   sx?: SxProps<Theme> | undefined;
   shouldLink?: boolean;
   fallbackInitials?: string;
@@ -19,11 +29,16 @@ export default function UserAvatar({
     ? `${user.first_name[0] ?? ""}${user.last_name[0] ?? ""}`
     : fallbackInitials;
 
-  // Try to get avatar URL from user object (Google users)
-  const avatarUrl = user?.profile_photo_path ?? undefined;
+  // Normalize avatar URL from user object (Google users or storage keys)
+  let avatarUrl = user?.profile_photo_path ?? undefined;
+
+  if (avatarUrl && !avatarUrl.startsWith("http")) {
+    const publicUrl = getPublicUrl("profile-photos", avatarUrl);
+    avatarUrl = publicUrl ?? undefined;
+  }
 
   const avatarElement = (
-    <Avatar sx={sx} src={avatarUrl || undefined}>
+    <Avatar sx={sx} src={avatarUrl}>
       {!avatarUrl && initials}
     </Avatar>
   );

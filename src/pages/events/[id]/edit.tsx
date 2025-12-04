@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
-import { Alert, Box, CircularProgress, Typography } from "@mui/material";
+import { Alert, Box, CircularProgress, Paper, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -147,21 +147,34 @@ export default function EditEvent() {
         >
           Edit Event
         </Typography>
-        <EventCreator
-          initialData={
-            originalEventData
-              ? {
-                  title: originalEventData.title,
-                  description: originalEventData.description ?? "",
-                  event_time: new Date(originalEventData.event_time),
-                  tags: eventTags,
-                  capacity: originalEventData.capacity,
-                }
-              : undefined
-          }
-          onSubmit={handleSubmit}
-          handleClick={handleClick}
-        />
+        <Paper
+          elevation={3}
+          sx={{
+            width: "100%",
+            borderRadius: 2,
+            boxShadow: 3,
+            border: 1,
+            borderColor: "divider",
+            overflow: "hidden",
+            p: 3,
+          }}
+        >
+          <EventCreator
+            initialData={
+              originalEventData
+                ? {
+                    title: originalEventData.title,
+                    description: originalEventData.description ?? "",
+                    event_time: new Date(originalEventData.event_time),
+                    tags: eventTags,
+                    capacity: originalEventData.capacity,
+                  }
+                : undefined
+            }
+            onSubmit={handleSubmit}
+            handleClick={handleClick}
+          />
+        </Paper>
       </PageLayout>
     </>
   );

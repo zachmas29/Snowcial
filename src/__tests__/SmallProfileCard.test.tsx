@@ -15,8 +15,8 @@ const mockUser: UserWithTags = {
   last_updated: "2025-01-01T00:00:00+00:00",
   banner_photo_path: null,
   profile_photo_path: null,
-  nick_name: "sophieshreds",
   last_active: "2025-11-13T00:00:00+00:00",
+
   tags: [
     { id: 1, name: "Snowbowl" },
     { id: 2, name: "Park" },
@@ -33,7 +33,6 @@ const mockUserNoBio: UserWithTags = {
   last_updated: "2025-02-01T00:00:00+00:00",
   banner_photo_path: null,
   profile_photo_path: null,
-  nick_name: "jakerides",
   last_active: "2025-11-13T00:00:00+00:00",
   tags: [],
 };
@@ -48,7 +47,6 @@ const mockUserNoNickname: UserWithTags = {
   last_updated: "2025-03-01T00:00:00+00:00",
   banner_photo_path: null,
   profile_photo_path: null,
-  nick_name: null,
   last_active: "2025-11-13T00:00:00+00:00",
   tags: [{ id: 3, name: "Nordic" }],
 };
@@ -63,7 +61,9 @@ describe("SmallProfileCard", () => {
     render(<SmallProfileCard user={mockUser} />);
     // Verify core pieces render as expected instead of snapshot
     expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
-    expect(screen.getByText("@sophieshreds")).toBeInTheDocument();
+    expect(
+      screen.getByText("Snowboarder who loves park features and powder days"),
+    ).toBeInTheDocument();
   });
 
   test("Displays first name and last name", () => {
@@ -71,13 +71,14 @@ describe("SmallProfileCard", () => {
     expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
   });
 
-  test("Displays nickname with @ prefix", () => {
+  test("Does not render legacy @nickname", () => {
     render(<SmallProfileCard user={mockUser} />);
-    expect(screen.getByText("@sophieshreds")).toBeInTheDocument();
+    expect(screen.queryByText("@sophieshreds")).not.toBeInTheDocument();
   });
 
-  test("Hides nickname section when nickname is null", () => {
+  test("Handles users without nickname", () => {
     render(<SmallProfileCard user={mockUserNoNickname} />);
+    expect(screen.getByText("Maya Patel")).toBeInTheDocument();
     expect(screen.queryByText("@maya")).not.toBeInTheDocument();
   });
 
@@ -148,17 +149,18 @@ describe("SmallProfileCard", () => {
 
   test("Displays profile information in correct order", () => {
     render(<SmallProfileCard user={mockUser} />);
-    // Name should appear before nickname in document
+    // Name should appear before bio in document
     const name = screen.getByText("Sophie Martinez");
-    const nickname = screen.getByText("@sophieshreds");
+    const bio = screen.getByText(
+      "Snowboarder who loves park features and powder days",
+    );
     expect(name).toBeInTheDocument();
-    expect(nickname).toBeInTheDocument();
+    expect(bio).toBeInTheDocument();
   });
 
   test("Handles user with all fields populated", () => {
     render(<SmallProfileCard user={mockUser} />);
     expect(screen.getByText("Sophie Martinez")).toBeInTheDocument();
-    expect(screen.getByText("@sophieshreds")).toBeInTheDocument();
     expect(
       screen.getByText("Snowboarder who loves park features and powder days"),
     ).toBeInTheDocument();
@@ -169,7 +171,6 @@ describe("SmallProfileCard", () => {
   test("Handles user with minimal fields", () => {
     render(<SmallProfileCard user={mockUserNoBio} />);
     expect(screen.getByText("Jake Thompson")).toBeInTheDocument();
-    expect(screen.getByText("@jakerides")).toBeInTheDocument();
     // Bio and tags should not be visible
     expect(
       screen.queryByText(/snowboarder|park|powder/i),

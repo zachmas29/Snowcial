@@ -8,10 +8,10 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
+import UserAvatar from "@/components/UserAvatar";
 import { formatEventDate } from "@/lib/date_formatters";
 import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
 import type { Tables } from "@/types/database.types";
-import UserAvatar from "./UserAvatar";
 
 type EventCardProps = {
   event: Tables<"events">;
@@ -92,7 +92,7 @@ export default function SmallEventCard({
               {event.title}
             </Typography>
           }
-          subheader={`${user ? `${user.first_name} ${user.last_name}` : ""} • ${formatEventDate(event.event_time)}`}
+          subheader={`${user ? `${user.first_name} ${user.last_name}` : "Event"} • ${formatEventDate(event.event_time)}`}
         />
         <CardContent
           sx={{

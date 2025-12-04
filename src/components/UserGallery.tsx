@@ -1,21 +1,9 @@
-/*
-  UserGallery.tsx
-
-  Displays a responsive gallery grid for a user's photo collection.
-*/
-
 import { Box, ImageList, ImageListItem, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import Image from "next/image";
 import type { UserGalleryProps } from "@/types/app.types";
 
 export default function UserGallery({ photos }: UserGalleryProps) {
   const showEmptyState = photos.length === 0;
-  const theme = useTheme();
-  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
-  const isSmUp = useMediaQuery(theme.breakpoints.up("sm"));
-  const columns = isMdUp ? 4 : isSmUp ? 3 : 2;
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -37,46 +25,50 @@ export default function UserGallery({ photos }: UserGalleryProps) {
           No photos yet.
         </Box>
       ) : (
-        <ImageList
-          cols={columns}
-          gap={12}
-          rowHeight={160}
-          sx={{
-            m: 0,
-            "& .MuiImageListItem-root": {
-              borderRadius: 2,
-              overflow: "hidden",
-            },
-            "& img": {
+        <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
+          <ImageList
+            cols={3}
+            gap={14}
+            rowHeight={200}
+            sx={{
               width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-            },
-          }}
-        >
-          {photos.map((photo) => (
-            <ImageListItem key={`${photo.user_id}-${photo.photo_path}`}>
-              <Box
-                sx={{
-                  position: "relative",
-                  width: "100%",
-                  height: "100%",
-                }}
-              >
-                <Image
-                  src={photo.photo_path}
-                  alt="Gallery photo"
-                  fill
-                  sizes="(min-width: 900px) 25vw, (min-width: 600px) 33vw, 50vw"
-                  style={{
-                    objectFit: "cover",
-                  }}
-                />
-              </Box>
-            </ImageListItem>
-          ))}
-        </ImageList>
+              maxWidth: 650,
+              "& .MuiImageListItem-root": {
+                width: 200,
+                height: 200,
+                borderRadius: 3,
+                overflow: "hidden",
+              },
+            }}
+          >
+            {photos.slice(0, 6).map((photo) => {
+              // FIX: prevent Next.js Image crash
+              if (!photo.photo_path) return null;
+
+              return (
+                <ImageListItem key={`${photo.user_id}-${photo.photo_path}`}>
+                  <Box
+                    sx={{
+                      position: "relative",
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  >
+                    <Image
+                      src={photo.photo_path}
+                      alt="Gallery photo"
+                      fill
+                      sizes="200px"
+                      style={{
+                        objectFit: "cover",
+                      }}
+                    />
+                  </Box>
+                </ImageListItem>
+              );
+            })}
+          </ImageList>
+        </Box>
       )}
     </Box>
   );

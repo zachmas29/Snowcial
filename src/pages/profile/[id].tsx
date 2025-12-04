@@ -1,12 +1,11 @@
+//biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB types to make Supabase happy>
+
 import { Alert, Box, CircularProgress, Typography } from "@mui/material";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import EventFeed from "@/components/EventFeed";
 import PageLayout from "@/components/PageLayout";
-import UserBioSection from "@/components/UserBioSection";
-import UserGallery from "@/components/UserGallery";
-import UserProfileHeader from "@/components/UserProfileHeader";
+import UserProfileView from "@/components/UserProfileView";
 import { useAuthContext } from "@/hooks/useAuth";
 import {
   fetchEventsByUser,
@@ -34,17 +33,9 @@ export default function UserProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // User events state
   const [userEvents, setUserEvents] = useState<EnrichedEvent[]>([]);
   const [userEventsLoading, setUserEventsLoading] = useState(true);
   const [userEventsError, setUserEventsError] = useState(false);
-
-  // function to handle possessive grammar for names
-  const getPossessiveForm = (name: string): string => {
-    return name.toLowerCase().endsWith("s")
-      ? `${name}' Events`
-      : `${name}'s Events`;
-  };
 
   useEffect(() => {
     if (!router.isReady) {
@@ -67,7 +58,6 @@ export default function UserProfilePage() {
       try {
         const baseEvents = await fetchEventsByUser(validUserId);
 
-        // Enrich each event with user, tags, and attendee data
         const enrichedPromises = baseEvents.map(async (event) => {
           try {
             const [eventUser, attendingCount, eventTags] = await Promise.all([
@@ -75,19 +65,14 @@ export default function UserProfilePage() {
               getAttendeeCount(event.id),
               fetchEventTags(event.id),
             ]);
+
             return {
               event,
               user: eventUser,
               eventTags,
               attendingCount,
             } as EnrichedEvent;
-          } catch (err) {
-            // If individual event enrichment fails, include with default values
-            // biome-ignore lint/suspicious/noConsole: intended logging
-            console.error(
-              `Failed to fetch extra data for event ${event.id}:`,
-              err,
-            );
+          } catch (_err) {
             return {
               event,
               user: undefined,
@@ -102,10 +87,8 @@ export default function UserProfilePage() {
         if (isMounted) {
           setUserEvents(enrichedEvents);
         }
-      } catch (err) {
+      } catch (_err) {
         if (isMounted) {
-          // biome-ignore lint/suspicious/noConsole: just for testing
-          console.error("Failed to fetch user events:", err);
           setUserEventsError(true);
         }
       } finally {
@@ -122,9 +105,7 @@ export default function UserProfilePage() {
       try {
         const data = await fetchUserProfile(validUserId);
 
-        if (!isMounted) {
-          return;
-        }
+        if (!isMounted) return;
 
         if (!data) {
           setProfile(null);
@@ -133,13 +114,9 @@ export default function UserProfilePage() {
         }
 
         setProfile(data);
-      } catch (fetchError) {
-        if (!isMounted) {
-          return;
-        }
+      } catch (_fetchError) {
+        if (!isMounted) return;
 
-        // biome-ignore lint/suspicious/noConsole: helpful during development
-        console.error("Failed to fetch profile:", fetchError);
         setProfile(null);
         setError("Something went wrong while loading this profile.");
       } finally {
@@ -182,28 +159,14 @@ export default function UserProfilePage() {
         ) : error ? (
           <Alert severity="error">{error}</Alert>
         ) : profile ? (
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            <UserProfileHeader user={profile.user} tags={profile.tags} />
-            <UserBioSection bioText={profile.user.bio_text} />
-            <UserGallery photos={profile.galleryPhotos} />
-            <Box>
-              <Typography variant="h6" component="h2" fontWeight={600} mb={1.5}>
-                {isOwnProfile
-                  ? "My Events"
-                  : getPossessiveForm(profile.user.first_name)}
-              </Typography>
-              {userEventsLoading ? (
-                <CircularProgress />
-              ) : userEventsError ? (
-                <Alert severity="error">Could not load events</Alert>
-              ) : (
-                <EventFeed
-                  events={userEvents}
-                  emptyMessage="No events yet. Create your first event!"
-                />
-              )}
-            </Box>
-          </Box>
+          <UserProfileView
+            profile={profile}
+            userEvents={userEvents}
+            userEventsLoading={userEventsLoading}
+            userEventsError={userEventsError}
+            isOwnProfile={isOwnProfile}
+            onEditProfile={() => router.push("/profile/edit")}
+          />
         ) : (
           <Typography color="text.secondary">
             No profile data available.

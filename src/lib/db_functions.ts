@@ -1,4 +1,6 @@
 /** biome-ignore-all lint/style/useNamingConvention: <Using snake_case to make Supabase happy> */
+
+import { getPublicUrl } from "@/lib/getPublicURL";
 import { supabase } from "@/lib/supabase_client";
 import type { AttendeeCountType } from "@/types/AttendeeCountType.type";
 import type { UserProfileData } from "@/types/app.types";
@@ -45,13 +47,28 @@ export async function fetchUsersWithTags(): Promise<UserWithTags[]> {
 
   const rows = (data ?? []) as UserRowWithAssignments[];
 
-  return rows.map(({ userTagAssignments, ...user }) => ({
-    ...user,
-    tags:
-      userTagAssignments
-        ?.map((assignment) => assignment.userTags)
-        .filter((tag): tag is Tables<"user_tags"> => tag !== null) ?? [],
-  }));
+  return rows.map(({ userTagAssignments, ...user }) => {
+    let profile_photo_path = user.profile_photo_path;
+    let banner_photo_path = user.banner_photo_path;
+
+    if (profile_photo_path && !profile_photo_path.startsWith("http")) {
+      profile_photo_path = getPublicUrl("profile-photos", profile_photo_path);
+    }
+
+    if (banner_photo_path && !banner_photo_path.startsWith("http")) {
+      banner_photo_path = getPublicUrl("banner-photos", banner_photo_path);
+    }
+
+    return {
+      ...user,
+      profile_photo_path,
+      banner_photo_path,
+      tags:
+        userTagAssignments
+          ?.map((assignment) => assignment.userTags)
+          .filter((tag): tag is Tables<"user_tags"> => tag !== null) ?? [],
+    };
+  });
 }
 
 /* fetchUser
@@ -715,4 +732,82 @@ export async function getCurrentUserRSVP(eventId: number) {
   }
 
   return data;
+}
+
+/* clearUserTagAssignments
+ * params: user id to clear tag assignments
+ */
+export async function clearUserTagAssignments(user_id: string) {
+  const { error } = await supabase
+    .from("user_tag_assignments")
+    .delete()
+    .eq("user_id", user_id);
+
+  if (error) {
+    throw error;
+  }
+}
+
+/* updateUserTagAssignments
+ * params: user id to assign tags to
+ */
+export async function updateUserTagAssignments(
+  user_id: string,
+  tagIds: number[],
+) {
+  await clearUserTagAssignments(user_id);
+
+  if (tagIds.length > 0) {
+    const rows = tagIds.map((tag_id) => ({ user_id, tag_id }));
+
+    const { error } = await supabase.from("user_tag_assignments").insert(rows);
+
+    if (error) {
+      throw error;
+    }
+  }
+}
+
+/*
+ * Updates the database row for the currently authenticated user.
+ */
+export async function updateCurrentUserProfile(
+  updates: Partial<Tables<"users">> & { id: string },
+) {
+  const { id: userId, ...updateData } = updates;
+
+  if (!userId) {
+    throw new Error("Missing user id");
+  }
+
+  const result = await supabase
+    .from("users")
+    .update(updateData)
+    .eq("id", userId)
+    .select()
+    .maybeSingle();
+
+  if (result.error) {
+    throw result.error;
+  }
+
+  return result.data;
+}
+
+/**
+ * Deletes a gallery photo database record.
+ * Note: gallery_photos has composite primary key (user_id, photo_path).
+ * This does not delete the underlying storage object; we keep
+ * storage insert-only and accept possible orphaned files.
+ */
+export async function deleteGalleryPhoto(userId: string, photoPath: string) {
+  const { error: dbError } = await supabase
+    .from("gallery_photos")
+    .delete()
+    .eq("user_id", userId)
+    .eq("photo_path", photoPath);
+
+  if (dbError) {
+    throw dbError;
+  }
 }

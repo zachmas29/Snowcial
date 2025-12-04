@@ -16,7 +16,8 @@ CREATE POLICY "Users can view all profiles"
 
 CREATE POLICY "Users can update own profile"
     ON users FOR UPDATE
-    USING ((select auth.uid()) = id);
+    USING ((select auth.uid()) = id)
+    WITH CHECK ((select auth.uid()) = id);
 
 -- User tags policies (read-only for all authenticated users)
 CREATE POLICY "Users can view all user tags"

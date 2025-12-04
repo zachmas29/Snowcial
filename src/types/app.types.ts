@@ -1,3 +1,4 @@
+// biome-ignore-all lint/style/useNamingConvention: <Using snake_case for DB-shaped types>
 import type { GenericTagType } from "@/types/EventCreator.types";
 import type { AttendeeCountType } from "./AttendeeCountType.type";
 import type { Tables } from "./database.types";
@@ -9,20 +10,30 @@ export interface UserProfileData {
   tags: Tables<"user_tags">[];
   galleryPhotos: Tables<"gallery_photos">[];
 }
+
 // Component props
 export interface UserProfileHeaderProps {
   user: Tables<"users">;
   tags: Tables<"user_tags">[];
+  onEditProfile?: () => void;
 }
+
 export interface UserBioSectionProps {
   bioText?: string | null;
 }
+
 export interface UserGalleryProps {
-  photos: Tables<"gallery_photos">[];
+  photos: {
+    user_id: string;
+    photo_path: string | null;
+    created_at: string;
+  }[];
 }
+
 export interface SmallProfileCardProps {
   user: UserWithTags;
 }
+
 export interface PeopleFeedProps {
   users: UserWithTags[];
   emptyMessage?: string;

@@ -292,7 +292,6 @@ export type Database = {
           last_active: string;
           last_name: string;
           last_updated: string;
-          nick_name: string | null;
           profile_photo_path: string | null;
         };
         Insert: {
@@ -305,7 +304,6 @@ export type Database = {
           last_active?: string;
           last_name: string;
           last_updated?: string;
-          nick_name?: string | null;
           profile_photo_path?: string | null;
         };
         Update: {
@@ -318,7 +316,6 @@ export type Database = {
           last_active?: string;
           last_name?: string;
           last_updated?: string;
-          nick_name?: string | null;
           profile_photo_path?: string | null;
         };
         Relationships: [];
