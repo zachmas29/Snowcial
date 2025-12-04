@@ -38,12 +38,12 @@ values
 -- Insert test events
 insert into events (creator_id, event_time, title, description, capacity)
 values
-  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', '2025-11-15 09:00:00-05', 'Morning Powder Run at Snowbowl', 'Fresh snow expected tonight! Let''s meet at the base lodge at 9am for first tracks. All levels welcome, we''ll split into groups by ability.', 5),
-  ('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', '2025-11-22 13:00:00-05', 'Park Session at Snowbowl', 'Hitting the terrain park this weekend. Looking for fellow park riders to session with. Bring your A-game!', null),
-  ('e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a55', '2025-11-16 10:00:00-05', 'Sugarbush Sunday Cruisers', 'Casual day at Sugarbush! Planning to stick to blue runs and grab lunch at the mid-mountain lodge. Perfect for intermediates.', 3),
-  ('d0eebc99-9c0b-4ef8-bb6d-6bb9bd380a44', '2025-11-18 08:00:00-05', 'Backcountry Tour at Stowe', 'Experienced backcountry skiers only. We''ll tour up from the resort and explore some sidecountry zones. Beacon, shovel, probe required.', 4),
-  ('30eebc99-9c0b-4ef8-bb6d-6bb9bd380a99', '2025-11-23 11:00:00-05', 'Killington Mogul Bash', 'Let''s hit the bumps at Killington! Looking for advanced skiers who want to work on mogul technique. Outer Limits awaits!', null),
-  ('10eebc99-9c0b-4ef8-bb6d-6bb9bd380a77', '2025-11-24 18:00:00-05', 'Night Skiing at Snowbowl', 'First night skiing session of the season! Meet at 6pm for some twilight turns under the lights. Hot chocolate after!', 2);
+  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', '2025-12-04 09:00:00-05', 'Morning Powder Run at Snowbowl', 'Fresh snow expected tonight! Let''s meet at the base lodge at 9am for first tracks. All levels welcome, we''ll split into groups by ability.', 5),
+  ('b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', '2025-12-07 13:00:00-05', 'Park Session at Snowbowl', 'Sunday afternoon park session! Looking for fellow park riders to session with. Bring your A-game!', null),
+  ('e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a55', '2025-12-08 10:00:00-05', 'Sugarbush Monday Cruisers', 'Casual Monday at Sugarbush! Planning to stick to blue runs and grab lunch at the mid-mountain lodge. Perfect for intermediates.', 3),
+  ('d0eebc99-9c0b-4ef8-bb6d-6bb9bd380a44', '2025-12-14 08:00:00-05', 'Backcountry Tour at Stowe', 'Experienced backcountry skiers only. We''ll tour up from the resort and explore some sidecountry zones. Beacon, shovel, probe required.', 4),
+  ('30eebc99-9c0b-4ef8-bb6d-6bb9bd380a99', '2025-12-21 11:00:00-05', 'Killington Mogul Bash', 'Let''s hit the bumps at Killington! Looking for advanced skiers who want to work on mogul technique. Outer Limits awaits!', null),
+  ('10eebc99-9c0b-4ef8-bb6d-6bb9bd380a77', '2025-12-28 18:00:00-05', 'Night Skiing at Snowbowl', 'First night skiing session of the season! Meet at 6pm for some twilight turns under the lights. Hot chocolate after!', 2);
 
 -- Insert event comments
 insert into event_comments (creator_id, event_id, comment_text)
@@ -75,9 +75,9 @@ values
     (select id from event_comments where event_id = 1 and creator_id = 'c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a33' limit 1)
   ),
   (
-    '20eebc99-9c0b-4ef8-bb6d-6bb9bd380a88',
+    'e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a55',
     3,
-    'Bring your camera, Ryan! Sunrise shots would be great.',
+    'Bring your camera, Ryan! The views would be perfect for shots.',
     (select id from event_comments where event_id = 3 and creator_id = '20eebc99-9c0b-4ef8-bb6d-6bb9bd380a88' limit 1)
   );
 
