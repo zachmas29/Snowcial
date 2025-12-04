@@ -27,7 +27,7 @@ export default function UserAvatar({
 }: UserAvatarProps) {
   const initials = user
     ? `${user.first_name[0] ?? ""}${user.last_name[0] ?? ""}`
-    : fallbackInitials;
+    : fallbackInitials || "?";
 
   // Normalize avatar URL from user object (Google users or storage keys)
   let avatarUrl = user?.profile_photo_path ?? undefined;
@@ -38,8 +38,17 @@ export default function UserAvatar({
   }
 
   const avatarElement = (
-    <Avatar sx={sx} src={avatarUrl}>
-      {!avatarUrl && initials}
+    <Avatar
+      sx={{
+        ...sx,
+        ...(!user && {
+          bgcolor: "grey.400",
+          color: "grey.600",
+        }),
+      }}
+      src={user ? avatarUrl : undefined}
+    >
+      {(!avatarUrl || !user) && initials}
     </Avatar>
   );
 

@@ -94,7 +94,6 @@ export default function NewEvent() {
             <Alert severity="error">{error}</Alert>
           </Box>
         )}
-        <EventCreator onSubmit={handleSubmit} handleClick={handleClick} />
       </PageLayout>
     </>
   );
