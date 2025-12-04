@@ -12,6 +12,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useColorScheme } from "@mui/material/styles";
 import { AddToCalendarButton } from "add-to-calendar-button-react";
 import { useRouter } from "next/router";
 import { useAuthContext } from "@/hooks/useAuth";
@@ -42,6 +43,7 @@ export default function Event({ eventData, userData }: EventProps) {
   const { title, description, event_time, tags } = eventData;
   const router = useRouter();
   const { user } = useAuthContext();
+  const { mode } = useColorScheme();
 
   const calendarProps = (() => {
     if (!event_time) return null;
@@ -182,6 +184,7 @@ export default function Event({ eventData, userData }: EventProps) {
                   listStyle="dropdown"
                   hideBranding
                   hideCheckmark
+                  lightMode={mode === "dark" ? "dark" : "light"}
                   {...calendarProps}
                 ></AddToCalendarButton>
               )}

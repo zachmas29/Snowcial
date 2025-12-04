@@ -38,3 +38,76 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+/* Calendar button theme colors */
+.atcb-button {
+  background: #667eea !important;
+  color: white !important;
+}
+
+html[data-mui-color-scheme="dark"] .atcb-button {
+  background: #8fa3f0 !important;
+}
+
+.atcb-button:hover {
+  background: var(--mui-palette-primary-dark) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.atcb-list {
+  background: var(--mui-palette-background-paper) !important;
+  border: 1px solid var(--mui-palette-divider) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+.atcb-list-item {
+  color: var(--mui-palette-text-primary) !important;
+  background: var(--mui-palette-background-paper) !important;
+  border-bottom: 1px solid var(--mui-palette-divider) !important;
+  font-family: "Roboto", "Arial", "Helvetica", sans-serif !important;
+}
+
+.atcb-list-item:hover {
+  background: var(--mui-palette-action-hover) !important;
+}
+
+.atcb-list-item:last-child {
+  border-bottom: none !important;
+}
+
+/* Dark mode specific overrides */
+html[data-mui-color-scheme="dark"] .atcb-button {
+  background: var(--mui-palette-primary-main) !important;
+  color: var(--mui-palette-primary-contrastText, #ffffff) !important;
+  border-color: var(--mui-palette-primary-main) !important;
+}
+
+html[data-mui-color-scheme="dark"] .atcb-list {
+  background: var(--mui-palette-background-paper) !important;
+  border-color: var(--mui-palette-divider) !important;
+}
+
+html[data-mui-color-scheme="dark"] .atcb-list-item {
+  color: var(--mui-palette-text-primary) !important;
+  background: var(--mui-palette-background-paper) !important;
+  border-color: var(--mui-palette-divider) !important;
+}
+
+/* Light mode specific overrides */
+html[data-mui-color-scheme="light"] .atcb-button {
+  background: var(--mui-palette-primary-main) !important;
+  color: var(--mui-palette-primary-contrastText, #ffffff) !important;
+  border-color: var(--mui-palette-primary-main) !important;
+}
+
+html[data-mui-color-scheme="light"] .atcb-list {
+  background: var(--mui-palette-background-paper) !important;
+  border-color: var(--mui-palette-divider) !important;
+}
+
+html[data-mui-color-scheme="light"] .atcb-list-item {
+  color: var(--mui-palette-text-primary) !important;
+  background: var(--mui-palette-background-paper) !important;
+  border-color: var(--mui-palette-divider) !important;
+}

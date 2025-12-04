@@ -1,50 +1,34 @@
-import { DarkMode, LightMode, SettingsBrightness } from "@mui/icons-material";
+import { DarkMode, LightMode } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import { useColorScheme } from "@mui/material/styles";
+import { useEffect } from "react";
 
 export function ThemeToggle() {
-  const { mode, setMode } = useColorScheme();
+  const { mode, setMode, systemMode } = useColorScheme();
+
+  // On first load, set to system preference if still on default
+  useEffect(() => {
+    if (mode === "dark" && systemMode) {
+      // Only change if we're still on the default and system mode is available
+      const hasUserPreference = localStorage.getItem("mui-color-scheme");
+      if (!hasUserPreference) {
+        setMode(systemMode);
+      }
+    }
+  }, [mode, systemMode, setMode]);
 
   const handleToggle = () => {
-    switch (mode) {
-      case "system":
-        setMode("light");
-        break;
-      case "light":
-        setMode("dark");
-        break;
-      case "dark":
-        setMode("system");
-        break;
-      default:
-        setMode("light");
-    }
+    // Simple toggle between light and dark only
+    setMode(mode === "dark" ? "light" : "dark");
   };
 
   const getNextMode = () => {
-    switch (mode) {
-      case "system":
-        return "light mode";
-      case "light":
-        return "dark mode";
-      case "dark":
-        return "system mode";
-      default:
-        return "light mode";
-    }
+    return mode === "dark" ? "light mode" : "dark mode";
   };
 
   const getIcon = () => {
-    switch (mode) {
-      case "system":
-        return <LightMode />; // Next: light mode
-      case "light":
-        return <DarkMode />; // Next: dark mode
-      case "dark":
-        return <SettingsBrightness />; // Next: system mode
-      default:
-        return <LightMode />;
-    }
+    // Show the icon for what will happen next
+    return mode === "dark" ? <LightMode /> : <DarkMode />;
   };
 
   return (
