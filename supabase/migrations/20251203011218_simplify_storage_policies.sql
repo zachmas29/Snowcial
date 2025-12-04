@@ -1,22 +1,23 @@
-drop policy "Users can delete own banner photos" on "storage"."objects";
+drop policy if exists "Users can delete own banner photos" on "storage"."objects";
 
-drop policy "Users can delete own gallery photos" on "storage"."objects";
+drop policy if exists "Users can delete own gallery photos" on "storage"."objects";
 
-drop policy "Users can delete own profile photos" on "storage"."objects";
+drop policy if exists "Users can delete own profile photos" on "storage"."objects";
 
-drop policy "Users can update own banner photos" on "storage"."objects";
+drop policy if exists "Users can update own banner photos" on "storage"."objects";
 
-drop policy "Users can update own gallery photos" on "storage"."objects";
+drop policy if exists "Users can update own gallery photos" on "storage"."objects";
 
-drop policy "Users can update own profile photos" on "storage"."objects";
+drop policy if exists "Users can update own profile photos" on "storage"."objects";
 
-drop policy "Users can upload own banner photos" on "storage"."objects";
+drop policy if exists "Users can upload own banner photos" on "storage"."objects";
 
-drop policy "Users can upload own gallery photos" on "storage"."objects";
+drop policy if exists "Users can upload own gallery photos" on "storage"."objects";
 
-drop policy "Users can upload own profile photos" on "storage"."objects";
+drop policy if exists "Users can upload own profile photos" on "storage"."objects";
 
 
+  drop policy if exists "Authenticated users can delete banner photos" on "storage"."objects";
   create policy "Authenticated users can delete banner photos"
   on "storage"."objects"
   as permissive
@@ -70,7 +71,7 @@ using (((bucket_id = 'gallery-photos'::text) AND (( SELECT auth.role() AS role) 
 using (((bucket_id = 'profile-photos'::text) AND (( SELECT auth.role() AS role) = 'authenticated'::text)));
 
 
-
+drop policy if exists "Authenticated users can upload banner photos" on storage.objects;
   create policy "Authenticated users can upload banner photos"
   on "storage"."objects"
   as permissive
@@ -80,6 +81,7 @@ with check (((bucket_id = 'banner-photos'::text) AND (( SELECT auth.role() AS ro
 
 
 
+  drop policy if exists "Authenticated users can upload gallery photos" on "storage"."objects";
   create policy "Authenticated users can upload gallery photos"
   on "storage"."objects"
   as permissive
@@ -89,6 +91,7 @@ with check (((bucket_id = 'gallery-photos'::text) AND (( SELECT auth.role() AS r
 
 
 
+  drop policy if exists "Authenticated users can upload profile photos" on "storage"."objects";
   create policy "Authenticated users can upload profile photos"
   on "storage"."objects"
   as permissive

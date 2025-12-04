@@ -24,6 +24,7 @@ CREATE POLICY "Users can delete own profile photos"
         (select auth.uid())::text = (string_to_array(name, '-'))[1]
     );
 
+DROP POLICY IF EXISTS "Anyone can view profile photos" ON storage.objects;
 CREATE POLICY "Anyone can view profile photos"
     ON storage.objects FOR SELECT
     USING (bucket_id = 'profile-photos');
@@ -50,6 +51,7 @@ CREATE POLICY "Users can delete own banner photos"
         (select auth.uid())::text = (string_to_array(name, '-'))[1]
     );
 
+DROP POLICY IF EXISTS "Anyone can view banner photos" ON storage.objects;
 CREATE POLICY "Anyone can view banner photos"
     ON storage.objects FOR SELECT
     USING (bucket_id = 'banner-photos');
@@ -76,6 +78,7 @@ CREATE POLICY "Users can delete own gallery photos"
         (select auth.uid())::text = (string_to_array(name, '-'))[1]
     );
 
+DROP POLICY IF EXISTS "Anyone can view gallery photos" ON storage.objects;
 CREATE POLICY "Anyone can view gallery photos"
     ON storage.objects FOR SELECT
     USING (bucket_id = 'gallery-photos');
