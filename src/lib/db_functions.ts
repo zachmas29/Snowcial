@@ -185,7 +185,10 @@ export async function fetchUserProfile(
  * returns: array of all Events in the DB
  */
 export async function fetchEvents(): Promise<Tables<"events">[]> {
-  const { data, error } = await supabase.from("events").select("*");
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .gte("event_time", new Date().toISOString());
 
   if (error) {
     throw error;
