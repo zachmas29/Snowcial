@@ -3,6 +3,7 @@ import { Box, Button, Container, type ContainerProps } from "@mui/material";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import type { ReactNode } from "react";
+import { useAuthContext } from "@/hooks/useAuth";
 
 interface PageLayoutProps {
   children: ReactNode;
@@ -21,9 +22,15 @@ export default function PageLayout({
   sx,
 }: PageLayoutProps) {
   const router = useRouter();
+  const { user } = useAuthContext();
 
   const showBackButton = () => {
     const pathname = router.pathname;
+
+    if (pathname === "/profile/[id]" && router.query.id === user?.id) {
+      return false;
+    }
+
     return pathname === "/profile/[id]" || pathname === "/events/[id]";
   };
 
