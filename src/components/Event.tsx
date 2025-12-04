@@ -123,9 +123,19 @@ export default function Event({ eventData, userData }: EventProps) {
         )}
 
         {event_time && (
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {formatEventDate(event_time)}
-          </Typography>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              {formatEventDate(event_time)}
+            </Typography>
+            {new Date(event_time) < new Date() && (
+              <Chip
+                label="Event has already started"
+                size="small"
+                color="warning"
+                sx={{ mt: 0.5 }}
+              />
+            )}
+          </Box>
         )}
 
         {tags && tags.length > 0 && (
