@@ -4,7 +4,7 @@
 
 Snowcial helps Middlebury students connect with fellow skiers and coordinate trips to the Snowbowl. Find your ski buddies and hit the slopes together!
 
-## authors
+## Authors
 
 Casey Adjei, Cam Bitter, Ned Cutler, Zach Okayli Masaryk, Toby Penner
 
